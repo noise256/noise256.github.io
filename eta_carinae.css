@@ -5,7 +5,7 @@ background-color: #5c87b2;
 color: #696969;
 }
 
-#webgl_script {
+div.webgl_script {
 	align: center;
 	vertical-align: center;
 }
