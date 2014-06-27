@@ -6,8 +6,8 @@ color: #696969;
 }
 
 #webgl_script {
-	width: 30%;
-	margin: 0 auto;
+	align: center;
+	vertical-align: center;
 }
 
 #main
