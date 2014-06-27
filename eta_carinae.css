@@ -5,9 +5,10 @@ background-color: #5c87b2;
 color: #696969;
 }
 
-div.webgl_script {
-	align: center;
-	vertical-align: center;
+div.center {
+	margin-left: auto;
+	margin-right: auto;
+	width: 8em;
 }
 
 #main
