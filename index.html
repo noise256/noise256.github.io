@@ -8,45 +8,49 @@
 	<!-- Based on Three.js "Getting Started" tutorial. -->
 	<body>
 		<script src="js/three.min.js"></script>
-		<div id="WebGLCanvas" style="text-align: center; border:1px solid white;"></div>
-		<script>
-			<!-- Scene, Camera and Renderer declaration and initialisation. -->
-			var scene = new THREE.Scene();
-			
-			var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-			camera.position.z = 5;
-			
-			var renderer = new THREE.WebGLRenderer();			
-			renderer.setSize(890, 600);
-			document.getElementById("WebGLCanvas").appendChild(renderer.domElement);
-			
-			<!-- Lighting setup -->
-			var ambient01 = new THREE.AmbientLight(0x404040);
-			scene.add(ambient01);
-			
-			var pointLight = new THREE.PointLight();
-			pointLight.position.set(50, 150, 150);
-			scene.add(pointLight);
-			
-			<!-- Cube creation -->
-			var geometry = new THREE.BoxGeometry(1, 1, 1);
-			var material = new THREE.MeshPhongMaterial({ambient: 0x030303, color: 0x007799, specular: 0x000000, shininess: 30, shading: THREE.SmoothShading});
-			var cube = new THREE.Mesh(geometry, material);
-			scene.add(cube);
-			
-			<!-- Render function -->
-			var render = function() {
-				requestAnimationFrame(render);
+		<div id="WebGLCanvas" style="width: 890px; height: 600px; text-align: center; border:1px solid white;">
+			<script>
+				<!-- Scene, Camera and Renderer declaration and initialisation. -->
+				var canvasWidth = document.getElementById("WebGLCanvas").clientWidth;
+				var canvasHeight = document.getElementById("WebGLCanvas").clientHeight;
 				
-				cube.rotation.x += 0.01;
-				cube.rotation.y += 0.01;
-				cube.rotation.z += 0.01;
+				var scene = new THREE.Scene();
 				
-				renderer.render(scene, camera);
-			};
-			
-			<!-- Initialise -->
-			render();
-		</script>
+				var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+				camera.position.z = 5;
+				
+				var renderer = new THREE.WebGLRenderer();			
+				renderer.setSize(canvasWidth, canvasHeight);
+				document.getElementById("WebGLCanvas").appendChild(renderer.domElement);
+				
+				<!-- Lighting setup -->
+				var ambient01 = new THREE.AmbientLight(0x404040);
+				scene.add(ambient01);
+				
+				var pointLight = new THREE.PointLight();
+				pointLight.position.set(50, 150, 150);
+				scene.add(pointLight);
+				
+				<!-- Cube creation -->
+				var geometry = new THREE.BoxGeometry(1, 1, 1);
+				var material = new THREE.MeshPhongMaterial({ambient: 0x030303, color: 0x007799, specular: 0x000000, shininess: 30, shading: THREE.SmoothShading});
+				var cube = new THREE.Mesh(geometry, material);
+				scene.add(cube);
+				
+				<!-- Render function -->
+				var render = function() {
+					requestAnimationFrame(render);
+					
+					cube.rotation.x += 0.01;
+					cube.rotation.y += 0.01;
+					cube.rotation.z += 0.01;
+					
+					renderer.render(scene, camera);
+				};
+				
+				<!-- Initialise -->
+				render();
+			</script>
+		</div>
 	</body>
 </html>
