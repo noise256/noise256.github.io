@@ -19,6 +19,10 @@
 			renderer.setSize(window.innerWidth, window.innerHeight);
 			document.body.appendChild(renderer.domElement);
 			
+			<!-- Lighting setup -->
+			var ambient01 = new THREE.AmbientLight(0x404040);
+			scene.add(ambient01);
+			
 			<!-- Cube creation -->
 			var geometry = new THREE.CubeGeometry(1, 1, 1);
 			var material = new THREE.MeshPhongMaterial({ambient: 0x030303, color: 0x009955, specular: 0x009900, shininess: 30, shading: THREE.FlatShading});
