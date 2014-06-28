@@ -25,6 +25,7 @@
 			var cube = new THREE.Mesh(geometry, material);
 			scene.add(cube);
 			
+			<!-- Render function -->
 			var render = function() {
 				requestAnimationFrame(render);
 				
@@ -35,6 +36,7 @@
 				renderer.render(scene, camera);
 			};
 			
+			<!-- Initialise -->
 			render();
 		</script>
 	</body>
