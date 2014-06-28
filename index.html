@@ -2,12 +2,13 @@
 	<head>
 		<!-- <LINK href="eta_carinae.css" rel="stylesheet" type="text/css"> -->
 		<title>WebGL - Hello World!</title>
-		<style>canvas { width: 640; height: 480 }</style>
+		<style>canvas { width: 100%; height: 100% }</style>
 	</head>
 	
 	<!-- Based on Three.js "Getting Started" tutorial. -->
 	<body>
 		<script src="js/three.min.js"></script>
+		<div id="WebGLCanvas" style="text-align: center">
 		<script>
 			<!-- Scene, Camera and Renderer declaration and initialisation. -->
 			var scene = new THREE.Scene();
@@ -15,9 +16,9 @@
 			var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 			camera.position.z = 5;
 			
-			var renderer = new THREE.WebGLRenderer();
-			renderer.setSize(canvas.width, canvas.height);
-			document.body.appendChild(renderer.domElement);
+			var renderer = new THREE.WebGLRenderer();			
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			document.getElementById("WebGLCanvas").appendChild(renderer.domElement);
 			
 			<!-- Lighting setup -->
 			var ambient01 = new THREE.AmbientLight(0x404040);
@@ -47,5 +48,6 @@
 			<!-- Initialise -->
 			render();
 		</script>
+		</div>
 	</body>
 </html>
