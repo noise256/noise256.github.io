@@ -21,16 +21,16 @@
 			
 			<!-- Cube creation -->
 			var geometry = new THREE.CubeGeometry(1, 1, 1);
-			var material = new THREE.MeshBasicMaterial({color: 0x009900});
+			var material = new THREE.MeshBasicMaterial({color: 0x009955});
 			var cube = new THREE.Mesh(geometry, material);
 			scene.add(cube);
 			
 			var render = function() {
 				requestAnimationFrame(render);
 				
-				cube.rotation.x += 0.1;
-				cube.rotation.y += 0.1;
-				cube.rotation.z += 0.1;
+				cube.rotation.x += 0.01;
+				cube.rotation.y += 0.01;
+				cube.rotation.z += 0.01;
 				
 				renderer.render(scene, camera);
 			};
