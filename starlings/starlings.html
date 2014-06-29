@@ -74,7 +74,7 @@
 				
 				<!-- Frame function -->
 				function frame() {
-					//fpsMeter.tickStart();
+					fpsMeter.tickStart();
 					
 					now = timestamp();
 					dt = dt + Math.min(1, (now - last) / 1000);
@@ -88,7 +88,7 @@
 					requestAnimationFrame(frame);
 					
 					last = now;
-					//fpsMeter.tick();
+					fpsMeter.tick();
 				};
 				
 				<!-- Initialise -->
