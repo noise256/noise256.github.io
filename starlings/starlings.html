@@ -2,14 +2,18 @@
 	<head>
 		<!-- <LINK href="eta_carinae.css" rel="stylesheet" type="text/css"> -->
 		<title>Flocking</title>
-		<style>canvas { width: 100%; height: 100% } body { background-color:#000000; } </style>
+		<style>canvas { width: 100%; height: 100%; display: inline; } body { background-color:#000000; } </style>
 	</head>
 	
 	<!-- Based on Three.js "Getting Started" tutorial. -->
 	<body>
+		<script src="js/fpsmeter.js"></script>
 		<script src="js/three.min.js"></script>
-		<div id="WebGLCanvas" style="text-align: center; width: 890px; height: 600px; border:1px solid white;">
+		<div id="WebGLCanvas" style="margin:auto; text-align:center; width: 80%; height: 80%; border:1px solid white;">
 			<script>
+				<!-- FPSMeter -->
+				var fpsMeter = new FPSMeter(document.getElementById("WebGLCanvas"), { decimals: 0, graph: true, theme: 'dark', left: '5px' });
+				
 				<!-- Scene, Camera and Renderer declaration and initialisation. -->
 				var canvasWidth = document.getElementById("WebGLCanvas").clientWidth;
 				var canvasHeight = document.getElementById("WebGLCanvas").clientHeight;
@@ -51,10 +55,14 @@
 				
 				<!-- Frame function -->
 				function frame() {
+					fpsMeter.tickStart();
+					
 					update();
 					render();
 					
 					requestAnimationFrame(frame);
+					
+					fpsMeter.tick();
 				};
 				
 				<!-- Initialise -->
