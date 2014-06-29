@@ -11,6 +11,12 @@
 		<script src="js/three.min.js"></script>
 		<div id="WebGLCanvas" style="margin:auto; text-align:center; width: 80%; height: 80%; border:1px solid white;">
 			<script>
+				<!--Time Step based on http://codeincomplete.com/posts/2013/12/4/javascript_game_foundations_the_game_loop/ -->
+				var now;
+				var dt = 0;
+				var last = timestamp();
+				var step = 1/60;
+				
 				<!-- FPSMeter -->
 				var fpsMeter = new FPSMeter(document.getElementById("WebGLCanvas"), { decimals: 0, graph: true, theme: 'dark', left: '5px' });
 				
@@ -41,15 +47,25 @@
 				var cube = new THREE.Mesh(geometry, material);
 				scene.add(cube);
 				
+				<!-- Time Step function -->
+				function timestamp() {
+					if (window.performance && window.performance.now) {
+						return window.performance.now();
+					}
+					else {
+						return new Date().getTime();
+					}
+				}
+				
 				<!-- Update function -->
-				function update() {
+				function update(dt) {
 					cube.rotation.x += 0.01;
 					cube.rotation.y += 0.01;
 					cube.rotation.z += 0.01;
 				}
 				
 				<!-- Render function -->
-				function render() {
+				function render(dt) {
 					renderer.render(scene, camera);
 				}
 				
@@ -57,11 +73,15 @@
 				function frame() {
 					fpsMeter.tickStart();
 					
-					update();
-					render();
+					now = timestamp();
+					dt = Math.min(1, (now - last) / 1000);
+					
+					update(dt);
+					render(dt);
 					
 					requestAnimationFrame(frame);
 					
+					last = now;
 					fpsMeter.tick();
 				};
 				
