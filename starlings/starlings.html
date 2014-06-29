@@ -9,6 +9,7 @@
 	<body>
 		<script src="js/fpsmeter.js"></script>
 		<script src="js/three.min.js"></script>
+		<script id="spp_model" src="js/spp_model.js"></script>
 		<div id="WebGLCanvas" style="margin:auto; text-align:center; width: 80%; height: 80%; border:1px solid white;">
 			<script>
 				<!--Time Step based on http://codeincomplete.com/posts/2013/12/4/javascript_game_foundations_the_game_loop/ -->
@@ -62,6 +63,8 @@
 					cube.rotation.x += 0.01;
 					cube.rotation.y += 0.01;
 					cube.rotation.z += 0.01;
+					
+					document.getElementById("spp_model").update();
 				}
 				
 				<!-- Render function -->
