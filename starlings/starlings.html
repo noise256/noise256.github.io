@@ -3,13 +3,14 @@
 		<!-- <LINK href="eta_carinae.css" rel="stylesheet" type="text/css"> -->
 		<title>Flocking</title>
 		<style>body { background-color:#000000; } </style>
+		
+		<script src="js/fpsmeter.js" type="text/javascript"></script>
+		<script src="js/three.min.js" type="text/javascript"></script>
+		<script src="js/spp_model.js" type="text/javascript"></script>
 	</head>
 	
 	<!-- Based on Three.js "Getting Started" tutorial. -->
 	<body>
-		<script src="js/fpsmeter.js"></script>
-		<script src="js/three.min.js"></script>
-		<script id="spp_model" src="js/spp_model.js"></script>
 		<div id="WebGLCanvas" style="margin:auto; text-align:center; width: 800px; height: 600px; border:1px solid white;">
 			<script>
 				<!--Time Step based on http://codeincomplete.com/posts/2013/12/4/javascript_game_foundations_the_game_loop/ -->
@@ -64,7 +65,7 @@
 					cube.rotation.y += 0.01;
 					cube.rotation.z += 0.01;
 					
-					//document.getElementById("spp_model").update();
+					updateSPP();//document.getElementById("spp_model").update();
 				}
 				
 				<!-- Render function -->
