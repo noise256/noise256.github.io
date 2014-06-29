@@ -37,19 +37,28 @@
 				var cube = new THREE.Mesh(geometry, material);
 				scene.add(cube);
 				
-				<!-- Render function -->
-				var render = function() {
-					requestAnimationFrame(render);
-					
+				<!-- Update function -->
+				function update() {
 					cube.rotation.x += 0.01;
 					cube.rotation.y += 0.01;
 					cube.rotation.z += 0.01;
+				}
+				
+				<!-- Render function -->
+				function render() {
+					renderer.frame(scene, camera);
+				}
+				
+				<!-- Frame function -->
+				function frame() {
+					update();
+					render();
 					
-					renderer.render(scene, camera);
+					requestAnimationFrame(frame);
 				};
 				
 				<!-- Initialise -->
-				render();
+				frame();
 			</script>
 		</div>
 	</body>
