@@ -74,9 +74,12 @@
 					fpsMeter.tickStart();
 					
 					now = timestamp();
-					dt = Math.min(1, (now - last) / 1000);
+					dt = dt + Math.min(1, (now - last) / 1000);
 					
-					update(dt);
+					while (dt > step) {
+						dt = dt - step;
+						update(dt);
+					}
 					render(dt);
 					
 					requestAnimationFrame(frame);
