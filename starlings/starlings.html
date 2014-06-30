@@ -49,10 +49,11 @@
 				
 				<!-- Scene creation -->
 				var sppModel = new SPPModel(10);
-				var sppView = sppModel.getView();
+				var sppModelView = sppModel.getView();
 				
-				for (i = 0; i < sppView; i++) {
-					scene.add(sppView[i]);
+				for (i = 0; i < sppModelView.length; i++) {
+					var sppView = sppModelView[i];
+					scene.add(sppView);
 				}
 				
 				<!-- Cube creation -->
@@ -76,11 +77,11 @@
 				
 				<!-- Update function -->
 				function update(dt) {
-					//cube.rotation.x += 0.01;
-					//cube.rotation.y += 0.01;
-					//cube.rotation.z += 0.01;
+					cube.rotation.x += 0.01;
+					cube.rotation.y += 0.01;
+					cube.rotation.z += 0.01;
 					
-					//sppModel.updateSPPModel();
+					sppModel.updateSPPModel();
 				}
 				
 				<!-- Render function -->
