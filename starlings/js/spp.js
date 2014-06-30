@@ -4,7 +4,7 @@ function SPP(position, direction) {
 	this.direction = direction;
 	
 	var geometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
-	var material = new THREE.MeshPhongMaterial({ambient: 0x030303, color: 0x007799, specular: 0x000000, shininess: 30, shading: THREE.SmoothShading});
+	var material = new THREE.MeshBasicMaterial({ambient: 0x030303, color: 0x007799, specular: 0x000000, shininess: 30, shading: THREE.SmoothShading});
 	var mesh = new THREE.Mesh(geometry, material);
 	
 	mesh.position.x = position[0];
