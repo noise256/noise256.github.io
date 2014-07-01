@@ -12,6 +12,7 @@ function SPPModel(maxParticles) {
 	this.updateSPPModel = function() {
 		for (i = 0; i < particles.length; i++) {
 			particles[i].updateSPP();
+			particles[i].updateView();
 		}
 	};
 	
