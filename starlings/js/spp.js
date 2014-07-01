@@ -20,8 +20,10 @@ function SPP(position, direction) {
 		
 		x = Math.random() < 0.5 ? -x : x;
 		
-		position[0] += Math.cos(x) * SPP.velocity;
-		position[1] += Math.sin(x) * SPP.velocity;
+		direction += x;
+		
+		position[0] += Math.cos(direction) * SPP.velocity;
+		position[1] += Math.sin(direction) * SPP.velocity;
 	};
 	
 	this.updateView = function() {
