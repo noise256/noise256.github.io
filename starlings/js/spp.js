@@ -9,7 +9,7 @@ function SPP(position, direction) {
 	var mesh = new THREE.Mesh(geometry, material);
 	
 	this.updateSPP = function() {
-		var a = 0.1;
+		var a = 5;
 		var k = 1;
 		var range = Math.PI*2;
 		
