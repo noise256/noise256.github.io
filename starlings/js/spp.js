@@ -1,5 +1,5 @@
 function SPP(position, direction) {
-	SPP.velocity = 0.001;
+	SPP.velocity = 0.01;
 	
 	this.direction = direction;
 	
@@ -11,16 +11,24 @@ function SPP(position, direction) {
 	mesh.position.y = position[1];
 	
 	this.updateSPP = function() {
-		mesh.position.x += direction[0] * SPP.velocity;
-		mesh.position.y += direction[1] * SPP.velocity;
+		var a = 0.1;
+		var k = 1;
+		var range = Math.PI*2;
+		
+		var u = Math.random() * (1 - Math.pow(range + 1, -a));
+		
+		var f = (1 - u) / Math.pow(k, a);
+		var x = Math.pow(f, 1 / -a) - 1;
+		
+		x = Math.random() < 0.5 ? -x : x;
+		
+		mesh.position.x += Math.cos(x) * SPP.velocity;
+		mesh.position.y += Math.sin(x) * SPP.velocity;
 		
 		mesh.rotation.x += 0.01;
 	};
 	
 	this.getMesh = function() {
-		mesh.position.x = position[0];
-		mesh.position.y = position[1];
-		
 		return mesh;
 	};
 }
