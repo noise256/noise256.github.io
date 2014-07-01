@@ -56,15 +56,6 @@
 					scene.add(sppView);
 				}
 				
-				<!-- Cube creation -->
-				var geometry = new THREE.BoxGeometry(1, 1, 1);
-				var material = new THREE.MeshPhongMaterial({ambient: 0x030303, color: 0x007799, specular: 0x000000, shininess: 30, shading: THREE.SmoothShading});
-				var cube = new THREE.Mesh(geometry, material);
-				
-				cube.position.x = 4;
-				
-				scene.add(cube);
-				
 				<!-- Time Step function -->
 				function timestamp() {
 					if (window.performance && window.performance.now) {
@@ -77,10 +68,6 @@
 				
 				<!-- Update function -->
 				function update(dt) {
-					cube.rotation.x += 0.01;
-					cube.rotation.y += 0.01;
-					cube.rotation.z += 0.01;
-					
 					sppModel.updateSPPModel();
 				}
 				
