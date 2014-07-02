@@ -12,8 +12,8 @@ function SPP(position, direction) {
 	
 	this.updateSPP = function(siblings) {
  		var meanDirection;
-		for (i = 0; i < siblings.length; i++) {
-			meanDirection += siblings[i].getDirection();
+		for (j = 0; j < siblings.length; j++) {
+			meanDirection += siblings[j].getDirection();
 		}
 		
 		//do stuff with mean direction
