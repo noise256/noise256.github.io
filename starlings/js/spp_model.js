@@ -12,7 +12,7 @@ function SPPModel(maxParticles) {
 			particles[i].updateSPP(particles);
 			particles[i].updateView();
 		}
-	};
+	}
 	
 	this.getView = function() {
 		var view = [];
@@ -22,5 +22,8 @@ function SPPModel(maxParticles) {
 		}
 		
 		return view;
-	};
+	}
 }
+
+
+
