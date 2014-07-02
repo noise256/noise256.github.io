@@ -11,28 +11,26 @@ function SPP(position, direction) {
 	var mesh = new THREE.Mesh(geometry, material);
 	
 	this.updateSPP = function(siblings) {
- 		var meanDirection = 0;
+ 		var meanDirection = $V([1, 0]);
+		
 		for (var j = 0; j < siblings.length; j++) {
-			meanDirection += siblings[j].getDirection();
+			meanDirection = meanDirection.add(siblings[j].getDirection());
 		}
 		
-		console.warn(siblings.length);
-		
-		meanDirection /= siblings.length;
-		
-		console.warn(meanDirection);
+		meanDirection = meanDirection.multiply(1/siblings.length);
 		
 		var levyWalk = this.getLevyWalk();
 		
-		direction += levyWalk + meanDirection;
+		direction = levyWalk.toUnitVector();
+		direction.add(meanDirection.toUnitVector());
 		
-		var movement = $V([1, 0]).rotate(direction, $V([0, 0]));
+		//var movement = $V([1, 0]).rotate(direction, $V([0, 0]));
 		
-		position = position.add(movement.multiply(SPP.velocity));
+		position = position.add(direction.multiply(SPP.velocity));
 	}
 	
 	this.getLevyWalk = function() {
-		var a = 5;
+		var a = 20;
 		var k = 1;
 		var range = Math.PI*2;
 		
@@ -43,7 +41,9 @@ function SPP(position, direction) {
 		
 		x = Math.random() < 0.5 ? -x : x;
 		
-		return x;
+		x += Math.atan2(direction.e(2), direction.e(1));//direction.angleFrom($V([1, 0]));
+		
+		return $V([1, 0]).rotate(x, $V([0, 0]));
 	}
 	
 	this.updateView = function() {

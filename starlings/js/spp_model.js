@@ -4,7 +4,7 @@ function SPPModel(maxParticles) {
 	var particles = [];
 	
 	for (i = 0; i < maxParticles; i++) {
-		particles.push(new SPP($V([0, 0]), Math.random() * Math.PI * 2));
+		particles.push(new SPP($V([0, 0]), $V([1, 0]).rotate(Math.random() * Math.PI * 2, $V([1, 0]))));
 	}
 	
 	this.updateSPPModel = function() {
