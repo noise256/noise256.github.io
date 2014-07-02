@@ -4,12 +4,12 @@ function SPPModel(maxParticles) {
 	var particles = [];
 	
 	for (i = 0; i < maxParticles; i++) {
-		particles.push(new SPP([0.0, 0.0], Math.random() * Math.PI * 2));
+		particles.push(new SPP($V([0, 0]), Math.random() * Math.PI * 2));
 	}
 	
 	this.updateSPPModel = function() {
 		for (i = 0; i < particles.length; i++) {
-			particles[i].updateSPP();
+			particles[i].updateSPP(particles);
 			particles[i].updateView();
 		}
 	};

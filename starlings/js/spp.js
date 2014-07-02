@@ -1,6 +1,8 @@
 function SPP(position, direction) {
 	SPP.velocity = 0.01;
 	
+	var UID = Math.random().toString(36).substr(2, 9);
+	
 	var position = position;
 	var direction = direction;
 	
@@ -8,7 +10,21 @@ function SPP(position, direction) {
 	var material = new THREE.MeshPhongMaterial({ambient: 0x030303, color: 0x667799, specular: 0xffffff, shininess: 10, shading: THREE.SmoothShading});
 	var mesh = new THREE.Mesh(geometry, material);
 	
-	this.updateSPP = function() {
+	this.updateSPP = function(siblings) {
+		for (i = 0; i < siblings.length; i++) {
+			
+		}
+		
+		var levyWalk = this.getLevyWalk();
+		
+		direction += levyWalk;
+		
+		var movement = $V([1, 0]).rotate(direction, $V([0, 0]));
+		
+		position = position.add(movement.multiply(SPP.velocity));
+	};
+	
+	this.getLevyWalk = function() {
 		var a = 5;
 		var k = 1;
 		var range = Math.PI*2;
@@ -20,15 +36,12 @@ function SPP(position, direction) {
 		
 		x = Math.random() < 0.5 ? -x : x;
 		
-		direction += x;
-		
-		position[0] += Math.cos(direction) * SPP.velocity;
-		position[1] += Math.sin(direction) * SPP.velocity;
-	};
+		return x;
+	}
 	
 	this.updateView = function() {
-		mesh.position.x = position[0];
-		mesh.position.y = position[1];
+		mesh.position.x = position.e(1);
+		mesh.position.y = position.e(2);
 	}
 	
 	this.getMesh = function() {
