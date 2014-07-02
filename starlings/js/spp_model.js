@@ -8,7 +8,7 @@ function SPPModel(maxParticles) {
 	}
 	
 	this.updateSPPModel = function() {
-		for (i = 0; i < particles.length; i++) {
+		for (var i = 0; i < particles.length; i++) {
 			particles[i].updateSPP(particles);
 			particles[i].updateView();
 		}
@@ -17,7 +17,7 @@ function SPPModel(maxParticles) {
 	this.getView = function() {
 		var view = [];
 		
-		for (i = 0; i < particles.length; i++) {
+		for (var i = 0; i < particles.length; i++) {
 			view.push(particles[i].getMesh());
 		}
 		

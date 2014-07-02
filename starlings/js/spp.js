@@ -11,16 +11,20 @@ function SPP(position, direction) {
 	var mesh = new THREE.Mesh(geometry, material);
 	
 	this.updateSPP = function(siblings) {
- 		var meanDirection;
-		for (j = 0; j < siblings.length; j++) {
+ 		var meanDirection = 0;
+		for (var j = 0; j < siblings.length; j++) {
 			meanDirection += siblings[j].getDirection();
 		}
 		
-		//do stuff with mean direction
+		console.warn(siblings.length);
+		
+		meanDirection /= siblings.length;
+		
+		console.warn(meanDirection);
 		
 		var levyWalk = this.getLevyWalk();
 		
-		direction += levyWalk;
+		direction += levyWalk + meanDirection;
 		
 		var movement = $V([1, 0]).rotate(direction, $V([0, 0]));
 		

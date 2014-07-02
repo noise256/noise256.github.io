@@ -52,8 +52,7 @@
 				var sppModel = new SPPModel(10);
 				var sppModelView = sppModel.getView();
 				
-				console.warn(sppModelView.length);
-				for (i = 0; i < sppModelView.length; i++) {
+				for (var i = 0; i < sppModelView.length; i++) {
 					var sppView = sppModelView[i];
 					scene.add(sppView);
 				}
