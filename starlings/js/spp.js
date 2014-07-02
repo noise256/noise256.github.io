@@ -37,12 +37,12 @@ function SPP(position, direction) {
 		x = Math.random() < 0.5 ? -x : x;
 		
 		return x;
-	}
+	};
 	
 	this.updateView = function() {
 		mesh.position.x = position.e(1);
 		mesh.position.y = position.e(2);
-	}
+	};
 	
 	this.getMesh = function() {
 		return mesh;
