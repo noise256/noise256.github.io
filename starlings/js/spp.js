@@ -30,7 +30,7 @@ function SPP(position, direction) {
 	}
 	
 	this.getLevyWalk = function() {
-		var a = 20;
+		var a = 2;
 		var k = 1;
 		var range = Math.PI*2;
 		
