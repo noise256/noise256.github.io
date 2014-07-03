@@ -6,19 +6,19 @@ function SPP(position, direction) {
 	SPP.alignRange = 1;
 	
 	SPP.attractStr = 0.05;
-	SPP.attractRange = 5;
+	SPP.attractRange = 2;
 	
 	SPP.levyRange = Math.PI/2;
 	SPP.levyExp = 5;
 	SPP.levyStr = 1;
 	
-	SPP.velocity = 0.01;
+	SPP.velocity = 0.02;
 	
 	var position = position;
 	var direction = direction;
 	
 	var geometry = new THREE.SphereGeometry(0.075, 32, 32);
-	var material = new THREE.MeshBasicMaterial({ambient: 0x030303, color: 0x667799, specular: 0xffffff, shininess: 10, shading: THREE.SmoothShading});
+	var material = new THREE.MeshPhongMaterial({ambient: 0x030303, color: 0x667799, specular: 0xffffff, shininess: 10, shading: THREE.SmoothShading});
 	var mesh = new THREE.Mesh(geometry, material);
 	
 	this.updateSPP = function(siblings) {
