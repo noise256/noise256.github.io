@@ -24,6 +24,7 @@ function SPP(position, direction) {
 	this.updateSPP = function(siblings) {
 		var repulseVector = $V([0, 0]);
  		var alignVector = $V([0, 0]);
+		var attractVector = $V([0, 0]);
 		
 		for (var j = 0; j < siblings.length; j++) {
 			var siblingDist = siblings[j].getPosition().distanceFrom(position);
@@ -34,12 +35,13 @@ function SPP(position, direction) {
 				alignVector = alignVector.add(siblings[j].getDirection());
 			}
 			if (siblingDist <= SPP.attractRange) {
-				
+				attractVector = attractVector.add(siblings[j].getPosition().subtract(position));
 			}
 		}
 		
 		repulseVector = repulseVector.multiply(1/siblings.length);
 		alignVector = alignVector.multiply(1/siblings.length);
+		attractVector = attractVector.multiply(1/siblings.length);
 		
 		var levyWalk = this.getLevyWalk();
 		
@@ -47,6 +49,7 @@ function SPP(position, direction) {
 		direction = direction.add(levyWalk.toUnitVector().multiply(SPP.levyStr));
 		direction = direction.add(alignVector.toUnitVector().multiply(SPP.alignStr));
 		direction = direction.add(repulseVector.toUnitVector().multiply(SPP.repulseStr));
+		direction = direction.add(attractVector.toUnitVector().multiply(SPP.attractStr));
 		
 		position = position.add(direction.toUnitVector().multiply(SPP.velocity));
 	}
