@@ -30,9 +30,9 @@ function SPP(position, direction) {
 	}
 	
 	this.getLevyWalk = function() {
-		var a = 2;
+		var a = 10;
 		var k = 1;
-		var range = Math.PI*2;
+		var range = Math.PI/4;
 		
 		var u = Math.random() * (1 - Math.pow(range + 1, -a));
 		
