@@ -1,6 +1,12 @@
 function SPP(position, direction) {
-	SPP.alignRange = 100;
+	SPP.alignStr = 0.05;
+	SPP.levyStr = 1;
+	
+	SPP.alignRange = 1;
 	SPP.velocity = 0.01;
+	
+	SPP.levyRange = Math.PI/2;
+	SPP.levyExp = 5;
 	
 	var position = position;
 	var direction = direction;
@@ -10,30 +16,29 @@ function SPP(position, direction) {
 	var mesh = new THREE.Mesh(geometry, material);
 	
 	this.updateSPP = function(siblings) {
- 		var meanDirection = $V();
+ 		var meanDirection = $V([0, 0]);
 		
 		for (var j = 0; j < siblings.length; j++) {
-			//if (siblings[j].getPosition().distanceFrom(position) <= SPP.alignRange) {
+			if (siblings[j].getPosition().distanceFrom(position) <= SPP.alignRange) {
 				meanDirection = meanDirection.add(siblings[j].getDirection());
-			//}
+			}
 		}
 		
 		meanDirection = meanDirection.multiply(1/siblings.length);
 		
 		var levyWalk = this.getLevyWalk();
 		
-		direction = levyWalk.toUnitVector();
-		direction.add(meanDirection.toUnitVector());
+		direction = $V([0, 0]);
+		direction = direction.add(levyWalk.toUnitVector().multiply(SPP.levyStr));
+		direction = direction.add(meanDirection.toUnitVector().multiply(SPP.alignStr));
 		
-		//var movement = $V([1, 0]).rotate(direction, $V([0, 0]));
-		
-		position = position.add(direction.multiply(SPP.velocity));
+		position = position.add(direction.toUnitVector().multiply(SPP.velocity));
 	}
 	
 	this.getLevyWalk = function() {
-		var a = 10;
+		var range = SPP.levyRange;
+		var a = SPP.levyExp;
 		var k = 1;
-		var range = Math.PI/4;
 		
 		var u = Math.random() * (1 - Math.pow(range + 1, -a));
 		
@@ -60,7 +65,7 @@ function SPP(position, direction) {
 		return direction;
 	}
 	
-/* 	this.getPosition = function() {
+	this.getPosition = function() {
 		return position;
-	} */
+	}
 }
