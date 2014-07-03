@@ -7,7 +7,7 @@ function SPP(position, direction) {
 	var direction = direction;
 	
 	var geometry = new THREE.SphereGeometry(0.075, 32, 32);
-	var material = new THREE.MeshPhongMaterial({ambient: 0x030303, color: 0x667799, specular: 0xffffff, shininess: 10, shading: THREE.SmoothShading});
+	var material = new THREE.MeshBasicMaterial({ambient: 0x030303, color: 0x667799, specular: 0xffffff, shininess: 10, shading: THREE.SmoothShading});
 	var mesh = new THREE.Mesh(geometry, material);
 	
 	this.updateSPP = function(siblings) {
