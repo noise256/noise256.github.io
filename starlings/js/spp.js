@@ -1,12 +1,18 @@
 function SPP(position, direction) {
-	SPP.alignStr = 0.05;
-	SPP.levyStr = 1;
+	SPP.repulseStr = 0.05;
+	SPP.repulseRange = 0.1;
 	
+	SPP.alignStr = 0.05;
 	SPP.alignRange = 1;
-	SPP.velocity = 0.01;
+	
+	SPP.attractStr = 0.05;
+	SPP.attractRange = 5;
 	
 	SPP.levyRange = Math.PI/2;
 	SPP.levyExp = 5;
+	SPP.levyStr = 1;
+	
+	SPP.velocity = 0.01;
 	
 	var position = position;
 	var direction = direction;
@@ -16,21 +22,31 @@ function SPP(position, direction) {
 	var mesh = new THREE.Mesh(geometry, material);
 	
 	this.updateSPP = function(siblings) {
- 		var meanDirection = $V([0, 0]);
+		var repulseVector = $V([0, 0]);
+ 		var alignVector = $V([0, 0]);
 		
 		for (var j = 0; j < siblings.length; j++) {
-			if (siblings[j].getPosition().distanceFrom(position) <= SPP.alignRange) {
-				meanDirection = meanDirection.add(siblings[j].getDirection());
+			var siblingDist = siblings[j].getPosition().distanceFrom(position);
+			if (siblingDist <= SPP.repulseRange) {
+				repulseVector = repulseVector.add(position.subtract(siblings[j].getPosition()));//position.subtract(siblings[j].getPosition));
+			}
+			if (siblingDist <= SPP.alignRange) {
+				alignVector = alignVector.add(siblings[j].getDirection());
+			}
+			if (siblingDist <= SPP.attractRange) {
+				
 			}
 		}
 		
-		meanDirection = meanDirection.multiply(1/siblings.length);
+		repulseVector = repulseVector.multiply(1/siblings.length);
+		alignVector = alignVector.multiply(1/siblings.length);
 		
 		var levyWalk = this.getLevyWalk();
 		
 		direction = $V([0, 0]);
 		direction = direction.add(levyWalk.toUnitVector().multiply(SPP.levyStr));
-		direction = direction.add(meanDirection.toUnitVector().multiply(SPP.alignStr));
+		direction = direction.add(alignVector.toUnitVector().multiply(SPP.alignStr));
+		direction = direction.add(repulseVector.toUnitVector().multiply(SPP.repulseStr));
 		
 		position = position.add(direction.toUnitVector().multiply(SPP.velocity));
 	}
