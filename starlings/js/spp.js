@@ -1,7 +1,6 @@
 function SPP(position, direction) {
+	SPP.alignRange = 100;
 	SPP.velocity = 0.01;
-	
-	var UID = Math.random().toString(36).substr(2, 9);
 	
 	var position = position;
 	var direction = direction;
@@ -11,10 +10,12 @@ function SPP(position, direction) {
 	var mesh = new THREE.Mesh(geometry, material);
 	
 	this.updateSPP = function(siblings) {
- 		var meanDirection = $V([1, 0]);
+ 		var meanDirection = $V();
 		
 		for (var j = 0; j < siblings.length; j++) {
-			meanDirection = meanDirection.add(siblings[j].getDirection());
+			//if (siblings[j].getPosition().distanceFrom(position) <= SPP.alignRange) {
+				meanDirection = meanDirection.add(siblings[j].getDirection());
+			//}
 		}
 		
 		meanDirection = meanDirection.multiply(1/siblings.length);
@@ -41,7 +42,7 @@ function SPP(position, direction) {
 		
 		x = Math.random() < 0.5 ? -x : x;
 		
-		x += Math.atan2(direction.e(2), direction.e(1));//direction.angleFrom($V([1, 0]));
+		x += Math.atan2(direction.e(2), direction.e(1));
 		
 		return $V([1, 0]).rotate(x, $V([0, 0]));
 	}
@@ -58,4 +59,8 @@ function SPP(position, direction) {
 	this.getDirection = function() {
 		return direction;
 	}
+	
+/* 	this.getPosition = function() {
+		return position;
+	} */
 }
