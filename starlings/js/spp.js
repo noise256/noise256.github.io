@@ -1,4 +1,6 @@
 function SPP(position, direction) {
+	SPP.origin = $V([0, 0]);
+	
 	SPP.repulseStr = 0.05;
 	SPP.repulseRange = 0.1;
 	
@@ -10,42 +12,46 @@ function SPP(position, direction) {
 	
 	SPP.levyRange = Math.PI/2;
 	SPP.levyExp = 5;
-	SPP.levyStr = 1;
+	SPP.levyStr = 0.5;
 	
-	SPP.velocity = 0.02;
+	SPP.velocity = 0.01;
 	
 	var position = position;
 	var direction = direction;
 	
-	var geometry = new THREE.SphereGeometry(0.075, 32, 32);
-	var material = new THREE.MeshPhongMaterial({ambient: 0x030303, color: 0x667799, specular: 0xffffff, shininess: 10, shading: THREE.SmoothShading});
+	var geometry = new THREE.PlaneGeometry(0.075, 0.075);//SphereGeometry(0.075, 32, 32);
+	var material = new THREE.MeshBasicMaterial({ambient: 0x030303, color: Math.random() * 0x667799, specular: 0xffffff, shininess: 10, shading: THREE.SmoothShading});
 	var mesh = new THREE.Mesh(geometry, material);
 	
+	var repulseVector = SPP.origin;
+	var alignVector = SPP.origin;
+	var attractVector = SPP.origin;
+	
+	var siblingDist;
+	
+	var levyWalk;
+	
 	this.updateSPP = function(siblings) {
-		var repulseVector = $V([0, 0]);
- 		var alignVector = $V([0, 0]);
-		var attractVector = $V([0, 0]);
+		repulseVector = SPP.origin;
+ 		alignVector = SPP.origin;
+		attractVector = SPP.origin;
 		
 		for (var j = 0; j < siblings.length; j++) {
-			var siblingDist = siblings[j].getPosition().distanceFrom(position);
+			siblingDist = siblings[j].getPosition().distanceFrom(position);
 			if (siblingDist <= SPP.repulseRange) {
 				repulseVector = repulseVector.add(position.subtract(siblings[j].getPosition()));//position.subtract(siblings[j].getPosition));
 			}
-			if (siblingDist <= SPP.alignRange) {
+			else if (siblingDist <= SPP.alignRange) {
 				alignVector = alignVector.add(siblings[j].getDirection());
 			}
-			if (siblingDist <= SPP.attractRange) {
+			else if (siblingDist <= SPP.attractRange) {
 				attractVector = attractVector.add(siblings[j].getPosition().subtract(position));
 			}
 		}
 		
-		repulseVector = repulseVector.multiply(1/siblings.length);
-		alignVector = alignVector.multiply(1/siblings.length);
-		attractVector = attractVector.multiply(1/siblings.length);
+		levyWalk = this.getLevyWalk();
 		
-		var levyWalk = this.getLevyWalk();
-		
-		direction = $V([0, 0]);
+		direction = SPP.origin;
 		direction = direction.add(levyWalk.toUnitVector().multiply(SPP.levyStr));
 		direction = direction.add(alignVector.toUnitVector().multiply(SPP.alignStr));
 		direction = direction.add(repulseVector.toUnitVector().multiply(SPP.repulseStr));
@@ -55,20 +61,16 @@ function SPP(position, direction) {
 	}
 	
 	this.getLevyWalk = function() {
-		var range = SPP.levyRange;
-		var a = SPP.levyExp;
-		var k = 1;
+		var u = Math.random() * (1 - Math.pow(SPP.levyRange + 1, -SPP.levyExp));
 		
-		var u = Math.random() * (1 - Math.pow(range + 1, -a));
-		
-		var f = (1 - u) / Math.pow(k, a);
-		var x = Math.pow(f, 1 / -a) - 1;
+		var f = (1 - u) / Math.pow(1, SPP.levyExp);
+		var x = Math.pow(f, 1 / -SPP.levyExp) - 1;
 		
 		x = Math.random() < 0.5 ? -x : x;
 		
 		x += Math.atan2(direction.e(2), direction.e(1));
 		
-		return $V([1, 0]).rotate(x, $V([0, 0]));
+		return $V([1, 0]).rotate(x, SPP.origin);
 	}
 	
 	this.updateView = function() {

@@ -2,10 +2,10 @@
 
 <html>
 	<head>
-		<meta charset="UTF-8"> 
-		<!-- <LINK href="eta_carinae.css" rel="stylesheet" type="text/css"> -->
 		<title>Flocking</title>
-		<style>body { background-color:#000000; } </style>
+		
+		<meta charset="UTF-8"> 
+		<LINK href="starlings.css" rel="stylesheet" type="text/css">
 		
 		<script src="js/sylvester.src.js" type="text/javascript"></script>
 		<script src="js/fpsmeter.js" type="text/javascript"></script>
@@ -49,7 +49,7 @@
 				scene.add(pointLight);
 				
 				<!-- Scene creation -->
-				var sppModel = new SPPModel(75);
+				var sppModel = new SPPModel(100);
 				var sppModelView = sppModel.getView();
 				
 				for (var i = 0; i < sppModelView.length; i++) {
