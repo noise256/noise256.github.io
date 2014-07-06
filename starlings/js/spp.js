@@ -14,7 +14,7 @@ function SPP(position, direction) {
 	SPP.levyExp = 5;
 	SPP.levyStr = 0.5;
 	
-	SPP.velocity = 0.75;
+	SPP.velocity = 0.2;
 	
 	SPP.numRandVecLU = 100;
 	SPP.numLevyStepLU = 100;
