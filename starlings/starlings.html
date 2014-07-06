@@ -7,17 +7,22 @@
 		<meta charset="UTF-8"> 
 		<LINK href="starlings.css" rel="stylesheet" type="text/css">
 		
+		
 		<script src="js/sylvester.src.js" type="text/javascript"></script>
 		<script src="js/fpsmeter.js" type="text/javascript"></script>
 		<script src="js/three.min.js" type="text/javascript"></script>
+		<script src="js/OrbitControls.js" type="text/javascript"></script>
 		<script src="js/spp.js" type="text/javascript"></script>
 		<script src="js/spp_model.js" type="text/javascript"></script>
 	</head>
 	
 	<!-- Based on Three.js "Getting Started" tutorial. -->
 	<body>
-		<div id="WebGLCanvas" style="margin:auto; text-align:center; width: 1000px; height: 800px; border:1px solid white;">
+		<div id="WebGLCanvas"; style="margin:auto; text-align:center; width: 1000px; height: 800px; border:1px solid white;">
 			<script>
+				this.canvasWidth = 1000;
+				this.canvasHeight = 800;
+				
 				<!--Time Step based on http://codeincomplete.com/posts/2013/12/4/javascript_game_foundations_the_game_loop/ -->
 				var now;
 				var dt = 0;
@@ -28,17 +33,36 @@
 				var fpsMeter = new FPSMeter(document.body, { decimals: 0, graph: true, theme: 'dark', left: '5px' });
 				
 				<!-- Scene, Camera and Renderer declaration and initialisation. -->
-				var canvasWidth = document.getElementById("WebGLCanvas").clientWidth;
-				var canvasHeight = document.getElementById("WebGLCanvas").clientHeight;
+				//var canvasWidth = document.getElementById("WebGLCanvas").clientWidth;
+				//var canvasHeight = document.getElementById("WebGLCanvas").clientHeight;
 				
+				<!-- Scene Creation -->
 				var scene = new THREE.Scene();
+				//scene.fog = new THREE.FogExp2( 0xefd1b5, 0.025 );
 				
-				var camera = new THREE.PerspectiveCamera(75, canvasWidth / canvasHeight, 0.1, 1000);
-				camera.position.z = 5;
+				<!-- Camera Creation -->
+				var camera = new THREE.PerspectiveCamera(60, canvasWidth / canvasHeight, 0.1, 1000);
+				
+				camera.position.x = 24
+				camera.position.y = 10;
+				camera.position.z = 24;
+				
+				camera.lookAt(new THREE.Vector3(0, 10, 0));
 				
 				var renderer = new THREE.WebGLRenderer();			
 				renderer.setSize(canvasWidth, canvasHeight);
 				document.getElementById("WebGLCanvas").appendChild(renderer.domElement);
+				
+				var controls = new THREE.OrbitControls(camera);
+				controls.target.y = 10;
+				
+				<!-- Ground Plane Creation -->
+				var geometry = new THREE.PlaneGeometry(20, 20, 20, 20);
+				var basicGroundMat = new THREE.MeshBasicMaterial({color: 0xF7D480, wireframe: true});
+				var mesh = new THREE.Mesh(geometry, basicGroundMat);
+				mesh.rotation.x = -Math.PI/2;
+				
+				scene.add(mesh);
 				
 				<!-- Lighting setup -->
 				var ambient01 = new THREE.AmbientLight(0x404040);
@@ -48,8 +72,8 @@
 				pointLight.position.set(50, 150, 150);
 				scene.add(pointLight);
 				
-				<!-- Scene creation -->
-				var sppModel = new SPPModel(100);
+				<!-- SPP creation -->
+				var sppModel = new SPPModel(50);
 				var sppModelView = sppModel.getView();
 				
 				for (var i = 0; i < sppModelView.length; i++) {
@@ -100,5 +124,8 @@
 				frame();
 			</script>
 		</div>
+		<p>
+		After some initial testing it appears that performance is substantially better in Chrome than in Firefox. More rigorous testing and optimisation will be done soon but for now I suggest using Google Chrome if you are having any performance issues.
+		</p>
 	</body>
 </html>
