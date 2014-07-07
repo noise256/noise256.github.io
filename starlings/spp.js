@@ -2,13 +2,13 @@ function SPP(position, direction) {
 	SPP.origin = $V([0, 0, 0]);
 	
 	SPP.repulseStr = 1;
-	SPP.repulseRange = 0.5;
+	SPP.repulseRange = 2;
 	
 	SPP.alignStr = 0.5;
-	SPP.alignRange = 1;
+	SPP.alignRange = 4;
 	
 	SPP.attractStr = 0.5;
-	SPP.attractRange = 2;
+	SPP.attractRange = 6;
 	
 	SPP.levyRange = Math.PI/8;
 	SPP.levyExp = 5;
