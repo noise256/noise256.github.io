@@ -2,17 +2,17 @@ function SPP(position, direction) {
 	SPP.origin = $V([0, 0, 0]);
 	
 	SPP.repulseStr = 1;
-	SPP.repulseRange = 0.1;
+	SPP.repulseRange = 2;
 	
-	SPP.alignStr = 2;
-	SPP.alignRange = 1.5;
+	SPP.alignStr = 1;
+	SPP.alignRange = 4;
 	
-	SPP.attractStr = 1;
-	SPP.attractRange = 2;
+	SPP.attractStr = 0.1;
+	SPP.attractRange = 10;
 	
 	SPP.levyRange = Math.PI/4;
 	SPP.levyExp = 10;
-	SPP.levyStr = 1;
+	SPP.levyStr = 0.5;
 	
 	SPP.velocity = 0.1;
 	
