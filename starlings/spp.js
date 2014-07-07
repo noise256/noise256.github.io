@@ -7,7 +7,7 @@ function SPP(position, direction) {
 	SPP.alignStr = 2;
 	SPP.alignRange = 1.5;
 	
-	SPP.attractStr = 0.1;
+	SPP.attractStr = 0.5;
 	SPP.attractRange = 15;
 	
 	SPP.levyRange = Math.PI/4;
