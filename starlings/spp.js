@@ -57,7 +57,6 @@ function SPP(position, direction) {
 		//levyWalk = this.getLevyWalk();
 		
 		//direction = SPP.origin;
-		r = 
 		direction = direction.add(randWalkLU[Math.floor(Math.random() * SPP.randWalkLUSize)].multiply(SPP.levyStr));
 		direction = direction.add(alignVector.toUnitVector().multiply(SPP.alignStr));
 		direction = direction.add(repulseVector.toUnitVector().multiply(SPP.repulseStr));
@@ -83,13 +82,13 @@ function SPP(position, direction) {
 		return Math.random() < 0.5 ? y : -y;
 	}
 	
-	var getLevyAngle = function() {
+/* 	var getLevyAngle = function() {
 		var u = Math.random() * (1 - Math.pow(SPP.levyRange + 1, -SPP.levyExp));
 		var f = (1 - u) / Math.pow(1, SPP.levyExp);
 		var x = Math.pow(f, 1 / -SPP.levyExp) - 1;
 		
 		return Math.random() < 0.5 ? -x : x;
-	}
+	} */
 	
 	this.updateView = function() {
 		particle.position.x = position.e(1);
