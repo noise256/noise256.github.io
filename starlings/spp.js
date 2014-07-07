@@ -128,5 +128,7 @@ function SPP(position, direction) {
 		vec = vec.rotate(g1, $L([0, 0, 0], [1, 0, 0]));
 		vec = vec.rotate(g2, $L([0, 0, 0], [0, 1, 0]));
 		vec = vec.rotate(g3, $L([0, 0, 0], [0, 0, 1]));
+		
+		randWalkLU[i] = vec;
 	}
 }
