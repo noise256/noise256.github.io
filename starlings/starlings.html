@@ -7,7 +7,7 @@
 		<meta charset="UTF-8"> 
 		<LINK href="starlings.css" rel="stylesheet" type="text/css">
 		
-		
+		<script src="OnLoad.js" type="text/javascript"></script>
 		<script src="js/sylvester.src.js" type="text/javascript"></script>
 		<script src="js/fpsmeter.js" type="text/javascript"></script>
 		<script src="js/three.min.js" type="text/javascript"></script>
@@ -17,7 +17,7 @@
 	</head>
 	
 	<!-- Based on Three.js "Getting Started" tutorial. -->
-	<body>
+	<body onload="OnLoad()">
 		<div id="WebGLCanvas"; style="margin:auto; text-align:center; width: 1000px; height: 800px; border:1px solid white;">
 			<script>
 				this.canvasWidth = 1000;
@@ -120,6 +120,9 @@
 					fpsMeter.tick();
 				};
 				
+				window.onload=function(){
+					alert("Loaded here too.");
+				};
 				<!-- Initialise -->
 				frame();
 			</script>
