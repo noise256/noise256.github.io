@@ -5,7 +5,7 @@ function SPP(position, direction) {
 	SPP.repulseRange = 3;
 	
 	SPP.alignStr = 1;
-	SPP.alignRange = 5;
+	SPP.alignRange = 3.5;
 	
 	SPP.attractStr = 0.1;
 	SPP.attractRange = 10;
