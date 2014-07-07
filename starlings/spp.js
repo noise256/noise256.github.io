@@ -27,7 +27,7 @@ function SPP(position, direction) {
 	
 	var geometry = new THREE.Geometry();
 	geometry.vertices.push(new THREE.Vector3());
-    var material = new THREE.ParticleBasicMaterial( {size: 20, color: 0xffffff, map: THREE.ImageUtils.loadTexture("images/particle.png"),} );
+    var material = new THREE.ParticleBasicMaterial( {size: 1, color: 0xffffff, map: THREE.ImageUtils.loadTexture("images/particle.png"), blending: THREE.AdditiveBlending, transparent: true} );
 	var particle = new THREE.ParticleSystem(geometry, material);
 	
 	var repulseVector = SPP.origin;
