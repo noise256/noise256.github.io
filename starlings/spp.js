@@ -141,14 +141,14 @@ function SPP(position, direction) {
 		Pre-generate levy steps to reduce load.
 	*/
 	for (var i = 0; i < SPP.numLevyStepLU; i++) {
-		levyStepLU[i] = getGuassianAngle();//getLevyAngle();
+		levyStepLU[i] = getGaussianAngle();//getLevyAngle();
 	}
 	
 	/**
 		Pre-generate random 3D vectors to reduce load.
 	*/
-	for (var i = 0; i < SPP.numLevyStepLU; i++) {
-		var theta = getGuassianAngle();//Math.random() * Math.PI * 2;
+	for (var i = 0; i < SPP.SPP.numRandVecLU; i++) {
+		var theta = Math.random() * Math.PI * 2;
 		var mu = Math.random() < 0.5 ? Math.random() : -Math.random();
 		
 		randVecLU[i] = $V([
