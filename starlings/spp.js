@@ -112,13 +112,21 @@ function SPP(position, direction) {
 		Pregenerate random walk vectors from normal distribution of angles and uniform random vectors.
 	*/
 	for (var i = 0; i < SPP.randWalkLUSize; i++) {
-		var theta = getGaussianAngle();
+		var theta = Math.random() * Math.PI * 2;//getGaussianAngle();
 		var mu = Math.random() < 0.5 ? Math.random() : -Math.random();
 		
-		randWalkLU[i] = $V([
+		var vec = $V([
 			Math.sqrt(1 - Math.pow(mu, 2)) * Math.cos(theta), 
 			Math.sqrt(1 - Math.pow(mu, 2)) * Math.sin(theta),
 			mu
 		]).toUnitVector();
+		
+		var g1 = getGaussianAngle();
+		var g2 = getGaussianAngle();
+		var g3 = getGaussianAngle();
+		
+		vec = vec.rotate(g1, $L([0, 0, 0], [1, 0, 0]));
+		vec = vec.rotate(g2, $L([0, 0, 0], [0, 1, 0]));
+		vec = vec.rotate(g3, $L([0, 0, 0], [0, 0, 1]));
 	}
 }
