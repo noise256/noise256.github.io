@@ -5,10 +5,10 @@ function SPP(position, direction) {
 	SPP.repulseRange = 2;
 	
 	SPP.alignStr = 0.5;
-	SPP.alignRange = 4;
+	SPP.alignRange = 2;
 	
 	SPP.attractStr = 0.5;
-	SPP.attractRange = 6;
+	SPP.attractRange = 1;
 	
 	SPP.levyRange = Math.PI/8;
 	SPP.levyExp = 5;
@@ -48,10 +48,10 @@ function SPP(position, direction) {
 			if (siblingDist <= SPP.repulseRange) {
 				repulseVector = repulseVector.add(position.subtract(siblings[j].getPosition()));//position.subtract(siblings[j].getPosition));
 			}
-			else if (siblingDist <= SPP.alignRange) {
+			else if (siblingDist <= SPP.alignRange + SPP.repulseRange) {
 				alignVector = alignVector.add(siblings[j].getDirection());
 			}
-			else if (siblingDist <= SPP.attractRange) {
+			else if (siblingDist <= SPP.attractRange + SPP.alignRange + SPP.repulseRange) {
 				attractVector = attractVector.add(siblings[j].getPosition().subtract(position));
 			}
 		}
