@@ -16,11 +16,8 @@ function SPP(position, direction) {
 	
 	SPP.velocity = 0.1;
 	
-	SPP.numRandVecLU = 100;
-	SPP.numLevyStepLU = 100;
-	
-	var randVecLU = [];
-	var levyStepLU = [];
+	SPP.randWalkLUSize = 100;
+	SPP.randWalkLU = [];
 	
 	var position = position;
 	var direction = direction;
@@ -36,7 +33,7 @@ function SPP(position, direction) {
 	
 	var siblingDist;
 	
-	var levyWalk;
+	//var levyWalk;
 
 	this.updateSPP = function(siblings) {
 		repulseVector = SPP.origin;
@@ -56,10 +53,10 @@ function SPP(position, direction) {
 			}
 		}
 		
-		levyWalk = this.getLevyWalk();
+		//levyWalk = this.getLevyWalk();
 		
 		//direction = SPP.origin;
-		direction = direction.add(levyWalk.toUnitVector().multiply(SPP.levyStr));
+		direction = direction.add(randWalkLU[Math.floor(Math.random() * SPP.numRandVecLU].multiply(SPP.levyStr));
 		direction = direction.add(alignVector.toUnitVector().multiply(SPP.alignStr));
 		direction = direction.add(repulseVector.toUnitVector().multiply(SPP.repulseStr));
 		direction = direction.add(attractVector.toUnitVector().multiply(SPP.attractStr));
@@ -69,7 +66,7 @@ function SPP(position, direction) {
 		position = position.add(direction.toUnitVector().multiply(SPP.velocity));
 	}
 	
-	this.getLevyWalk = function() {
+/* 	this.getLevyWalk = function() {
 		dir = randVecLU[Math.floor(Math.random() * SPP.numRandVecLU)];
 		
 		dir = dir.rotate(levyStepLU[Math.floor(Math.random() * SPP.numLevyStepLU)], $L([0, 0, 0], [1, 0, 0]));
@@ -77,31 +74,7 @@ function SPP(position, direction) {
 		dir = dir.rotate(levyStepLU[Math.floor(Math.random() * SPP.numLevyStepLU)], $L([0, 0, 0], [0, 0, 1]));
 		
 		return dir;
-/* 		var u = Math.random() * (1 - Math.pow(SPP.levyRange + 1, -SPP.levyExp));//Math.random() * Math.PI * 2;
-		var f = (1 - u) / Math.pow(1, SPP.levyExp);
-		var x = Math.pow(f, 1 / -SPP.levyExp) - 1;
-		x = Math.random() < 0.5 ? -x : x;
-		
-		var mu = Math.random() < 0.5 ? Math.random() : -Math.random();
-		
-		var dir = $V([
-			Math.sqrt(1 - Math.pow(mu, 2)) * Math.cos(x), 
-			Math.sqrt(1 - Math.pow(mu, 2)) * Math.sin(x),
-			mu
-		]);
-		
-		return dir; */
-/* 		var u = Math.random() * (1 - Math.pow(SPP.levyRange + 1, -SPP.levyExp));
-		
-		var f = (1 - u) / Math.pow(1, SPP.levyExp);
-		var x = Math.pow(f, 1 / -SPP.levyExp) - 1;
-		
-		x = Math.random() < 0.5 ? -x : x;
-		
-		x += Math.atan2(direction.e(2), direction.e(1));
-		
-		return $V([1, 0]).rotate(x, SPP.origin); */
-	}
+	} */
 	
 	var getGaussianAngle = function() {
 		var y = Math.PI * Math.exp(-(Math.random() * 5) / (2 * 0.01*0.01));
@@ -125,9 +98,6 @@ function SPP(position, direction) {
 	this.getParticle = function() {
 		return particle;
 	}
-/* 	this.getMesh = function() {
-		return mesh;
-	} */
 	
 	this.getDirection = function() {
 		return direction;
@@ -138,23 +108,16 @@ function SPP(position, direction) {
 	}
 	
 	/**
-		Pre-generate levy steps to reduce load.
+		Pregenerate random walk vectors from normal distribution of angles and uniform random vectors.
 	*/
-	for (var i = 0; i < SPP.numLevyStepLU; i++) {
-		levyStepLU[i] = getGaussianAngle();//getLevyAngle();
-	}
-	
-	/**
-		Pre-generate random 3D vectors to reduce load.
-	*/
-	for (var i = 0; i < SPP.numRandVecLU; i++) {
-		var theta = Math.random() * Math.PI * 2;
+	for (var i = 0; i < SPP.randWalkLUSize; i++) {
+		var theta = getGaussianAngle();
 		var mu = Math.random() < 0.5 ? Math.random() : -Math.random();
 		
-		randVecLU[i] = $V([
+		randWalkLU[i] = $V([
 			Math.sqrt(1 - Math.pow(mu, 2)) * Math.cos(theta), 
 			Math.sqrt(1 - Math.pow(mu, 2)) * Math.sin(theta),
 			mu
-		]);
+		]).toUnitVector();
 	}
 }
