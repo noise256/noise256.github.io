@@ -15,7 +15,7 @@ function SPP(position, direction) {
 	SPP.levyStr = 0.5;
 	
 	SPP.velocity = 0.1;
-	W
+	
 	SPP.randWalkLUSize = 100;
 	
 	var randWalkLU = [];
