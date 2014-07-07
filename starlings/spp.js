@@ -104,7 +104,7 @@ function SPP(position, direction) {
 	}
 	
 	var getGaussianAngle = function() {
-		var y = Math.PI * Math.exp(-(Math.random() * 5) / (2 * 1*1));
+		var y = Math.PI * Math.exp(-(Math.random() * 5) / (2 * 0.01*0.01));
 		return Math.random() < 0.5 ? y : -y;
 	}
 	
