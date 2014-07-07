@@ -1,11 +1,11 @@
 function SPP(position, direction) {
 	SPP.origin = $V([0, 0, 0]);
 	
-	SPP.repulseStr = 1;
-	SPP.repulseRange = 2;
+	SPP.repulseStr = 5;
+	SPP.repulseRange = 3;
 	
 	SPP.alignStr = 1;
-	SPP.alignRange = 4;
+	SPP.alignRange = 5;
 	
 	SPP.attractStr = 0.1;
 	SPP.attractRange = 10;
