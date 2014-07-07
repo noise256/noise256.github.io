@@ -103,6 +103,11 @@ function SPP(position, direction) {
 		return $V([1, 0]).rotate(x, SPP.origin); */
 	}
 	
+	var getGaussianAngle = function() {
+		var y = Math.PI * Math.exp(-(Math.random() * 5) / (2 * 1*1));
+		return Math.random() < 0.5 ? y : -y;
+	}
+	
 	var getLevyAngle = function() {
 		var u = Math.random() * (1 - Math.pow(SPP.levyRange + 1, -SPP.levyExp));
 		var f = (1 - u) / Math.pow(1, SPP.levyExp);
@@ -136,14 +141,14 @@ function SPP(position, direction) {
 		Pre-generate levy steps to reduce load.
 	*/
 	for (var i = 0; i < SPP.numLevyStepLU; i++) {
-		levyStepLU[i] = getLevyAngle();
+		levyStepLU[i] = getGuassianAngle();//getLevyAngle();
 	}
 	
 	/**
 		Pre-generate random 3D vectors to reduce load.
 	*/
 	for (var i = 0; i < SPP.numLevyStepLU; i++) {
-		var theta = Math.random() * Math.PI * 2;
+		var theta = getGuassianAngle();//Math.random() * Math.PI * 2;
 		var mu = Math.random() < 0.5 ? Math.random() : -Math.random();
 		
 		randVecLU[i] = $V([
