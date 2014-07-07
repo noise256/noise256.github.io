@@ -27,7 +27,7 @@ function SPPModel(maxParticles) {
 		var view = [];
 		
 		for (var i = 0; i < particles.length; i++) {
-			view.push(particles[i].getMesh());
+			view.push(particles[i].getParticle());
 		}
 		
 		return view;

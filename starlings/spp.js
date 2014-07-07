@@ -14,7 +14,7 @@ function SPP(position, direction) {
 	SPP.levyExp = 5;
 	SPP.levyStr = 0.5;
 	
-	SPP.velocity = 0.2;
+	SPP.velocity = 0.1;
 	
 	SPP.numRandVecLU = 100;
 	SPP.numLevyStepLU = 100;
@@ -25,9 +25,10 @@ function SPP(position, direction) {
 	var position = position;
 	var direction = direction;
 	
-	var geometry = new THREE.SphereGeometry(0.075, 32, 32);
-	var material = new THREE.MeshLambertMaterial({ambient: 0x030303, color: Math.random() * 0x667799, specular: 0xffffff, shininess: 10, shading: THREE.SmoothShading});
-	var mesh = new THREE.Mesh(geometry, material);
+	var geometry = new THREE.Geometry();
+	geometry.vertices.push(new THREE.Vector3());
+    var material = new THREE.ParticleBasicMaterial( {size: 20, color: 0xffffff, map: THREE.ImageUtils.loadTexture("images/particle.png"),} );
+	var particle = new THREE.ParticleSystem(geometry, material);
 	
 	var repulseVector = SPP.origin;
 	var alignVector = SPP.origin;
@@ -36,7 +37,7 @@ function SPP(position, direction) {
 	var siblingDist;
 	
 	var levyWalk;
-	
+
 	this.updateSPP = function(siblings) {
 		repulseVector = SPP.origin;
  		alignVector = SPP.origin;
@@ -111,14 +112,17 @@ function SPP(position, direction) {
 	}
 	
 	this.updateView = function() {
-		mesh.position.x = position.e(1);
-		mesh.position.y = position.e(2);
-		mesh.position.z = position.e(3);
+		particle.position.x = position.e(1);
+		particle.position.y = position.e(2);
+		particle.position.z = position.e(3);
 	}
 	
-	this.getMesh = function() {
-		return mesh;
+	this.getParticle = function() {
+		return particle;
 	}
+/* 	this.getMesh = function() {
+		return mesh;
+	} */
 	
 	this.getDirection = function() {
 		return direction;
