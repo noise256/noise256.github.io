@@ -1,16 +1,16 @@
-function SPP(position, direction) {
+function SPP(position) {
 	SPP.origin = $V([0, 0, 0]);
 	
 	SPP.repulseStr = 1;
-	SPP.repulseRange = 3;
+	SPP.repulseRange = 5;
 	
 	SPP.alignStr = 1;
-	SPP.alignRange = 3.5;
+	SPP.alignRange = 5;
 	
 	SPP.attractStr = 1;
-	SPP.attractRange = 10;
+	SPP.attractRange = 5;
 	
-	SPP.walkStr = 1;
+	SPP.walkStr = 0.3;
 	
 	SPP.velocity = 0.1;
 	
@@ -19,11 +19,11 @@ function SPP(position, direction) {
 	var randWalkLU = [];
 	
 	var position = position;
-	var direction = direction;
+	var direction = $V([0, 0, 0]);
 	
 	var geometry = new THREE.Geometry();
 	geometry.vertices.push(new THREE.Vector3());
-    var material = new THREE.ParticleBasicMaterial( {size: 1, color: 0xffffff, map: THREE.ImageUtils.loadTexture("images/particle.png"), blending: THREE.AdditiveBlending, transparent: true} );
+    var material = new THREE.ParticleBasicMaterial( {size: 1, color: 0xffffff, });//map: THREE.ImageUtils.loadTexture("images/particle.png"), blending: THREE.AdditiveBlending, transparent: true} );
 	var particle = new THREE.ParticleSystem(geometry, material);
 	
 	var repulseVector = SPP.origin;
@@ -44,28 +44,23 @@ function SPP(position, direction) {
 			if (siblingDist <= SPP.repulseRange) {
 				repulseVector = repulseVector.add(position.subtract(siblings[j].getPosition()).toUnitVector().multiply(SPP.repulseStr));//position.subtract(siblings[j].getPosition));
 			}
-			else if (siblingDist <= SPP.alignRange) {
+			else if (siblingDist <= SPP.alignRange + SPP.repulseRange) {
 				alignVector = alignVector.add(siblings[j].getDirection().toUnitVector().multiply(SPP.alignStr));
 			}
-			else if (siblingDist <= SPP.attractRange) {
-				attractVector = attractVector.add(siblings[j].getPosition().subtract(position).toUnitVector().multiply(SPP.attractStr));
+			else if (siblingDist <= SPP.attractRange + SPP.alignRange + SPP.repulseRange) {
+				attractVector = attractVector.add(siblings[j].getPosition().subtract(position).toUnitVector().multiply(SPP.attractStr * siblingDist / (SPP.attractRange + SPP.alignRange + SPP.repulseRange)));
 			}
 		}
 		
-		var movement = $V([0, 0, 0]);//randWalkLU[Math.floor(Math.random() * SPP.randWalkLUSize)].multiply(SPP.walkStr);
+		var movement = randWalkLU[Math.floor(Math.random() * SPP.randWalkLUSize)].multiply(SPP.walkStr * siblings.length);
 		
-		//movement = movement.add(alignVector.multiply(SPP.alignStr));
-		//movement = movement.add(repulseVector.multiply(SPP.repulseStr));
+		movement = movement.add(alignVector.multiply(SPP.alignStr));
+		movement = movement.add(repulseVector.multiply(SPP.repulseStr));
 		movement = movement.add(attractVector.multiply(SPP.attractStr));
 		
-		direction.add(movement.toUnitVector());
+		direction = movement.toUnitVector();
 		
 		position = position.add(direction.multiply(SPP.velocity));
-	}
-	
-	var getGaussianAngle = function() {
-		var y = Math.PI * Math.exp(-(Math.random() * 5) / (2 * 0.01*0.01));
-		return Math.random() < 0.5 ? y : -y;
 	}
 	
 	this.updateView = function() {
@@ -89,6 +84,12 @@ function SPP(position, direction) {
 	/**
 		Pregenerate random walk vectors from normal distribution of angles and uniform random vectors.
 	*/
+	
+	var getGaussianAngle = function() {
+		var y = Math.PI * Math.exp(-(Math.random() * 5.0) / (2.0 * 0.01*0.01));
+		return Math.random() < 0.5 ? y : -y;
+	}
+	
 	for (var i = 0; i < SPP.randWalkLUSize; i++) {
 		var theta = Math.random() * Math.PI * 2;//getGaussianAngle();
 		var mu = Math.random() < 0.5 ? Math.random() : -Math.random();

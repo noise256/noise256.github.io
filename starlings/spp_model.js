@@ -4,16 +4,7 @@ function SPPModel(maxParticles) {
 	var particles = [];
 	
 	for (i = 0; i < maxParticles; i++) {
-		var theta = Math.random() * Math.PI * 2;
-		var mu = Math.random() < 0.5 ? Math.random() : -Math.random();
-		
-		var dir = $V([
-			Math.sqrt(1 - Math.pow(mu, 2)) * Math.cos(theta), 
-			Math.sqrt(1 - Math.pow(mu, 2)) * Math.sin(theta),
-			mu
-		]);
-		
-		particles.push(new SPP($V([Math.random()*2, Math.random()*2+10, Math.random()*2]), dir));//$V([1, 0]).rotate(Math.random() * Math.PI * 2, $V([0, 0]))));
+		particles.push(new SPP($V([Math.random()*2, Math.random()*2+10, Math.random()*2])));//$V([1, 0]).rotate(Math.random() * Math.PI * 2, $V([0, 0]))));
 	}
 	
 	this.updateSPPModel = function() {
