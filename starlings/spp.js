@@ -46,13 +46,13 @@ function SPP(position, direction) {
 		for (var j = 0; j < siblings.length; j++) {
 			siblingDist = siblings[j].getPosition().distanceFrom(position);
 			if (siblingDist <= SPP.repulseRange) {
-				//repulseVector = repulseVector.add(position.subtract(siblings[j].getPosition()).toUnitVector().multiply(SPP.repulseStr));//position.subtract(siblings[j].getPosition));
+				repulseVector = repulseVector.add(position.subtract(siblings[j].getPosition()).toUnitVector().multiply(SPP.repulseStr));//position.subtract(siblings[j].getPosition));
 			}
 			else if (siblingDist <= SPP.alignRange) {
-				//alignVector = alignVector.add(siblings[j].getDirection().toUnitVector().multiply(SPP.alignStr));
+				alignVector = alignVector.add(siblings[j].getDirection().toUnitVector().multiply(SPP.alignStr));
 			}
 			else if (siblingDist <= SPP.attractRange) {
-				//attractVector = attractVector.add(siblings[j].getPosition().subtract(position).toUnitVector().multiply(SPP.attractStr));
+				attractVector = attractVector.add(siblings[j].getPosition().subtract(position).toUnitVector().multiply(SPP.attractStr));
 			}
 		}
 		
@@ -60,9 +60,9 @@ function SPP(position, direction) {
 		
 		//direction = SPP.origin;
 		direction = direction.add(levyWalk.toUnitVector().multiply(SPP.levyStr));
-		//direction = direction.add(alignVector.toUnitVector().multiply(SPP.alignStr));
-		//direction = direction.add(repulseVector.toUnitVector().multiply(SPP.repulseStr));
-		//direction = direction.add(attractVector.toUnitVector().multiply(SPP.attractStr));
+		direction = direction.add(alignVector.toUnitVector().multiply(SPP.alignStr));
+		direction = direction.add(repulseVector.toUnitVector().multiply(SPP.repulseStr));
+		direction = direction.add(attractVector.toUnitVector().multiply(SPP.attractStr));
 		
 		direction = direction.toUnitVector();
 		
