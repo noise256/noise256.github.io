@@ -56,7 +56,7 @@ function SPP(position, direction) {
 		//levyWalk = this.getLevyWalk();
 		
 		//direction = SPP.origin;
-		direction = direction.add(randWalkLU[Math.floor(Math.random() * SPP.numRandVecLU].multiply(SPP.levyStr));
+		direction = direction.add(randWalkLU[Math.floor(Math.random() * SPP.randWalkLUSize].multiply(SPP.levyStr));
 		direction = direction.add(alignVector.toUnitVector().multiply(SPP.alignStr));
 		direction = direction.add(repulseVector.toUnitVector().multiply(SPP.repulseStr));
 		direction = direction.add(attractVector.toUnitVector().multiply(SPP.attractStr));
