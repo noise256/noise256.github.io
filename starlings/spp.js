@@ -43,13 +43,14 @@ function SPP(position, direction) {
  		alignVector = SPP.origin;
 		attractVector = SPP.origin;
 		
+		console.warn(SPP.origin.e(1));
 		for (var j = 0; j < siblings.length; j++) {
 			siblingDist = siblings[j].getPosition().distanceFrom(position);
 			if (siblingDist <= SPP.repulseRange) {
 				repulseVector = repulseVector.add(position.subtract(siblings[j].getPosition()).toUnitVector().multiply(SPP.repulseStr));//position.subtract(siblings[j].getPosition));
 			}
 			else if (siblingDist <= SPP.alignRange) {
-				alignVector = alignVector.add(siblings[j].getDirection().toUnitVector().multiply(SPP.alignStr));
+				//alignVector = alignVector.add(siblings[j].getDirection().toUnitVector().multiply(SPP.alignStr));
 			}
 			else if (siblingDist <= SPP.attractRange) {
 				attractVector = attractVector.add(siblings[j].getPosition().subtract(position).toUnitVector().multiply(SPP.attractStr));
