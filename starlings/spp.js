@@ -4,10 +4,10 @@ function SPP(position, direction) {
 	SPP.repulseStr = 1;
 	SPP.repulseRange = 2;
 	
-	SPP.alignStr = 0.5;
+	SPP.alignStr = 2;
 	SPP.alignRange = 2;
 	
-	SPP.attractStr = 0.5;
+	SPP.attractStr = 0.1;
 	SPP.attractRange = 1;
 	
 	SPP.levyRange = Math.PI/8;
