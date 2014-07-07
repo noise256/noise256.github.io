@@ -49,10 +49,10 @@ function SPP(position, direction) {
 				repulseVector = repulseVector.add(position.subtract(siblings[j].getPosition()).toUnitVector().multiply(SPP.repulseStr));//position.subtract(siblings[j].getPosition));
 			}
 			else if (siblingDist <= SPP.alignRange) {
-				alignVector = alignVector.add(siblings[j].getDirection().toUnitVector().multiply(SPP.repulseStr));
+				alignVector = alignVector.add(siblings[j].getDirection().toUnitVector().multiply(SPP.alignStr));
 			}
 			else if (siblingDist <= SPP.attractRange) {
-				attractVector = attractVector.add(siblings[j].getPosition().subtract(position).toUnitVector().multiply(SPP.repulseStr));
+				attractVector = attractVector.add(siblings[j].getPosition().subtract(position).toUnitVector().multiply(SPP.attractStr));
 			}
 		}
 		
