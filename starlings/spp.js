@@ -52,7 +52,7 @@ function SPP(position, direction) {
 			}
 		}
 		
-		var movement = randWalkLU[Math.floor(Math.random() * SPP.randWalkLUSize)].multiply(SPP.walkStr);
+		var movement = $V([0, 0]);//randWalkLU[Math.floor(Math.random() * SPP.randWalkLUSize)].multiply(SPP.walkStr);
 		
 		movement = movement.add(alignVector.multiply(SPP.alignStr));
 		movement = movement.add(repulseVector.multiply(SPP.repulseStr));
