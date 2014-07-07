@@ -1,18 +1,16 @@
 function SPP(position, direction) {
 	SPP.origin = $V([0, 0, 0]);
 	
-	SPP.repulseStr = 5;
+	SPP.repulseStr = 1;
 	SPP.repulseRange = 3;
 	
 	SPP.alignStr = 1;
 	SPP.alignRange = 3.5;
 	
-	SPP.attractStr = 0.1;
+	SPP.attractStr = 1;
 	SPP.attractRange = 10;
 	
-	SPP.levyRange = Math.PI/4;
-	SPP.levyExp = 10;
-	SPP.levyStr = 0.5;
+	SPP.walkStr = 1;
 	
 	SPP.velocity = 0.1;
 	
@@ -54,9 +52,8 @@ function SPP(position, direction) {
 			}
 		}
 		
-		var movement = SPP.origin;
+		var movement = randWalkLU[Math.floor(Math.random() * SPP.randWalkLUSize)].multiply(SPP.walkStr);
 		
-		movement = movement.add(randWalkLU[Math.floor(Math.random() * SPP.randWalkLUSize)].multiply(SPP.levyStr));
 		movement = movement.add(alignVector.multiply(SPP.alignStr));
 		movement = movement.add(repulseVector.multiply(SPP.repulseStr));
 		movement = movement.add(attractVector.multiply(SPP.attractStr));
