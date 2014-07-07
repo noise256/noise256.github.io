@@ -12,7 +12,7 @@ function SPP(position, direction) {
 	
 	SPP.levyRange = Math.PI/4;
 	SPP.levyExp = 10;
-	SPP.levyStr = 1.5;
+	SPP.levyStr = 1;
 	
 	SPP.velocity = 0.1;
 	
