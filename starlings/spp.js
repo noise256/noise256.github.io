@@ -147,7 +147,7 @@ function SPP(position, direction) {
 	/**
 		Pre-generate random 3D vectors to reduce load.
 	*/
-	for (var i = 0; i < SPP.SPP.numRandVecLU; i++) {
+	for (var i = 0; i < SPP.numRandVecLU; i++) {
 		var theta = Math.random() * Math.PI * 2;
 		var mu = Math.random() < 0.5 ? Math.random() : -Math.random();
 		
