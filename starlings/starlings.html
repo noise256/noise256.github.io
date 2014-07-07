@@ -17,7 +17,7 @@
 	</head>
 	
 	<!-- Based on Three.js "Getting Started" tutorial. -->
-	<body onload="OnLoad()">
+	<body>
 		<div id="WebGLCanvas"; style="margin:auto; text-align:center; width: 1000px; height: 800px; border:1px solid white;">
 			<script>
 				this.canvasWidth = 1000;
@@ -81,6 +81,10 @@
 					scene.add(sppView);
 				}
 				
+				function createScene() {
+				
+				}
+				
 				<!-- Time Step function -->
 				function timestamp() {
 					if (window.performance && window.performance.now) {
@@ -120,11 +124,12 @@
 					fpsMeter.tick();
 				};
 				
-				window.onload=function(){
-					alert("Loaded here too.");
-				};
 				<!-- Initialise -->
-				frame();
+				window.onload=function(){
+					createScene();
+					
+					frame();
+				};
 			</script>
 		</div>
 		<p>

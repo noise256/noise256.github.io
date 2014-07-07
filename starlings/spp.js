@@ -54,41 +54,22 @@ function SPP(position, direction) {
 			}
 		}
 		
-		//levyWalk = this.getLevyWalk();
+		var movement = SPP.origin;
 		
-		//direction = SPP.origin;
-		direction = direction.add(randWalkLU[Math.floor(Math.random() * SPP.randWalkLUSize)].multiply(SPP.levyStr));
-		direction = direction.add(alignVector.toUnitVector().multiply(SPP.alignStr));
-		direction = direction.add(repulseVector.toUnitVector().multiply(SPP.repulseStr));
-		direction = direction.add(attractVector.toUnitVector().multiply(SPP.attractStr));
+		movement = movement.add(randWalkLU[Math.floor(Math.random() * SPP.randWalkLUSize)].multiply(SPP.levyStr));
+		movement = movement.add(alignVector.multiply(SPP.alignStr));
+		movement = movement.add(repulseVector.multiply(SPP.repulseStr));
+		movement = movement.add(attractVector.multiply(SPP.attractStr));
 		
-		direction = direction.toUnitVector();
+		direction.add(movement.toUnitVector());
 		
-		position = position.add(direction.toUnitVector().multiply(SPP.velocity));
+		position = position.add(direction.multiply(SPP.velocity));
 	}
-	
-/* 	this.getLevyWalk = function() {
-		dir = randVecLU[Math.floor(Math.random() * SPP.numRandVecLU)];
-		
-		dir = dir.rotate(levyStepLU[Math.floor(Math.random() * SPP.numLevyStepLU)], $L([0, 0, 0], [1, 0, 0]));
-		dir = dir.rotate(levyStepLU[Math.floor(Math.random() * SPP.numLevyStepLU)], $L([0, 0, 0], [0, 1, 0]));
-		dir = dir.rotate(levyStepLU[Math.floor(Math.random() * SPP.numLevyStepLU)], $L([0, 0, 0], [0, 0, 1]));
-		
-		return dir;
-	} */
 	
 	var getGaussianAngle = function() {
 		var y = Math.PI * Math.exp(-(Math.random() * 5) / (2 * 0.01*0.01));
 		return Math.random() < 0.5 ? y : -y;
 	}
-	
-/* 	var getLevyAngle = function() {
-		var u = Math.random() * (1 - Math.pow(SPP.levyRange + 1, -SPP.levyExp));
-		var f = (1 - u) / Math.pow(1, SPP.levyExp);
-		var x = Math.pow(f, 1 / -SPP.levyExp) - 1;
-		
-		return Math.random() < 0.5 ? -x : x;
-	} */
 	
 	this.updateView = function() {
 		particle.position.x = position.e(1);
