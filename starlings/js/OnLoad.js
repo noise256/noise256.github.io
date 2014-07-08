@@ -1,3 +1,0 @@
-function OnLoad() {
-	alert("Loaded");
-}
