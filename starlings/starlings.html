@@ -172,21 +172,22 @@
 					Pregenerate random walk look up table.
 					*/
 					for (var i = 0; i < randWalkLUSize; i++) {
-						var theta = Math.random() * Math.PI * 2;
-						var mu = Math.random() < 0.5 ? Math.random() : -Math.random();
+						//var theta = Math.random() * Math.PI * 2;
+						//var mu = Math.random() < 0.5 ? Math.random() : -Math.random();
 						
-						var vx = Math.sqrt(1 - Math.pow(mu, 2)) * Math.cos(theta),
-							vy = Math.sqrt(1 - Math.pow(mu, 2)) * Math.sin(theta),
-							vz = mu;
+						//var vx = Math.sqrt(1 - Math.pow(mu, 2)) * Math.cos(theta),
+						//	vy = Math.sqrt(1 - Math.pow(mu, 2)) * Math.sin(theta),
+						//	vz = mu;
 							
-						var vec = vec3.fromValues(vx,vy,vz);
-						vec3.normalize(vec, vec);
+						//var vec = vec3.fromValues(vx,vy,vz);
+						//vec3.normalize(vec, vec);
 						
-						vec3.rotateX(vec, vec, vec3.create(), getGaussianAngle());
-						vec3.rotateY(vec, vec, vec3.create(), getGaussianAngle());
-						vec3.rotateZ(vec, vec, vec3.create(), getGaussianAngle());
-
-						randWalkLU[i] = vec;
+						//vec3.rotateX(vec, vec, vec3.create(), getGaussianAngle());
+						//vec3.rotateY(vec, vec, vec3.create(), getGaussianAngle());
+						//vec3.rotateZ(vec, vec, vec3.create(), getGaussianAngle());
+						
+						randWalkLU[i] = vec3.create();
+						vec3.random(randWalkLU[i], getGaussianAngle());
 					}
 					
 					/**
