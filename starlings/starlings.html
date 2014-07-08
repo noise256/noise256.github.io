@@ -186,8 +186,11 @@
 						//vec3.rotateY(vec, vec, vec3.create(), getGaussianAngle());
 						//vec3.rotateZ(vec, vec, vec3.create(), getGaussianAngle());
 						
-						randWalkLU[i] = vec3.create();
-						vec3.random(randWalkLU[i], getGaussianAngle());
+						
+						var rand = vec3.create();
+						vec3.random(rand, getGaussianAngle());
+						if (Math.random() < 0.5) {vec3.negate(rand, rand)};
+						randWalkLU[i] = rand;
 					}
 					
 					/**
