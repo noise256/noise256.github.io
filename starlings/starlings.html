@@ -7,7 +7,9 @@
 		<meta charset="UTF-8"> 
 		<LINK href="starlings.css" rel="stylesheet" type="text/css">
 		
-		<script src="js/sylvester.src.js" type="text/javascript"></script>
+		<!-- <script src="js/sylvester.src.js" type="text/javascript"></script> -->
+		<script src="js/common.js", type="text/javascript"></script>
+		<script src="js/vec3.js", type="text/javascript"></script>
 		<script src="js/fpsmeter.js" type="text/javascript"></script>
 		<script src="js/three.min.js" type="text/javascript"></script>
 		<script src="js/OrbitControls.js" type="text/javascript"></script>
@@ -177,12 +179,12 @@
 							vy = Math.sqrt(1 - Math.pow(mu, 2)) * Math.sin(theta),
 							vz = mu;
 							
-						var vec = $V([vx, vy, vz]);
-						vec = vec.toUnitVector();
+						var vec = vec3.fromValues(vx,vy,vz);
+						vec3.normalize(vec, vec);
 						
-						vec.rotate(getGaussianAngle(), $L([0, 0, 0], [1, 0, 0]));
-						vec.rotate(getGaussianAngle(), $L([0, 0, 0], [0, 1, 0]));
-						vec.rotate(getGaussianAngle(), $L([0, 0, 0], [0, 0, 1]));
+						vec3.rotateX(vec, vec, vec3.create(), getGaussianAngle());
+						vec3.rotateY(vec, vec, vec3.create(), getGaussianAngle());
+						vec3.rotateZ(vec, vec, vec3.create(), getGaussianAngle());
 
 						randWalkLU[i] = vec;
 					}
@@ -206,9 +208,9 @@
 					scene.add(particleSystem);
 				}
 				
-				var repulseVector = $V([0, 0, 0]);
-				var alignVector = $V([0, 0, 0]);
-				var attractVector = $V([0, 0, 0]);
+				var repulseVector;
+				var alignVector;
+				var attractVector;
 				
 				var cParticle;
 				var sParticle;
@@ -222,47 +224,51 @@
 				
 				function updateSPPModel() {
 					for (var i = 0; i < maxParticles; i++) {
-						cParticle = $V([particleSystem.geometry.vertices[i].x, particleSystem.geometry.vertices[i].y, particleSystem.geometry.vertices[i].z]);
-						cVelocity = $V([particleSystem.geometry.vertices[i].velocity.x, particleSystem.geometry.vertices[i].velocity.y, particleSystem.geometry.vertices[i].velocity.z]);
+						cParticle = vec3.fromValues(particleSystem.geometry.vertices[i].x, particleSystem.geometry.vertices[i].y, particleSystem.geometry.vertices[i].z);
+						cVelocity = vec3.fromValues(particleSystem.geometry.vertices[i].velocity.x, particleSystem.geometry.vertices[i].velocity.y, particleSystem.geometry.vertices[i].velocity.z);
 						
-						repulseVector = $V([0, 0, 0]);
-						alignVector = $V([0, 0, 0]);
-						attractVector = $V([0, 0, 0]);
+						repulseVector = vec3.create();
+						alignVector = vec3.create();
+						attractVector = vec3.create();
 						
 						for (var j = 0; j < maxParticles; j++) {
-							sParticle = $V([particleSystem.geometry.vertices[j].x, particleSystem.geometry.vertices[j].y, particleSystem.geometry.vertices[j].z]);
+							var sx = particleSystem.geometry.vertices[j].x;
+							var sy = particleSystem.geometry.vertices[j].y;
+							var sz = particleSystem.geometry.vertices[j].z;
 							
-							siblingDist = sParticle.distanceFrom(cParticle);
+							sParticle = vec3.fromValues(sx, sy, sz);
+							
+							siblingDist = vec3.distance(sParticle, cParticle);
 							
 							if (siblingDist <= repulseRange) {
-								repulseVector = repulseVector.add(cParticle.subtract(sParticle));
+								var sub = vec3.create();
+								vec3.add(repulseVector, repulseVector, vec3.subtract(sub, cParticle, sParticle));
 							}
 							else if (siblingDist <= alignRange) {
-								sVelocity = $V([particleSystem.geometry.vertices[j].velocity.x, particleSystem.geometry.vertices[j].velocity.y, particleSystem.geometry.vertices[j].velocity.z]);
+								sVelocity = vec3.fromValues(particleSystem.geometry.vertices[j].velocity.x, particleSystem.geometry.vertices[j].velocity.y, particleSystem.geometry.vertices[j].velocity.z);
 								
-								alignVector = alignVector.add(sVelocity);
+								vec3.add(alignVector, alignVector, sVelocity);
 							}
 							else if (siblingDist <= attractRange) {
-								attractVector = attractVector.add(sParticle.subtract(cParticle));
+								vec3.add(attractVector, attractVector, vec3.subtract(sub, sParticle, cParticle));
 							}
 						}
 						
-						t1 = timestamp();
+						var movement = randWalkLU[Math.floor(Math.random() * randWalkLUSize)];
+						vec3.scale(movement, movement, walkStr);
 						
-						movement = randWalkLU[Math.floor(Math.random() * randWalkLUSize)].multiply(walkStr);
+						vec3.scaleAndAdd(movement, movement, repulseVector, repulseStr);
+						vec3.scaleAndAdd(movement, movement, attractVector, attractStr);
+						vec3.scaleAndAdd(movement, movement, alignVector, alignStr);
 						
-						movement = movement.add(repulseVector.multiply(repulseStr));
-						movement = movement.add(attractVector.multiply(attractStr));
-						movement = movement.add(alignVector.multiply(alignStr));
+						//todo cvelocity should be normalized already, its not, if 1st value of it is high then messed up
+						vec3.normalize(movement, movement);
+						vec3.add(cVelocity, cVelocity, movement);
 						
-						cVelocity = cVelocity.add(movement).toUnitVector();
-						cParticle = cParticle.add(cVelocity.multiply(velocity));
+						vec3.scaleAndAdd(cParticle, cParticle, cVelocity, velocity);
 
-						particleSystem.geometry.vertices[i].set(cParticle.e(1), cParticle.e(2), cParticle.e(3));
-						particleSystem.geometry.vertices[i].velocity.set(cVelocity.e(1), cVelocity.e(2), cVelocity.e(3));
-						
-						t2 = timestamp();
-						//console.warn('output', t2-t1);
+						particleSystem.geometry.vertices[i].set(cParticle.x, cParticle.y, cParticle.z);
+						particleSystem.geometry.vertices[i].velocity.set(cVelocity.x, cVelocity.y, cVelocity.z);
 					}
 				}
 				
