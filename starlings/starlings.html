@@ -201,6 +201,8 @@
 					}
 					
 					particleSystem = new THREE.ParticleSystem(particles, pMaterial);
+					
+					particleSystem.sortParticles = true;
 					scene.add(particleSystem);
 				}
 				
