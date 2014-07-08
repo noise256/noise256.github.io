@@ -45,7 +45,7 @@
 				/**
 					SPP Variable.
 				*/
-				var maxParticles = 150;
+				var maxParticles = 500;
 	
 				var repulseStr = 1;
 				var repulseRange = 5;
@@ -208,37 +208,20 @@
 					scene.add(particleSystem);
 				}
 				
-				var repulseVector;
-				var alignVector;
-				var attractVector;
-				
-				var cParticle;
-				var sParticle;
-				
-				var cVelocity;
-				var sVelocity;
-				
-				var siblingDist;
-				
-				var movement;
-				
 				function updateSPPModel() {
 					for (var i = 0; i < maxParticles; i++) {
-						cParticle = vec3.fromValues(particleSystem.geometry.vertices[i].x, particleSystem.geometry.vertices[i].y, particleSystem.geometry.vertices[i].z);
-						cVelocity = vec3.fromValues(particleSystem.geometry.vertices[i].velocity.x, particleSystem.geometry.vertices[i].velocity.y, particleSystem.geometry.vertices[i].velocity.z);
+						var cParticle = vec3.fromValues(particleSystem.geometry.vertices[i].x, particleSystem.geometry.vertices[i].y, particleSystem.geometry.vertices[i].z);
+						var cVelocity = vec3.fromValues(particleSystem.geometry.vertices[i].velocity.x, particleSystem.geometry.vertices[i].velocity.y, particleSystem.geometry.vertices[i].velocity.z);
 						
-						repulseVector = vec3.create();
-						alignVector = vec3.create();
-						attractVector = vec3.create();
+						var repulseVector = vec3.create();
+						var alignVector = vec3.create();
+						var attractVector = vec3.create();
 						
 						for (var j = 0; j < maxParticles; j++) {
-							var sx = particleSystem.geometry.vertices[j].x;
-							var sy = particleSystem.geometry.vertices[j].y;
-							var sz = particleSystem.geometry.vertices[j].z;
+							var sParticle = vec3.fromValues(particleSystem.geometry.vertices[j].x, particleSystem.geometry.vertices[j].y, particleSystem.geometry.vertices[j].z);
+							var sVelocity;
 							
-							sParticle = vec3.fromValues(sx, sy, sz);
-							
-							siblingDist = vec3.distance(sParticle, cParticle);
+							var siblingDist = vec3.distance(sParticle, cParticle);
 							
 							if (siblingDist <= repulseRange) {
 								var sub = vec3.create();
@@ -265,10 +248,11 @@
 						vec3.normalize(movement, movement);
 						vec3.add(cVelocity, cVelocity, movement);
 						
+						vec3.normalize(cVelocity, cVelocity);
 						vec3.scaleAndAdd(cParticle, cParticle, cVelocity, velocity);
 
-						particleSystem.geometry.vertices[i].set(cParticle.x, cParticle.y, cParticle.z);
-						particleSystem.geometry.vertices[i].velocity.set(cVelocity.x, cVelocity.y, cVelocity.z);
+						particleSystem.geometry.vertices[i].set(cParticle[0], cParticle[1], cParticle[2]);
+						particleSystem.geometry.vertices[i].velocity.set(cVelocity[0], cVelocity[1], cVelocity[2]);
 					}
 				}
 				
