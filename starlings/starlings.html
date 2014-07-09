@@ -44,7 +44,7 @@
 				var mainLight;
 				
 				/**
-					SPP Variable.
+					SPP Variables.
 				*/
 				var sppParams = {
 					repulseStr: 1,
@@ -56,20 +56,8 @@
 					walkStr: 250,
 					velocity: 0.01
 				};
+				
 				var maxParticles = 350;
-	
-				//var repulseStr = 1;
-				//var repulseRange = 5;
-				
-				//var alignStr = 0.8;
-				//var alignRange = 5 + repulseRange;
-				
-				//var attractStr = 1;
-				//var attractRange = 5 + alignRange + repulseRange;
-				
-				//var walkStr = 250;
-				
-				//var velocity = 0.1;
 				
 				var randWalkLUSize = 1000;
 				
@@ -78,7 +66,7 @@
 				var particleSystem;
 				
 				/**
-					DAT GUI variables.
+					DAT.GUI Sliders.
 				*/
 				var gui = new dat.GUI({height: 8 * 32 - 1});
 				
@@ -198,23 +186,7 @@
 					Pregenerate random walk look up table.
 					*/
 					for (var i = 0; i < randWalkLUSize; i++) {
-						//var theta = Math.random() * Math.PI * 2;
-						//var mu = Math.random() < 0.5 ? Math.random() : -Math.random();
-						
-						//var vx = Math.sqrt(1 - Math.pow(mu, 2)) * Math.cos(theta),
-						//	vy = Math.sqrt(1 - Math.pow(mu, 2)) * Math.sin(theta),
-						//	vz = mu;
-							
-						//var vec = vec3.fromValues(vx,vy,vz);
-						//vec3.normalize(vec, vec);
-						
-						//vec3.rotateX(vec, vec, vec3.create(), getGaussianAngle());
-						//vec3.rotateY(vec, vec, vec3.create(), getGaussianAngle());
-						//vec3.rotateZ(vec, vec, vec3.create(), getGaussianAngle());
-						
-						
-						var rand = vec3.create();
-						vec3.random(rand, getGaussianAngle());
+						var rand = vec3.random(vec3.create(), getGaussianAngle());
 						if (Math.random() < 0.5) {vec3.negate(rand, rand)};
 						randWalkLU[i] = rand;
 					}
@@ -245,12 +217,15 @@
 					var sParticle;
 					var sVelocity;
 					
+					var siblingDist;
+					var movement;
+					
 					var repulseVector;
 					var alignVector;
 					var attractVector;
 					
-					var siblingDist;
-					var movement;
+					var scVec; //vector from sibling spp to current spp, used for repulsion
+					var csVec; //vector from current spp to sibling spp, used for attraction
 					
 					for (var i = 0; i < maxParticles; i++) {
 						cParticle = vec3.fromValues(particleSystem.geometry.vertices[i].x, particleSystem.geometry.vertices[i].y, particleSystem.geometry.vertices[i].z);
@@ -265,18 +240,22 @@
 							siblingDist = vec3.distance(sParticle, cParticle);
 							
 							if (siblingDist < sppParams.repulseRange) {
-								var sub = vec3.create();
-								vec3.add(repulseVector, repulseVector, vec3.subtract(sub, cParticle, sParticle));
+								scVec = vec3.create();
+								vec3.subtract(scVec, cParticle, sParticle)
+								vec3.add(repulseVector, repulseVector, scVec);
 							}
 							else if (siblingDist < sppParams.alignRange) {
 								sVelocity = vec3.fromValues(particleSystem.geometry.vertices[j].velocity.x, particleSystem.geometry.vertices[j].velocity.y, particleSystem.geometry.vertices[j].velocity.z);
 								vec3.add(alignVector, alignVector, sVelocity);
 							}
 							else if (siblingDist < sppParams.attractRange) {
-								var sub = vec3.create();
-								vec3.add(attractVector, attractVector, vec3.subtract(sub, sParticle, cParticle));
+								csVec = vec3.create();
+								vec3.subtract(csVec, sParticle, cParticle);
+								vec3.add(attractVector, attractVector, csVec);
 							}
 						}
+						
+						movement = vec3.create();
 						
 						movement = randWalkLU[Math.floor(Math.random() * randWalkLUSize)];
 						vec3.scale(movement, movement, sppParams.walkStr);
@@ -285,7 +264,6 @@
 						vec3.scaleAndAdd(movement, movement, attractVector, sppParams.attractStr);
 						vec3.scaleAndAdd(movement, movement, alignVector, sppParams.alignStr);
 						
-						//todo cvelocity should be normalized already, its not, if 1st value of it is high then messed up
 						vec3.normalize(movement, movement);
 						vec3.add(cVelocity, cVelocity, movement);
 						
