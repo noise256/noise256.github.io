@@ -235,11 +235,10 @@
 						attractVector = vec3.create();
 						
 						for (var j = 0; j < maxParticles; j++) {
-							sParticle = vec3.fromValues(particleSystem.geometry.vertices[j].x, particleSystem.geometry.vertices[j].y, particleSystem.geometry.vertices[j].z);
-							
 							siblingDist = vec3.distance(sParticle, cParticle);
 							
 							if (siblingDist < attractRange) {
+								sParticle = vec3.fromValues(particleSystem.geometry.vertices[j].x, particleSystem.geometry.vertices[j].y, particleSystem.geometry.vertices[j].z);
 								if (siblingDist < alignRange) {
 									if (siblingDist < repulseRange) {
 										var sub = vec3.create();
