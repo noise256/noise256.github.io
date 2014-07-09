@@ -10,6 +10,7 @@
 		<!-- <script src="js/sylvester.src.js" type="text/javascript"></script> -->
 		<script src="js/common.js", type="text/javascript"></script>
 		<script src="js/vec3.js", type="text/javascript"></script>
+		<script src='js/dat.gui.min.js' type='text/javascript'></script>
 		<script src="js/fpsmeter.js" type="text/javascript"></script>
 		<script src="js/three.min.js" type="text/javascript"></script>
 		<script src="js/OrbitControls.js" type="text/javascript"></script>
@@ -45,26 +46,50 @@
 				/**
 					SPP Variable.
 				*/
+				var sppParams = {
+					repulseStr: 1,
+					repulseRange: 5,
+					alignStr: 0.8,
+					alignRange: 10,
+					attractStr: 1,
+					attractRange: 15,
+					walkStr: 250,
+					velocity: 0.01
+				};
 				var maxParticles = 350;
 	
-				var repulseStr = 1;
-				var repulseRange = 5;
+				//var repulseStr = 1;
+				//var repulseRange = 5;
 				
-				var alignStr = 0.8;
-				var alignRange = 5 + repulseRange;
+				//var alignStr = 0.8;
+				//var alignRange = 5 + repulseRange;
 				
-				var attractStr = 1;
-				var attractRange = 5 + alignRange + repulseRange;
+				//var attractStr = 1;
+				//var attractRange = 5 + alignRange + repulseRange;
 				
-				var walkStr = 250;
+				//var walkStr = 250;
 				
-				var velocity = 0.1;
+				//var velocity = 0.1;
 				
 				var randWalkLUSize = 100;
 				
 				var randWalkLU = [];
 				
 				var particleSystem;
+				
+				/**
+					DAT GUI variables.
+				*/
+				var gui = new dat.GUI({height: 8 * 32 - 1});
+				
+				gui.add(sppParams, 'repulseStr').min(0).max(10).step(0.1);
+				gui.add(sppParams, 'repulseRange').min(0).max(10).step(1);
+				gui.add(sppParams, 'alignStr').min(0).max(10).step(0.1);
+				gui.add(sppParams, 'alignRange').min(0).max(20).step(1);
+				gui.add(sppParams, 'attractStr').min(0).max(10).step(0.1);
+				gui.add(sppParams, 'attractRange').min(0).max(30).step(1);
+				gui.add(sppParams, 'walkStr').min(0).max(500).step(1);
+				gui.add(sppParams, 'velocity').min(0).max(1).step(0.01);
 				
 				/**
 					THREE.js Functions
@@ -142,6 +167,7 @@
 						Controls.
 					*/
 					controls = new THREE.OrbitControls(camera);
+					controls.noMouse = true;
 					controls.target.y = 10;
 					
 					/**
@@ -197,7 +223,7 @@
 					Generate particles.
 					*/
 					var particles = new THREE.Geometry();
-					var pMaterial = new THREE.ParticleBasicMaterial( {size: 1, color: 0xffffff, map: THREE.ImageUtils.loadTexture("images/particle.png"), blending: THREE.AdditiveBlending, transparent: true} );
+					var pMaterial = new THREE.ParticleBasicMaterial( {size: 1, color: 0xffffff});//, map: THREE.ImageUtils.loadTexture("images/particle.png"), blending: THREE.AdditiveBlending, transparent: true} );
 				
 					for (i = 0; i < maxParticles; i++) {
 						var particle = new THREE.Vector3(Math.random()*2, Math.random()*2+10, Math.random()*2);
@@ -238,34 +264,33 @@
 							sParticle = vec3.fromValues(particleSystem.geometry.vertices[j].x, particleSystem.geometry.vertices[j].y, particleSystem.geometry.vertices[j].z);
 							siblingDist = vec3.distance(sParticle, cParticle);
 							
-							if (siblingDist < attractRange) {
-								if (siblingDist < alignRange) {
-									if (siblingDist < repulseRange) {
-										var sub = vec3.create();
-										vec3.add(repulseVector, repulseVector, vec3.subtract(sub, cParticle, sParticle));
-										continue;
-									}
-									sVelocity = vec3.fromValues(particleSystem.geometry.vertices[j].velocity.x, particleSystem.geometry.vertices[j].velocity.y, particleSystem.geometry.vertices[j].velocity.z);
-									vec3.add(alignVector, alignVector, sVelocity);
-									continue;
-								}
+							if (siblingDist < sppParams.repulseRange) {
+								var sub = vec3.create();
+								vec3.add(repulseVector, repulseVector, vec3.subtract(sub, cParticle, sParticle));
+							}
+							else if (siblingDist < sppParams.alignRange) {
+								sVelocity = vec3.fromValues(particleSystem.geometry.vertices[j].velocity.x, particleSystem.geometry.vertices[j].velocity.y, particleSystem.geometry.vertices[j].velocity.z);
+								vec3.add(alignVector, alignVector, sVelocity);
+							}
+							else if (siblingDist < sppParams.attractRange) {
+								var sub = vec3.create();
 								vec3.add(attractVector, attractVector, vec3.subtract(sub, sParticle, cParticle));
 							}
 						}
 						
 						movement = randWalkLU[Math.floor(Math.random() * randWalkLUSize)];
-						vec3.scale(movement, movement, walkStr);
+						vec3.scale(movement, movement, sppParams.walkStr);
 						
-						vec3.scaleAndAdd(movement, movement, repulseVector, repulseStr);
-						vec3.scaleAndAdd(movement, movement, attractVector, attractStr);
-						vec3.scaleAndAdd(movement, movement, alignVector, alignStr);
+						vec3.scaleAndAdd(movement, movement, repulseVector, sppParams.repulseStr);
+						vec3.scaleAndAdd(movement, movement, attractVector, sppParams.attractStr);
+						vec3.scaleAndAdd(movement, movement, alignVector, sppParams.alignStr);
 						
 						//todo cvelocity should be normalized already, its not, if 1st value of it is high then messed up
 						vec3.normalize(movement, movement);
 						vec3.add(cVelocity, cVelocity, movement);
 						
 						vec3.normalize(cVelocity, cVelocity);
-						vec3.scaleAndAdd(cParticle, cParticle, cVelocity, velocity);
+						vec3.scaleAndAdd(cParticle, cParticle, cVelocity, sppParams.velocity);
 
 						particleSystem.geometry.vertices[i].set(cParticle[0], cParticle[1], cParticle[2]);
 						particleSystem.geometry.vertices[i].velocity.set(cVelocity[0], cVelocity[1], cVelocity[2]);

@@ -63,6 +63,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 	this.maxPolarAngle = Math.PI; // radians
 
 	// Set to true to disable use of the keys
+	this.noMouse = false;
 	this.noKeys = false;
 	// The four arrow keys
 	this.keys = { LEFT: 37, UP: 38, RIGHT: 39, BOTTOM: 40 };
@@ -282,7 +283,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 	function onMouseDown( event ) {
 
-		if ( scope.enabled === false ) { return; }
+		if ( scope.enabled === false || scope.noMouse === true) { return; }
 		event.preventDefault();
 
 		if ( event.button === 2 ) {
@@ -316,7 +317,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 	function onMouseMove( event ) {
 
-		if ( scope.enabled === false ) return;
+		if ( scope.enabled === false || scope.noMouse === true) return;
 
 		event.preventDefault();
 
@@ -375,7 +376,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 	function onMouseUp( /* event */ ) {
 
-		if ( scope.enabled === false ) return;
+		if ( scope.enabled === false || scope.noMouse === true) return;
 
 		// Greggman fix: https://github.com/greggman/three.js/commit/fde9f9917d6d8381f06bf22cdff766029d1761be
 		scope.domElement.removeEventListener( 'mousemove', onMouseMove, false );
@@ -386,8 +387,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 	}
 
 	function onMouseWheel( event ) {
-
-		if ( scope.enabled === false || scope.noZoom === true ) return;
+		if ( scope.noMouse === true || scope.enabled === false || scope.noZoom === true ) return;
 
 		var delta = 0;
 
