@@ -236,20 +236,20 @@
 						
 						for (var j = 0; j < maxParticles; j++) {
 							sParticle = vec3.fromValues(particleSystem.geometry.vertices[j].x, particleSystem.geometry.vertices[j].y, particleSystem.geometry.vertices[j].z);
-							sVelocity;
 							
 							siblingDist = vec3.distance(sParticle, cParticle);
 							
-							if (siblingDist <= repulseRange) {
-								var sub = vec3.create();
-								vec3.add(repulseVector, repulseVector, vec3.subtract(sub, cParticle, sParticle));
-							}
-							else if (siblingDist <= alignRange) {
-								sVelocity = vec3.fromValues(particleSystem.geometry.vertices[j].velocity.x, particleSystem.geometry.vertices[j].velocity.y, particleSystem.geometry.vertices[j].velocity.z);
-								
-								vec3.add(alignVector, alignVector, sVelocity);
-							}
-							else if (siblingDist <= attractRange) {
+							if (siblingDist < attractRange) {
+								if (siblingDist < alignRange) {
+									if (siblingDist < repulseRange) {
+										var sub = vec3.create();
+										vec3.add(repulseVector, repulseVector, vec3.subtract(sub, cParticle, sParticle));
+										continue;
+									}
+									sVelocity = vec3.fromValues(particleSystem.geometry.vertices[j].velocity.x, particleSystem.geometry.vertices[j].velocity.y, particleSystem.geometry.vertices[j].velocity.z);
+									vec3.add(alignVector, alignVector, sVelocity);
+									continue;
+								}
 								vec3.add(attractVector, attractVector, vec3.subtract(sub, sParticle, cParticle));
 							}
 						}
