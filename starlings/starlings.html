@@ -213,19 +213,32 @@
 				}
 				
 				function updateSPPModel() {
+					var cParticle;
+					var cVelocity;
+					
+					var sParticle;
+					var sVelocity;
+					
+					var repulseVector;
+					var alignVector;
+					var attractVector;
+					
+					var siblingDist;
+					var movement;
+					
 					for (var i = 0; i < maxParticles; i++) {
-						var cParticle = vec3.fromValues(particleSystem.geometry.vertices[i].x, particleSystem.geometry.vertices[i].y, particleSystem.geometry.vertices[i].z);
-						var cVelocity = vec3.fromValues(particleSystem.geometry.vertices[i].velocity.x, particleSystem.geometry.vertices[i].velocity.y, particleSystem.geometry.vertices[i].velocity.z);
+						cParticle = vec3.fromValues(particleSystem.geometry.vertices[i].x, particleSystem.geometry.vertices[i].y, particleSystem.geometry.vertices[i].z);
+						cVelocity = vec3.fromValues(particleSystem.geometry.vertices[i].velocity.x, particleSystem.geometry.vertices[i].velocity.y, particleSystem.geometry.vertices[i].velocity.z);
 						
-						var repulseVector = vec3.create();
-						var alignVector = vec3.create();
-						var attractVector = vec3.create();
+						repulseVector = vec3.create();
+						alignVector = vec3.create();
+						attractVector = vec3.create();
 						
 						for (var j = 0; j < maxParticles; j++) {
-							var sParticle = vec3.fromValues(particleSystem.geometry.vertices[j].x, particleSystem.geometry.vertices[j].y, particleSystem.geometry.vertices[j].z);
-							var sVelocity;
+							sParticle = vec3.fromValues(particleSystem.geometry.vertices[j].x, particleSystem.geometry.vertices[j].y, particleSystem.geometry.vertices[j].z);
+							sVelocity;
 							
-							var siblingDist = vec3.distance(sParticle, cParticle);
+							siblingDist = vec3.distance(sParticle, cParticle);
 							
 							if (siblingDist <= repulseRange) {
 								var sub = vec3.create();
@@ -241,7 +254,7 @@
 							}
 						}
 						
-						var movement = randWalkLU[Math.floor(Math.random() * randWalkLUSize)];
+						movement = randWalkLU[Math.floor(Math.random() * randWalkLUSize)];
 						vec3.scale(movement, movement, walkStr);
 						
 						vec3.scaleAndAdd(movement, movement, repulseVector, repulseStr);
