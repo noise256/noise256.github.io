@@ -211,7 +211,7 @@ function updateSPPModel() {
 	
 	for (var i = 0; i < maxParticles; i++) {
 		cParticle = vec3.fromValues(particleSystem.geometry.vertices[i].x, particleSystem.geometry.vertices[i].y, particleSystem.geometry.vertices[i].z);
-		cVelocity = vec3.create();//fromValues(particleSystem.geometry.vertices[i].velocity.x, particleSystem.geometry.vertices[i].velocity.y, particleSystem.geometry.vertices[i].velocity.z);
+		cVelocity = vec3.fromValues(particleSystem.geometry.vertices[i].velocity.x, particleSystem.geometry.vertices[i].velocity.y, particleSystem.geometry.vertices[i].velocity.z);
 		
 		if (sppParams.gravity === 1) {
 			var gravVector = vec3.create();
@@ -252,23 +252,21 @@ function updateSPPModel() {
 			}
 		}
 		
-		movement = vec3.create();
+		var sppVector = vec3.create();
 		
-		movement = randWalkLU[Math.floor(Math.random() * randWalkLUSize)];
-		vec3.scale(movement, movement, sppParams.walkStr);
+		vec3.scaleAndAdd(sppVector, sppVector, getRandomWalk(), sppParams.walkStr);
+		vec3.scaleAndAdd(sppVector, sppVector, repulseVector, sppParams.repulseStr);
+		vec3.scaleAndAdd(sppVector, sppVector, attractVector, sppParams.attractStr);
+		vec3.scaleAndAdd(sppVector, sppVector, alignVector, sppParams.alignStr);
 		
-		vec3.scaleAndAdd(movement, movement, repulseVector, sppParams.repulseStr);
-		vec3.scaleAndAdd(movement, movement, attractVector, sppParams.attractStr);
-		vec3.scaleAndAdd(movement, movement, alignVector, sppParams.alignStr);
+		vec3.normalize(sppVector, sppVector);
 		
-		vec3.normalize(movement, movement);
-		vec3.add(cVelocity, cVelocity, movement);
+		vec3.scaleAndAdd(cVelocity, cVelocity, sppVector, sppParams.velocity);
+		vec3.add(cParticle, cParticle, cVelocity);
 		
-		vec3.normalize(cVelocity, cVelocity);
-		vec3.scaleAndAdd(cParticle, cParticle, cVelocity, sppParams.velocity);
-
-		particleSystem.geometry.vertices[i].set(cParticle[0], cParticle[1], cParticle[2]);
 		particleSystem.geometry.vertices[i].velocity.set(cVelocity[0], cVelocity[1], cVelocity[2]);
+		particleSystem.geometry.vertices[i].set(cParticle[0], cParticle[1], cParticle[2]);
+		
 	}
 }
 
