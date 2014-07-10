@@ -241,11 +241,11 @@ function updateSPPModel() {
 				vec3.subtract(scVec, cParticle, sParticle)
 				vec3.add(repulseVector, repulseVector, scVec);
 			}
-			else if (siblingDist < sppParams.alignRange + sppParams.repulseRange) {
+			else if (siblingDist > sppParams.repulseRange && siblingDist < sppParams.alignRange + sppParams.repulseRange) {
 				sVelocity = vec3.fromValues(particleSystem.geometry.vertices[j].velocity.x, particleSystem.geometry.vertices[j].velocity.y, particleSystem.geometry.vertices[j].velocity.z);
 				vec3.add(alignVector, alignVector, sVelocity);
 			}
-			else if (siblingDist < sppParams.attractRange + sppParams.alignRange + sppParams.repulseRange) {
+			else if (siblingDist > sppParams.repulseRange + sppParams.alignRange && siblingDist < sppParams.attractRange + sppParams.alignRange + sppParams.repulseRange) {
 				csVec = vec3.create();
 				vec3.subtract(csVec, sParticle, cParticle);
 				vec3.add(attractVector, attractVector, csVec);
