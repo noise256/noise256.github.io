@@ -33,12 +33,12 @@ var mainLight;
 	SPP Variables.
 */
 var sppParams = {
-	repulseStr: 1,
-	repulseRange: 1,
+	repulseStr: 0,
+	repulseRange: 0,
 	alignStr: 0,
-	alignRange: 3,
+	alignRange: 0,
 	attractStr: 0,
-	attractRange: 15,
+	attractRange: 0,
 	walkStr: 1,
 	velocity: 0.01,
 	gravity: 0
