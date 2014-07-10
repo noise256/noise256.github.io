@@ -41,7 +41,7 @@ var sppParams = {
 	attractRange: 0,
 	walkStr: 1,
 	acceleration: 0.01,
-	maxVelocity: 0.1,
+	maxVelocity: 0.01,
 	gravity: 0
 };
 
