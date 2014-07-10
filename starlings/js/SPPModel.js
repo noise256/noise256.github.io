@@ -40,7 +40,8 @@ var sppParams = {
 	attractStr: 0,
 	attractRange: 0,
 	walkStr: 1,
-	velocity: 0.01,
+	acceleration: 0.01,
+	maxVelocity: 0.1,
 	gravity: 0
 };
 
@@ -64,7 +65,8 @@ gui.add(sppParams, 'alignRange').min(0).max(20).step(1);
 gui.add(sppParams, 'attractStr').min(0).max(10).step(0.1);
 gui.add(sppParams, 'attractRange').min(0).max(30).step(1);
 gui.add(sppParams, 'walkStr').min(0).max(500).step(1);
-gui.add(sppParams, 'velocity').min(0).max(1).step(0.01);
+gui.add(sppParams, 'acceleration').min(0).max(1).step(0.01);
+gui.add(sppParams, 'maxVelocity').min(0).max(1).step(0.01);
 gui.add(sppParams, 'gravity').min(0).max(1).step(1);
 
 /**
