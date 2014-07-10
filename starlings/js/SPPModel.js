@@ -33,15 +33,15 @@ var mainLight;
 	SPP Variables.
 */
 var sppParams = {
-	repulseStr: 0,
-	repulseRange: 0,
-	alignStr: 0,
-	alignRange: 0,
-	attractStr: 0,
-	attractRange: 0,
-	walkStr: 1,
+	repulseStr: 5,
+	repulseRange: 10,
+	alignStr: 10,
+	alignRange: 5,
+	attractStr: 5,
+	attractRange: 5,
+	walkStr: 5,
 	acceleration: 0.01,
-	maxVelocity: 0.01,
+	maxVelocity: 0.1,
 	gravity: 0
 };
 
@@ -59,15 +59,15 @@ var particleSystem;
 var gui = new dat.GUI({height: 8 * 32 - 1});
 
 gui.add(sppParams, 'repulseStr').min(0).max(10).step(0.1);
-gui.add(sppParams, 'repulseRange').min(0).max(10).step(1);
+gui.add(sppParams, 'repulseRange').min(0).max(10).step(0.1);
 gui.add(sppParams, 'alignStr').min(0).max(10).step(0.1);
-gui.add(sppParams, 'alignRange').min(0).max(20).step(1);
+gui.add(sppParams, 'alignRange').min(0).max(10).step(0.1);
 gui.add(sppParams, 'attractStr').min(0).max(10).step(0.1);
-gui.add(sppParams, 'attractRange').min(0).max(30).step(1);
-gui.add(sppParams, 'walkStr').min(0).max(500).step(1);
+gui.add(sppParams, 'attractRange').min(0).max(10).step(0.1);
+gui.add(sppParams, 'walkStr').min(0).max(50).step(1);
 gui.add(sppParams, 'acceleration').min(0).max(1).step(0.01);
 gui.add(sppParams, 'maxVelocity').min(0).max(1).step(0.01);
-gui.add(sppParams, 'gravity').min(0).max(1).step(1);
+//gui.add(sppParams, 'gravity').min(0).max(1).step(1);
 
 /**
 	THREE.js Functions
