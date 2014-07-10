@@ -260,8 +260,10 @@ function updateSPPModel() {
 		vec3.scaleAndAdd(sppVector, sppVector, alignVector, sppParams.alignStr);
 		
 		vec3.normalize(sppVector, sppVector);
+		vec3.scaleAndAdd(cVelocity, cVelocity, sppVector, sppParams.acceleration);
+		vec3.normalize(cVelocity, cVelocity);
+		vec3.scale(cVelocity, cVelocity, sppParams.maxVelocity);
 		
-		vec3.scaleAndAdd(cVelocity, cVelocity, sppVector, sppParams.velocity);
 		vec3.add(cParticle, cParticle, cVelocity);
 		
 		particleSystem.geometry.vertices[i].velocity.set(cVelocity[0], cVelocity[1], cVelocity[2]);
