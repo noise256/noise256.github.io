@@ -39,8 +39,8 @@ var sppParams = {
 	alignRange: 3,
 	attractStr: 0,
 	attractRange: 15,
-	walkStr: 250,
-	velocity: 0.1,
+	walkStr: 1,
+	velocity: 0.01,
 	gravity: 0
 };
 
@@ -266,7 +266,6 @@ function updateSPPModel() {
 		
 		particleSystem.geometry.vertices[i].velocity.set(cVelocity[0], cVelocity[1], cVelocity[2]);
 		particleSystem.geometry.vertices[i].set(cParticle[0], cParticle[1], cParticle[2]);
-		
 	}
 }
 
