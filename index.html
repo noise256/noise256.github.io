@@ -3,33 +3,116 @@
 		<!-- <LINK href="index.css" rel="stylesheet" type="text/css"> -->
 		<title>noise256 - Eta Carinae</title>
 		<style type="text/css">
+			/*
+				Adapted from: http://alijafarian.com/responsive-image-grids-using-css/ 11.07.2014
+			*/
+			
 			body {
 				background-color:#f0ead6;
 			}
-			#grid_div {
-				background-color:#B7AA9A;
-				position: relative;
-				margin:50px auto;
-				width: 960;
-				height: 960;
+			ul.grid {
+				list-style: none;
+				font-size: 0px;
+				margin-left: 0 0 2.5% 2.5%; /* should match li left margin */
 			}
-			#flocking_link {
+			ul.grid li {
+				position: relative;
+				height: 448;
+				display: inline-block;
+				padding: 0 10px;
+				margin: 0 0 2.5% 2.5%;
+				background: #fff;
+				border: 5px solid #ddd;
+				font-size: 32px;
+				font-size: 1rem;
+				vertical-align: middle;
+				box-shadow: 0 0 5px #ddd;
+				box-sizing: border-box;
+				-moz-box-sizing: border-box;
+				-webkit-box-sizing: border-box;
+			}
+			ul.grid li a {
 				background-image:url(starling_link_bg.png);
 				position:absolute;
 				max-width:256;
 				max-height:256;
+				margin:auto;
 				top:0;
 				bottom:0;
 				left:0;
 				right:0;
-				margin: auto;
 				border:1px solid white;
+			}
+			ul.grid li h3 {
+				margin: 0 auto;
+			}
+			ul.grid li p {
+				font-size: .9em;
+				line-height: 1.5em;
+				color: #999;
+			}
+			/* class for 2 columns */
+			ul.grid.columns-2 li {
+				width: 47.5%; /* this value + 2.5 should = 50% */
+			}
+			/* class for 3 columns */
+			ul.grid.columns-3 li {
+				width: 30.83%; /* this value + 2.5 should = 33% */
+			}
+			/* class for 4 columns */
+			ul.grid.columns-4 li {
+				width: 22.5%; /* this value + 2.5 should = 25% */
+			}
 			}
 		</style>
 	</head>
 	<body>
-		<div id="grid_div">
-			<a id="flocking_link" href="starlings/starlings.html" title="Starling Flocking"></a>
-		</div>
+		<ul class="grid column-3">
+			<li>
+				<a href="starlings/starlings.html" title="Starling Flocking"></a>
+				<h3>Self-Propelled Particle Simulation</h3>
+				<p>Descriptive description describing.</p>
+			</li>
+			<li>
+				<a href="starlings/starlings.html" title="Starling Flocking"></a>
+				<h3>Self-Propelled Particle Simulation</h3>
+				<p>Descriptive description describing.</p>
+			</li>
+			<li>
+				<a href="starlings/starlings.html" title="Starling Flocking"></a>
+				<h3>Self-Propelled Particle Simulation</h3>
+				<p>Descriptive description describing.</p>
+			</li>
+			<li>
+				<a href="starlings/starlings.html" title="Starling Flocking"></a>
+				<h3>Self-Propelled Particle Simulation</h3>
+				<p>Descriptive description describing.</p>
+			</li>
+			<li>
+				<a href="starlings/starlings.html" title="Starling Flocking"></a>
+				<h3>Self-Propelled Particle Simulation</h3>
+				<p>Descriptive description describing.</p>
+			</li>
+						<li>
+				<a href="starlings/starlings.html" title="Starling Flocking"></a>
+				<h3>Self-Propelled Particle Simulation</h3>
+				<p>Descriptive description describing.</p>
+			</li>
+			<li>
+				<a href="starlings/starlings.html" title="Starling Flocking"></a>
+				<h3>Self-Propelled Particle Simulation</h3>
+				<p>Descriptive description describing.</p>
+			</li>
+			<li>
+				<a href="starlings/starlings.html" title="Starling Flocking"></a>
+				<h3>Self-Propelled Particle Simulation</h3>
+				<p>Descriptive description describing.</p>
+			</li>
+			<li>
+				<a href="starlings/starlings.html" title="Starling Flocking"></a>
+				<h3>Self-Propelled Particle Simulation</h3>
+				<p>Descriptive description describing.</p>
+			</li>
+		</ul>
 	</body>
 </html>
