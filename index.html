@@ -1,11 +1,35 @@
 <html>
 	<head>
-		<LINK href="index.css" rel="stylesheet" type="text/css">
+		<!-- <LINK href="index.css" rel="stylesheet" type="text/css"> -->
 		<title>noise256 - Eta Carinae</title>
+		<style type="text/css">
+			body {
+				background-color:#f0ead6;
+			}
+			#grid_div {
+				background-color:#B7AA9A;
+				position: relative;
+				margin:50px auto;
+				width: 960;
+				height: 960;
+			}
+			#flocking_link {
+				background-image:url(starling_link_bg.png);
+				position:absolute;
+				max-width:256;
+				max-height:256;
+				top:0;
+				bottom:0;
+				left:0;
+				right:0;
+				margin: auto;
+				border:1px solid white;
+			}
+		</style>
 	</head>
 	<body>
-		<div style="">
-			<a href="starlings/starlings.html">Flocking</a>
+		<div id="grid_div">
+			<a id="flocking_link" href="starlings/starlings.html" title="Starling Flocking"></a>
 		</div>
 	</body>
 </html>
