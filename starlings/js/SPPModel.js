@@ -42,7 +42,7 @@ var sppParams = {
 	walkStr: 5,
 	acceleration: 0.01,
 	maxVelocity: 0.1,
-	gravity: 0
+	gravity: false
 };
 
 var maxParticles = 400;
@@ -67,7 +67,7 @@ gui.add(sppParams, 'attractRange').min(0).max(10).step(0.1);
 gui.add(sppParams, 'walkStr').min(0).max(50).step(1);
 gui.add(sppParams, 'acceleration').min(0).max(1).step(0.01);
 gui.add(sppParams, 'maxVelocity').min(0).max(1).step(0.01);
-//gui.add(sppParams, 'gravity').min(0).max(1).step(1);
+gui.add(sppParams, 'gravity');
 
 /**
 	THREE.js Functions
@@ -195,25 +195,9 @@ function initSPPModel() {
 }
 
 function updateSPPModel() {
-	var cParticle;
-	var cVelocity;
-	
-	var sParticle;
-	var sVelocity;
-	
-	var siblingDist;
-	var movement;
-	
-	var repulseVector;
-	var alignVector;
-	var attractVector;
-	
-	var scVec; //vector from sibling spp to current spp, used for repulsion
-	var csVec; //vector from current spp to sibling spp, used for attraction
-	
 	for (var i = 0; i < maxParticles; i++) {
-		cParticle = vec3.fromValues(particleSystem.geometry.vertices[i].x, particleSystem.geometry.vertices[i].y, particleSystem.geometry.vertices[i].z);
-		cVelocity = vec3.fromValues(particleSystem.geometry.vertices[i].velocity.x, particleSystem.geometry.vertices[i].velocity.y, particleSystem.geometry.vertices[i].velocity.z);
+		var cParticle = vec3.fromValues(particleSystem.geometry.vertices[i].x, particleSystem.geometry.vertices[i].y, particleSystem.geometry.vertices[i].z);
+		var cVelocity = vec3.fromValues(particleSystem.geometry.vertices[i].velocity.x, particleSystem.geometry.vertices[i].velocity.y, particleSystem.geometry.vertices[i].velocity.z);
 		
 		if (sppParams.gravity === 1) {
 			var gravVector = vec3.create();
@@ -221,34 +205,37 @@ function updateSPPModel() {
 			vec3.subtract(gravVector, origin, cParticle);
 			vec3.normalize(gravVector, gravVector);
 			
-			vec3.scaleAndAdd(cParticle, cParticle, gravVector, sppParams.velocity);
-
+			vec3.scaleAndAdd(cVelocity, cVelocity, gravVector, sppParams.acceleration);
+			vec3.normalize(cVelocity, cVelocity);
+			vec3.scale(cVelocity, cVelocity, sppParams.maxVelocity);
+			
+			vec3.add(cParticle, cParticle, cVelocity);
+			
+			particleSystem.geometry.vertices[i].velocity.set(cVelocity[0], cVelocity[1], cVelocity[2]);
 			particleSystem.geometry.vertices[i].set(cParticle[0], cParticle[1], cParticle[2]);
-			particleSystem.geometry.vertices[i].velocity.set(gravVector[0], gravVector[1], gravVector[2]);
 			
 			continue;
 		}
 		
-		repulseVector = vec3.create();
-		alignVector = vec3.create();
-		attractVector = vec3.create();
+		var repulseVector = vec3.create();
+		var alignVector = vec3.create();
+		var attractVector = vec3.create();
 		
 		for (var j = 0; j < maxParticles; j++) {
-			sParticle = vec3.fromValues(particleSystem.geometry.vertices[j].x, particleSystem.geometry.vertices[j].y, particleSystem.geometry.vertices[j].z);
-			siblingDist = vec3.distance(sParticle, cParticle);
+			var sParticle = vec3.fromValues(particleSystem.geometry.vertices[j].x, particleSystem.geometry.vertices[j].y, particleSystem.geometry.vertices[j].z);
+			var siblingDist = vec3.distance(sParticle, cParticle);
 			
 			//TODO order of if statements is incorrect if range values get altered by user or are initialised to different values
 			if (siblingDist < sppParams.repulseRange) {
-				scVec = vec3.create();
+				var scVec = vec3.create();
 				vec3.subtract(scVec, cParticle, sParticle)
 				vec3.add(repulseVector, repulseVector, scVec);
 			}
-			else if (siblingDist > sppParams.repulseRange && siblingDist < sppParams.alignRange + sppParams.repulseRange) {
-				sVelocity = vec3.fromValues(particleSystem.geometry.vertices[j].velocity.x, particleSystem.geometry.vertices[j].velocity.y, particleSystem.geometry.vertices[j].velocity.z);
-				vec3.add(alignVector, alignVector, sVelocity);
+			else if (siblingDist < sppParams.alignRange + sppParams.repulseRange) {
+				vec3.add(alignVector, alignVector, vec3.fromValues(particleSystem.geometry.vertices[j].velocity.x, particleSystem.geometry.vertices[j].velocity.y, particleSystem.geometry.vertices[j].velocity.z));
 			}
-			else if (siblingDist > sppParams.repulseRange + sppParams.alignRange && siblingDist < sppParams.attractRange + sppParams.alignRange + sppParams.repulseRange) {
-				csVec = vec3.create();
+			else if (siblingDist < sppParams.attractRange + sppParams.alignRange + sppParams.repulseRange) {
+				var csVec = vec3.create();
 				vec3.subtract(csVec, sParticle, cParticle);
 				vec3.add(attractVector, attractVector, csVec);
 			}
