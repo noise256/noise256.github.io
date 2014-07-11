@@ -199,7 +199,7 @@ function updateSPPModel() {
 		var cParticle = vec3.fromValues(particleSystem.geometry.vertices[i].x, particleSystem.geometry.vertices[i].y, particleSystem.geometry.vertices[i].z);
 		var cVelocity = vec3.fromValues(particleSystem.geometry.vertices[i].velocity.x, particleSystem.geometry.vertices[i].velocity.y, particleSystem.geometry.vertices[i].velocity.z);
 		
-		if (sppParams.gravity === 1) {
+		if (sppParams.gravity) {
 			var gravVector = vec3.create();
 			
 			vec3.subtract(gravVector, origin, cParticle);
