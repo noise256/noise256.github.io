@@ -9,67 +9,88 @@
 			
 			body {
 				background-color:#f0ead6;
+				font-family: 'Helvetica Neue', arial, sans-serif;
+				font-weight: 200;
 			}
+			
+			h1 {
+				font-family: 'Oswald', sans-serif;
+				font-weight: 400;
+				margin: 0 0 20px;
+				text-align: center;
+				text-shadow: 1px 1px 0 #fff, 2px 2px 0 #bbb;
+			}
+			hr {
+				border-top: 1px solid #ccc;
+				border-bottom: 1px solid #fff;
+				margin: 25px 0;
+				clear: both;
+			}
+			
 			ul.grid {
 				list-style: none;
 				font-size: 0px;
 				margin-left: -2.5%; /* should match li left margin */
 			}
 			ul.grid li {
-				background: #fff;
-				position: relative;
-				height: 448;
 				display: inline-block;
-				padding: 0 10px;
+				padding: 10px;
 				margin: 0 0 2.5% 2.5%;
-				border: 5px solid #ddd;
-				font-size: 32px;
+				background: #fff;
+				border: 1px solid #ddd;
+				font-size: 16px;
 				font-size: 1rem;
-				vertical-align: middle;
+				vertical-align: top;
 				box-shadow: 0 0 5px #ddd;
 				box-sizing: border-box;
 				-moz-box-sizing: border-box;
 				-webkit-box-sizing: border-box;
 			}
-			ul.grid li a {
-				background-image:url(starling_link_bg.png);
-				position:absolute;
-				max-width:256;
-				max-height:256;
-				margin:auto;
-				top:0;
-				bottom:0;
-				left:0;
-				right:0;
-				border:1px solid white;
+			ul.grid li img {
+				max-width:100%;
+				height:auto;
+				margin: 0 0 10px;
 			}
 			ul.grid li h3 {
-				margin: 0 auto;
+				margin: 0 0 5px;
 			}
 			ul.grid li p {
 				font-size: .9em;
 				line-height: 1.5em;
 				color: #999;
 			}
-			/* class for 2 columns */
 			ul.grid.columns-2 li {
 				width: 47.5%; /* this value + 2.5 should = 50% */
 			}
-			/* class for 3 columns */
 			ul.grid.columns-3 li {
 				width: 30.83%; /* this value + 2.5 should = 33% */
 			}
-			/* class for 4 columns */
 			ul.grid.columns-4 li {
 				width: 22.5%; /* this value + 2.5 should = 25% */
 			}
+			
+			@media (max-width: 480px) {
+				ul.grid-nav li {
+					display: block;
+					margin: 0 0 5px;
+				}
+				ul.grid-nav li a {
+					display: block;
+				}
+				ul.rig {
+					margin-left: 0;
+				}
+				ul.rig li {
+					width: 100% !important; /* over-ride all li styles */
+					margin: 0 0 20px;
+				}
 			}
 		</style>
 	</head>
 	<body>
 		<ul class="grid columns-3">
 			<li>
-				<a href="starlings/starlings.html" title="Starling Flocking"></a>
+				<img src="starling_link_bg.png" />
 				<h3>Self-Propelled Particle Simulation</h3>
 				<p>Descriptive description describing.</p>
 			</li>
