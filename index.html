@@ -18,19 +18,14 @@
 				font-weight: 400;
 				margin: 0 0 20px;
 				text-align: center;
-				text-shadow: 1px 1px 0 #fff, 2px 2px 0 #bbb;
-			}
-			hr {
-				border-top: 1px solid #ccc;
-				border-bottom: 1px solid #fff;
-				margin: 25px 0;
-				clear: both;
 			}
 			
 			ul.grid {
-				list-style: none;
+				text-align:center;
 				font-size: 0px;
-				margin-left: -2.5%; /* should match li left margin */
+				list-style: none;
+				margin-left: -2.5%;
+				margin-right: 2.5%;
 			}
 			ul.grid li {
 				display: inline-block;
@@ -46,10 +41,13 @@
 				-moz-box-sizing: border-box;
 				-webkit-box-sizing: border-box;
 			}
-			ul.grid li img {
+			ul.grid li a {
 				max-width:100%;
 				height:auto;
 				margin: 0 0 10px;
+			}
+			ul.grid li a img {
+				width: 100%;
 			}
 			ul.grid li h3 {
 				margin: 0 0 5px;
@@ -58,6 +56,9 @@
 				font-size: .9em;
 				line-height: 1.5em;
 				color: #999;
+			}
+			ul.grid.columns-1 li {
+				width: 97.5%;
 			}
 			ul.grid.columns-2 li {
 				width: 47.5%; /* this value + 2.5 should = 50% */
@@ -70,67 +71,68 @@
 			}
 			
 			@media (max-width: 480px) {
-				ul.grid-nav li {
-					display: block;
-					margin: 0 0 5px;
-				}
-				ul.grid-nav li a {
-					display: block;
-				}
-				ul.rig {
+				ul.grid {
 					margin-left: 0;
 				}
-				ul.rig li {
-					width: 100% !important; /* over-ride all li styles */
+				ul.grid li {
+					width: 100% !important;
 					margin: 0 0 20px;
 				}
 			}
 		</style>
 	</head>
 	<body>
-		<ul class="grid columns-3">
+		<h1>
+		Projects
+		</h1>
+		<ul class="grid columns-2">
 			<li>
-				<img src="starling_link_bg.png" />
+				<a href="starlings/starlings.html" title="Starling Flocking"><img src="starling_link_bg.png"></a>
 				<h3>Self-Propelled Particle Simulation</h3>
 				<p>Descriptive description describing.</p>
 			</li>
 			<li>
-				<a href="starlings/starlings.html" title="Starling Flocking"></a>
-				<h3>Self-Propelled Particle Simulation</h3>
-				<p>Descriptive description describing.</p>
-			</li>
-			<li>
-				<a href="starlings/starlings.html" title="Starling Flocking"></a>
-				<h3>Self-Propelled Particle Simulation</h3>
-				<p>Descriptive description describing.</p>
-			</li>
-			<li>
-				<a href="starlings/starlings.html" title="Starling Flocking"></a>
-				<h3>Self-Propelled Particle Simulation</h3>
-				<p>Descriptive description describing.</p>
-			</li>
-			<li>
-				<a href="starlings/starlings.html" title="Starling Flocking"></a>
+				<a href="starlings/starlings.html" title="Starling Flocking"><img src="starling_link_bg.png"></a>
 				<h3>Self-Propelled Particle Simulation</h3>
 				<p>Descriptive description describing.</p>
 			</li>
 						<li>
-				<a href="starlings/starlings.html" title="Starling Flocking"></a>
+				<a href="starlings/starlings.html" title="Starling Flocking"><img src="starling_link_bg.png"></a>
 				<h3>Self-Propelled Particle Simulation</h3>
 				<p>Descriptive description describing.</p>
 			</li>
 			<li>
-				<a href="starlings/starlings.html" title="Starling Flocking"></a>
+				<a href="starlings/starlings.html" title="Starling Flocking"><img src="starling_link_bg.png"></a>
+				<h3>Self-Propelled Particle Simulation</h3>
+				<p>Descriptive description describing.</p>
+			</li>
+						<li>
+				<a href="starlings/starlings.html" title="Starling Flocking"><img src="starling_link_bg.png"></a>
 				<h3>Self-Propelled Particle Simulation</h3>
 				<p>Descriptive description describing.</p>
 			</li>
 			<li>
-				<a href="starlings/starlings.html" title="Starling Flocking"></a>
+				<a href="starlings/starlings.html" title="Starling Flocking"><img src="starling_link_bg.png"></a>
+				<h3>Self-Propelled Particle Simulation</h3>
+				<p>Descriptive description describing.</p>
+			</li>
+						<li>
+				<a href="starlings/starlings.html" title="Starling Flocking"><img src="starling_link_bg.png"></a>
 				<h3>Self-Propelled Particle Simulation</h3>
 				<p>Descriptive description describing.</p>
 			</li>
 			<li>
-				<a href="starlings/starlings.html" title="Starling Flocking"></a>
+				<a href="starlings/starlings.html" title="Starling Flocking"><img src="starling_link_bg.png"></a>
+				<h3>Self-Propelled Particle Simulation</h3>
+				<p>Descriptive description describing.</p>
+			</li>
+						<li>
+				<a href="starlings/starlings.html" title="Starling Flocking"><img src="starling_link_bg.png"></a>
+				<h3>Self-Propelled Particle Simulation</h3>
+				<p>Descriptive description describing.</p>
+			</li>
+			<li>
+				<a href="starlings/starlings.html" title="Starling Flocking"><img src="starling_link_bg.png"></a>
 				<h3>Self-Propelled Particle Simulation</h3>
 				<p>Descriptive description describing.</p>
 			</li>
