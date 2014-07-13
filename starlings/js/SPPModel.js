@@ -3,6 +3,7 @@ window.onload = function() {
 }
 
 function main() {
+	particleSystem = null;
 	createScene();
 	initSPPModel();
 	frame();
