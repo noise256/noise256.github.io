@@ -108,6 +108,7 @@ function frame() {
 	
 	//last = now;
 	fpsMeter.tick();
+	rendererStats.update(renderer);
 }
 
 function timestamp() {
