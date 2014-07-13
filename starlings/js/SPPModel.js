@@ -167,7 +167,7 @@ function createScene() {
 	var groundMaterial = new THREE.MeshBasicMaterial({color: 0xF7D480, wireframe: true});
 	var groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
 	groundMesh.rotation.x = -Math.PI/2;					
-	scene.add(groundMesh);
+	//scene.add(groundMesh);
 }
 
 /**
