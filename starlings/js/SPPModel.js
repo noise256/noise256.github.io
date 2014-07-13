@@ -64,7 +64,7 @@ var particleSystem;
 */
 var gui = new dat.GUI({height: 8 * 32 - 1});
 
-gui.add(sppParams, 'repulseStr').min(0).max(10).step(0.1);
+gui.add(sppParams, 'repulseStr').min(0).max(10).step(0.1).name('Repulse Strength');
 gui.add(sppParams, 'repulseRange').min(0).max(10).step(0.1);
 gui.add(sppParams, 'alignStr').min(0).max(10).step(0.1);
 gui.add(sppParams, 'alignRange').min(0).max(10).step(0.1);
