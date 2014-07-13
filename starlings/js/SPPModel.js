@@ -64,16 +64,16 @@ var particleSystem;
 */
 var gui = new dat.GUI({height: 8 * 32 - 1});
 
-gui.add(sppParams, 'repulseStr').min(0).max(10).step(0.1).name('Repulse Strength');
-gui.add(sppParams, 'repulseRange').min(0).max(10).step(0.1);
-gui.add(sppParams, 'alignStr').min(0).max(10).step(0.1);
-gui.add(sppParams, 'alignRange').min(0).max(10).step(0.1);
-gui.add(sppParams, 'attractStr').min(0).max(10).step(0.1);
-gui.add(sppParams, 'attractRange').min(0).max(10).step(0.1);
-gui.add(sppParams, 'walkStr').min(0).max(50).step(1);
-gui.add(sppParams, 'acceleration').min(0).max(1).step(0.01);
-gui.add(sppParams, 'maxVelocity').min(0).max(1).step(0.01);
-gui.add(sppParams, 'gravity');
+gui.add(sppParams, 'repulseStr').min(0).max(10).step(0.1).name('Repulsion Strength');
+gui.add(sppParams, 'repulseRange').min(0).max(10).step(0.1).name('Repulsion Range');
+gui.add(sppParams, 'alignStr').min(0).max(10).step(0.1).name('Alignment Range');
+gui.add(sppParams, 'alignRange').min(0).max(10).step(0.1).name('Alignment Range');
+gui.add(sppParams, 'attractStr').min(0).max(10).step(0.1).name('Attraction Strength');
+gui.add(sppParams, 'attractRange').min(0).max(10).step(0.1).name('Attraction Range');
+gui.add(sppParams, 'walkStr').min(0).max(50).step(1).name('Random Walk Strength');
+gui.add(sppParams, 'acceleration').min(0).max(1).step(0.01).name('Acceleration');
+gui.add(sppParams, 'maxVelocity').min(0).max(1).step(0.01).name('Max Velocity');
+gui.add(sppParams, 'gravity').name('Gravity');
 
 /**
 	THREE.js Functions
