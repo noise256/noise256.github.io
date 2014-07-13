@@ -11,7 +11,11 @@ function main() {
 var canvasWidth = 1000;
 var canvasHeight = 800;
 
-var origin = vec3.fromValues(0, 10, 0);
+
+
+var renderStats = new THREEx.RendererStats();
+
+document.getElementById("rendererStats").appendChild( rendererStats.domElement);
 
 /**
 	FPS Meter
@@ -48,6 +52,8 @@ var sppParams = {
 	maxVelocity: 0.1,
 	gravity: false
 };
+
+var origin = vec3.fromValues(0, 10, 0);
 
 var maxParticles = 400;
 

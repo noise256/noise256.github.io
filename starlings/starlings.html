@@ -13,6 +13,7 @@
 		<script src='js/lib/dat.gui.min.js' type='text/javascript'></script>
 		<script src="js/lib/fpsmeter.js" type="text/javascript"></script>
 		<script src="js/lib/OrbitControls.js" type="text/javascript"></script>
+		<script src="js/lib/threex.rendererstats.js" type="text/javascript"></script>
 	</head>
 	
 	<!-- Based on Three.js "Getting Started" tutorial. -->
@@ -21,6 +22,9 @@
 			<script src="js/SPPModel.js" type="text/javascript"></script>
 		</div>
 		
+		<div id="rendererStats" style="position:absolute; left:0; bottom:0;">
+			<script src="js/lib/threex.rendererstats.js"></script>
+		</div>
 		<p style="margin:auto; text-align:center;">
 			LMB: zoom, MMB: Pan, RMB: Rotate. After some initial testing it appears that performance is substantially better in Chrome than in Firefox. More rigorous testing and optimisation will be done soon but for now I suggest using Google Chrome if you are having any performance issues.
 		</p>
