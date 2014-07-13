@@ -159,15 +159,6 @@ function createScene() {
 	mainLight = new THREE.PointLight();
 	mainLight.position.set(50, 150, 150);
 	scene.add(mainLight);
-
-	/**
-		Environment Objects.
-	*/
-	var groundGeometry = new THREE.PlaneGeometry(20, 20, 20, 20);
-	var groundMaterial = new THREE.MeshBasicMaterial({color: 0xF7D480, wireframe: true});
-	var groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
-	groundMesh.rotation.x = -Math.PI/2;					
-	//scene.add(groundMesh);
 }
 
 /**
