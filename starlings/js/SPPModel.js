@@ -8,14 +8,14 @@ function main() {
 	frame();
 }
 
+/**
+	Page objects.
+*/
+
 var canvasWidth = 1000;
 var canvasHeight = 800;
 
-
-
-var rendererStats = new THREEx.RendererStats();
-
-document.getElementById("rendererStats").appendChild(rendererStats.domElement);
+var rendererStats;
 
 /**
 	FPS Meter
@@ -121,6 +121,13 @@ function timestamp() {
 }
 
 function createScene() {
+	/**
+		Renderer stats.
+	*/
+	rendererStats = new THREEx.RendererStats();
+
+	document.getElementById("rendererStats").appendChild(rendererStats.domElement);
+	
 	/**
 		Scene.
 	*/
