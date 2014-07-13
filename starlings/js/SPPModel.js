@@ -3,7 +3,6 @@ window.onload = function() {
 }
 
 function main() {
-	particleSystem = null;
 	createScene();
 	initSPPModel();
 	frame();
@@ -51,10 +50,6 @@ var sppParams = {
 };
 
 var maxParticles = 400;
-
-var randWalkLUSize = 1000;
-
-var randWalkLU = [];
 
 var particleSystem;
 
@@ -172,15 +167,6 @@ function createScene() {
 	SPP Model Functions.
 */
 function initSPPModel() {
-	/**
-	Pregenerate random walk look up table.
-	*/
-	for (var i = 0; i < randWalkLUSize; i++) {
-		var rand = vec3.random(vec3.create(), getGaussianAngle());
-		if (Math.random() < 0.5) {vec3.negate(rand, rand)};
-		randWalkLU[i] = rand;
-	}
-	
 	/**
 	Generate particles.
 	*/
