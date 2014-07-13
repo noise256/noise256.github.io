@@ -1,3 +1,7 @@
+window.onload = function() {
+	main();
+}
+
 function main() {
 	createScene();
 	initSPPModel();
@@ -102,7 +106,7 @@ function frame() {
 	
 	//last = now;
 	fpsMeter.tick();
-};
+}
 
 function timestamp() {
 	if (window.performance && window.performance.now) {
