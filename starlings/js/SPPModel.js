@@ -92,23 +92,22 @@ function render() {
 function frame() {
 	fpsMeter.tickStart();
 	
-	requestAnimationFrame(frame);
+	now = timestamp();
+	dt = dt + Math.min(1, (now - last) / 1000);
 	
-	//now = timestamp();
-	//dt = dt + Math.min(1, (now - last) / 1000);
-	
-	//while (dt > step) {
-		//dt = dt - step;
+	while (dt > step) {
+		dt = dt - step;
 		update();
-	//}
+	}
 
 	render();
 	
+	last = now;
 	
-	
-	//last = now;
-	fpsMeter.tick();
 	rendererStats.update(renderer);
+	fpsMeter.tick();
+	
+	requestAnimationFrame(frame);
 }
 
 function timestamp() {
