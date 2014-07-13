@@ -13,9 +13,9 @@ var canvasHeight = 800;
 
 
 
-var renderStats = new THREEx.RendererStats();
+var rendererStats = new THREEx.RendererStats();
 
-document.getElementById("rendererStats").appendChild( rendererStats.domElement);
+document.getElementById("rendererStats").appendChild(rendererStats.domElement);
 
 /**
 	FPS Meter
