@@ -92,17 +92,8 @@ function render() {
 function frame() {
 	fpsMeter.tickStart();
 	
-	now = timestamp();
-	dt = dt + Math.min(1, (now - last) / 1000);
-	
-	while (dt > step) {
-		dt = dt - step;
-		update();
-	}
-
+	update();
 	render();
-	
-	last = now;
 	
 	rendererStats.update(renderer);
 	fpsMeter.tick();
