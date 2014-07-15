@@ -1,45 +1,18 @@
-window.onload = function() {
-	main();
-}
-
-function main() {
-	createScene();
-	initSPPModel();
-	frame();
-}
-
-/**
-	Page objects.
-*/
-
 var canvasWidth = 1000;
 var canvasHeight = 800;
 
+var fpsMeter;
 var rendererStats;
 
-/**
-	FPS Meter
-*/
-var fpsMeter = new FPSMeter(document.body, { decimals: 0, graph: true, theme: 'dark', left: '5px' });
-var now;
-var dt = 0;
-var last = timestamp();
-var step = 1/60;
-
-/**
-	THREE.js Objects 
-*/
 var scene;
-var renderer;
 var camera;
-var controls;
+var renderer;
 
-var ambientLight;
-var mainLight;
+var particleSystem;
 
-/**
-	SPP Variables.
-*/
+var origin = vec3.fromValues(0, 10, 0);
+var maxParticles = 400;
+
 var sppParams = {
 	repulseStr: 5,
 	repulseRange: 10,
@@ -53,36 +26,74 @@ var sppParams = {
 	gravity: false
 };
 
-var origin = vec3.fromValues(0, 10, 0);
+window.onload = function() {
+	initRenderer();
+	initGUI();
+	initSPPModel();
+	frame();
+}
 
-var maxParticles = 400;
+window.onbeforeunload = function() {
+	particleSystem.geometry.dispose();
+	particleSystem.material.dispose();
+	
+	canvasWidth = null;
+	canvasHeight = null;
+	fpsHeight = null;
+	rendererStats = null;
+	scene = null;
+	camera = null;
+	renderer = null;
+	particleSystem = null;
+	origin = null;
+	maxParticles = null;
+}
 
-var particleSystem;
+function initGUI() {
+	fpsMeter = new FPSMeter(document.body, { decimals: 0, graph: true, theme: 'dark', left: '5px' });
 
-/**
-	DAT.GUI Sliders.
-*/
-var gui = new dat.GUI({height: 8 * 32 - 1});
+	var paramGui = new dat.GUI({height: 8 * 32 - 1});
 
-gui.add(sppParams, 'repulseStr').min(0).max(10).step(0.1).name('Repulsion Strength');
-gui.add(sppParams, 'repulseRange').min(0).max(10).step(0.1).name('Repulsion Range');
-gui.add(sppParams, 'alignStr').min(0).max(10).step(0.1).name('Alignment Range');
-gui.add(sppParams, 'alignRange').min(0).max(10).step(0.1).name('Alignment Range');
-gui.add(sppParams, 'attractStr').min(0).max(10).step(0.1).name('Attraction Strength');
-gui.add(sppParams, 'attractRange').min(0).max(10).step(0.1).name('Attraction Range');
-gui.add(sppParams, 'walkStr').min(0).max(50).step(1).name('Random Walk Strength');
-gui.add(sppParams, 'acceleration').min(0).max(1).step(0.01).name('Acceleration');
-gui.add(sppParams, 'maxVelocity').min(0).max(1).step(0.01).name('Max Velocity');
-gui.add(sppParams, 'gravity').name('Gravity');
+	paramGui.add(sppParams, 'repulseStr').min(0).max(10).step(0.1).name('Repulsion Strength');
+	paramGui.add(sppParams, 'repulseRange').min(0).max(10).step(0.1).name('Repulsion Range');
+	paramGui.add(sppParams, 'alignStr').min(0).max(10).step(0.1).name('Alignment Range');
+	paramGui.add(sppParams, 'alignRange').min(0).max(10).step(0.1).name('Alignment Range');
+	paramGui.add(sppParams, 'attractStr').min(0).max(10).step(0.1).name('Attraction Strength');
+	paramGui.add(sppParams, 'attractRange').min(0).max(10).step(0.1).name('Attraction Range');
+	paramGui.add(sppParams, 'walkStr').min(0).max(50).step(1).name('Random Walk Strength');
+	paramGui.add(sppParams, 'acceleration').min(0).max(1).step(0.01).name('Acceleration');
+	paramGui.add(sppParams, 'maxVelocity').min(0).max(1).step(0.01).name('Max Velocity');
+	paramGui.add(sppParams, 'gravity').name('Gravity');
+	
+	var fpsGUI
+}
 
 /**
 	THREE.js Functions
 */
-
-function update() {
-	updateSPPModel();
-	particleSystem.geometry.dynamic = true;
-	particleSystem.geometry.verticesNeedUpdate = true;
+function initRenderer() {
+	scene = new THREE.Scene();
+	
+	camera = new THREE.PerspectiveCamera(60, canvasWidth / canvasHeight, 0.1, 1000);				
+	camera.position.x = 24;
+	camera.position.y = 10;
+	camera.position.z = 24;			
+	camera.lookAt(new THREE.Vector3(0, 10, 0));
+	
+	var controls = new THREE.OrbitControls(camera, document.getElementById("canvas"));
+	controls.target.y = 10;
+	
+	var ambientLight = new THREE.AmbientLight(0x404040);
+	scene.add(ambientLight);
+	
+	var mainLight = new THREE.PointLight();
+	mainLight.position.set(50, 150, 150);
+	scene.add(mainLight);
+	
+	renderer = new THREE.WebGLRenderer();			
+	renderer.setSize(canvasWidth, canvasHeight);
+	renderer.setClearColor(0xffffff, 1);
+	document.getElementById("canvas").appendChild(renderer.domElement);
 }
 
 function render() {
@@ -91,11 +102,10 @@ function render() {
 
 function frame() {
 	fpsMeter.tickStart();
-	
+
 	update();
 	render();
 	
-	rendererStats.update(renderer);
 	fpsMeter.tick();
 	
 	requestAnimationFrame(frame);
@@ -110,63 +120,9 @@ function timestamp() {
 	}
 }
 
-function createScene() {
-	/**
-		Renderer stats.
-	*/
-	rendererStats = new THREEx.RendererStats();
-
-	document.getElementById("rendererStats").appendChild(rendererStats.domElement);
-	
-	/**
-		Scene.
-	*/
-	scene = new THREE.Scene();
-	
-	/**
-		Camera.
-	*/
-	camera = new THREE.PerspectiveCamera(60, canvasWidth / canvasHeight, 0.1, 1000);				
-	camera.position.x = 24;
-	camera.position.y = 10;
-	camera.position.z = 24;			
-	camera.lookAt(new THREE.Vector3(0, 10, 0));
-	
-	/**
-		Renderer.
-	*/
-	renderer = new THREE.WebGLRenderer();			
-	renderer.setSize(canvasWidth, canvasHeight);
-	renderer.setClearColor(0xffffff, 1);
-	document.getElementById("WebGLCanvas").appendChild(renderer.domElement);
-	
-	/**
-		Controls.
-	*/
-	controls = new THREE.OrbitControls(camera, document.getElementById("WebGLCanvas"));
-	//controls.noMouse = true;
-	controls.target.y = 10;
-	
-	/**
-		Lighting.
-	*/
-	ambientLight = new THREE.AmbientLight(0x404040);
-	scene.add(ambientLight);
-	
-	mainLight = new THREE.PointLight();
-	mainLight.position.set(50, 150, 150);
-	scene.add(mainLight);
-}
-
-/**
-	SPP Model Functions.
-*/
 function initSPPModel() {
-	/**
-	Generate particles.
-	*/
 	var particles = new THREE.Geometry();
-	var pMaterial = new THREE.ParticleBasicMaterial( {size: 1, color: 0xffffff, map: THREE.ImageUtils.loadTexture("images/particle-grey.png"), transparent: true} );
+	var pMaterial = new THREE.ParticleBasicMaterial( {size: 1, color: 0x000000, map: THREE.ImageUtils.loadTexture("images/particle-grey.png"), transparent: true} );
 
 	for (i = 0; i < maxParticles; i++) {
 		var particle = new THREE.Vector3(Math.random()*2, Math.random()*2+10, Math.random()*2);
@@ -177,11 +133,13 @@ function initSPPModel() {
 	
 	particleSystem = new THREE.ParticleSystem(particles, pMaterial);
 	
-	particleSystem.sortParticles = true;
 	scene.add(particleSystem);
+	
+	particles.dispose();
+	pMaterial.dispose();
 }
 
-function updateSPPModel() {
+function update() {
 	for (var i = 0; i < maxParticles; i++) {
 		var cParticle = vec3.fromValues(particleSystem.geometry.vertices[i].x, particleSystem.geometry.vertices[i].y, particleSystem.geometry.vertices[i].z);
 		var cVelocity = vec3.fromValues(particleSystem.geometry.vertices[i].velocity.x, particleSystem.geometry.vertices[i].velocity.y, particleSystem.geometry.vertices[i].velocity.z);
@@ -212,7 +170,7 @@ function updateSPPModel() {
 			var sParticle = vec3.fromValues(particleSystem.geometry.vertices[j].x, particleSystem.geometry.vertices[j].y, particleSystem.geometry.vertices[j].z);
 			var siblingDist = vec3.distance(sParticle, cParticle);
 			
-			//TODO order of if statements is incorrect if range values get altered by user or are initialised to different values
+			//TODO order of if statements may be incorrect if range values get altered by user or are initialised to different values
 			if (siblingDist < sppParams.repulseRange) {
 				var scVec = vec3.create();
 				vec3.subtract(scVec, cParticle, sParticle)
@@ -245,6 +203,8 @@ function updateSPPModel() {
 		particleSystem.geometry.vertices[i].velocity.set(cVelocity[0], cVelocity[1], cVelocity[2]);
 		particleSystem.geometry.vertices[i].set(cParticle[0], cParticle[1], cParticle[2]);
 	}
+	
+	particleSystem.geometry.verticesNeedUpdate = true;
 }
 
 function getRandomWalk() {
