@@ -122,7 +122,7 @@ function timestamp() {
 
 function initSPPModel() {
 	var particles = new THREE.Geometry();
-	var pMaterial = new THREE.ParticleBasicMaterial( {size: 1, color: 0xffffff, map: THREE.ImageUtils.loadTexture("images/particle-grey.png"), blending: THREE.AdditiveBlending, transparent: true} );
+	var pMaterial = new THREE.ParticleBasicMaterial( {size: 1, color: 0xffffff, map: THREE.ImageUtils.loadTexture("images/particle-grey.png"), transparent: true} );
 
 	for (i = 0; i < maxParticles; i++) {
 		var particle = new THREE.Vector3(Math.random()*2, Math.random()*2+10, Math.random()*2);
@@ -132,7 +132,7 @@ function initSPPModel() {
 	}
 	
 	particleSystem = new THREE.ParticleSystem(particles, pMaterial);
-	
+	particleSystem.sortParticles = true;
 	scene.add(particleSystem);
 	
 	particles.dispose();
