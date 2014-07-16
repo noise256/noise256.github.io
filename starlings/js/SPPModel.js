@@ -11,7 +11,7 @@ var renderer;
 var particleSystem;
 
 var origin = vec3.fromValues(0, 10, 0);
-var maxParticles = 1000;
+var maxParticles = 500;
 
 var sppParams = {
 	repulseStr: 10,
