@@ -33,22 +33,6 @@ window.onload = function() {
 	frame();
 }
 
-window.onbeforeunload = function() {
-	particleSystem.geometry.dispose();
-	particleSystem.material.dispose();
-	
-	canvasWidth = null;
-	canvasHeight = null;
-	fpsHeight = null;
-	rendererStats = null;
-	scene = null;
-	camera = null;
-	renderer = null;
-	particleSystem = null;
-	origin = null;
-	maxParticles = null;
-}
-
 function initGUI() {
 	fpsMeter = new FPSMeter(document.body, { decimals: 0, graph: true, theme: 'dark', left: '5px' });
 
