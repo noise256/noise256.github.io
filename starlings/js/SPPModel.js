@@ -57,8 +57,7 @@ function initGUI() {
 */
 function initRenderer() {
 	scene = new THREE.Scene();
-	
-	//scene.fog = new THREE.FogExp2( 0x5fa5d8, 0.0025 );
+	scene.fog = new THREE.FogExp2( 0xff0000, 1);
 	
 	camera = new THREE.PerspectiveCamera(60, canvasWidth / canvasHeight, 0.1, 1000);				
 	camera.position.x = 24;
