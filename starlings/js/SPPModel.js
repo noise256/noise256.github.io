@@ -14,16 +14,16 @@ var origin = vec3.fromValues(0, 10, 0);
 var maxParticles = 400;
 
 var sppParams = {
-	repulseStr: 5,
-	repulseRange: 10,
-	alignStr: 10,
-	alignRange: 5,
-	attractStr: 5,
-	attractRange: 5,
-	walkStr: 5,
-	acceleration: 0.01,
-	maxVelocity: 0.1,
-	gravity: false
+	repulseStr: 10,
+	repulseRange: 3,
+	alignStr: 1,
+	alignRange: 3,
+	attractStr: 1,
+	attractRange: 3,
+	walkStr: 0.1,
+	gravityStr: 1,
+	acceleration: 0.03,
+	maxVelocity: 0.5,
 };
 
 window.onload = function() {
@@ -56,14 +56,14 @@ function initGUI() {
 
 	paramGui.add(sppParams, 'repulseStr').min(0).max(10).step(0.1).name('Repulsion Strength');
 	paramGui.add(sppParams, 'repulseRange').min(0).max(10).step(0.1).name('Repulsion Range');
-	paramGui.add(sppParams, 'alignStr').min(0).max(10).step(0.1).name('Alignment Range');
+	paramGui.add(sppParams, 'alignStr').min(0).max(10).step(0.1).name('Alignment Strength');
 	paramGui.add(sppParams, 'alignRange').min(0).max(10).step(0.1).name('Alignment Range');
 	paramGui.add(sppParams, 'attractStr').min(0).max(10).step(0.1).name('Attraction Strength');
 	paramGui.add(sppParams, 'attractRange').min(0).max(10).step(0.1).name('Attraction Range');
-	paramGui.add(sppParams, 'walkStr').min(0).max(50).step(1).name('Random Walk Strength');
+	paramGui.add(sppParams, 'walkStr').min(0).max(10).step(0.1).name('Random Walk Strength');
+	paramGui.add(sppParams, 'gravityStr').min(0).max(10).step(0.1).name('Gravity Strength');
 	paramGui.add(sppParams, 'acceleration').min(0).max(1).step(0.01).name('Acceleration');
 	paramGui.add(sppParams, 'maxVelocity').min(0).max(1).step(0.01).name('Max Velocity');
-	paramGui.add(sppParams, 'gravity').name('Gravity');
 	
 	var fpsGUI
 }
@@ -122,7 +122,7 @@ function timestamp() {
 
 function initSPPModel() {
 	var particles = new THREE.Geometry();
-	var pMaterial = new THREE.ParticleBasicMaterial( {size: 1, color: 0xffffff, map: THREE.ImageUtils.loadTexture("images/particle-grey.png"), transparent: true} );
+	var pMaterial = new THREE.ParticleBasicMaterial( {size: 1, color: 0x000000});//, map: THREE.ImageUtils.loadTexture("images/particle-grey.png"), transparent: true} );
 
 	for (i = 0; i < maxParticles; i++) {
 		var particle = new THREE.Vector3(Math.random()*2, Math.random()*2+10, Math.random()*2);
@@ -144,31 +144,17 @@ function update() {
 		var cParticle = vec3.fromValues(particleSystem.geometry.vertices[i].x, particleSystem.geometry.vertices[i].y, particleSystem.geometry.vertices[i].z);
 		var cVelocity = vec3.fromValues(particleSystem.geometry.vertices[i].velocity.x, particleSystem.geometry.vertices[i].velocity.y, particleSystem.geometry.vertices[i].velocity.z);
 		
-		if (sppParams.gravity) {
-			var gravVector = vec3.create();
-			
-			vec3.subtract(gravVector, origin, cParticle);
-			vec3.normalize(gravVector, gravVector);
-			
-			vec3.scaleAndAdd(cVelocity, cVelocity, gravVector, sppParams.acceleration);
-			vec3.normalize(cVelocity, cVelocity);
-			vec3.scale(cVelocity, cVelocity, sppParams.maxVelocity);
-			
-			vec3.add(cParticle, cParticle, cVelocity);
-			
-			particleSystem.geometry.vertices[i].velocity.set(cVelocity[0], cVelocity[1], cVelocity[2]);
-			particleSystem.geometry.vertices[i].set(cParticle[0], cParticle[1], cParticle[2]);
-			
-			continue;
-		}
-		
+		var gravityVector = vec3.create();
 		var repulseVector = vec3.create();
 		var alignVector = vec3.create();
 		var attractVector = vec3.create();
 		
+		vec3.subtract(gravityVector, origin, cParticle);
+		vec3.normalize(gravityVector, gravityVector);
+		
 		for (var j = 0; j < maxParticles; j++) {
 			var sParticle = vec3.fromValues(particleSystem.geometry.vertices[j].x, particleSystem.geometry.vertices[j].y, particleSystem.geometry.vertices[j].z);
-			var siblingDist = vec3.distance(sParticle, cParticle);
+			var siblingDist = vec3.distance(cParticle, sParticle);
 			
 			//TODO order of if statements may be incorrect if range values get altered by user or are initialised to different values
 			if (siblingDist < sppParams.repulseRange) {
@@ -177,7 +163,9 @@ function update() {
 				vec3.add(repulseVector, repulseVector, scVec);
 			}
 			else if (siblingDist < sppParams.alignRange + sppParams.repulseRange) {
-				vec3.add(alignVector, alignVector, vec3.fromValues(particleSystem.geometry.vertices[j].velocity.x, particleSystem.geometry.vertices[j].velocity.y, particleSystem.geometry.vertices[j].velocity.z));
+				var sVelocityNorm = vec3.normalize(vec3.create(), vec3.fromValues(particleSystem.geometry.vertices[j].velocity.x, particleSystem.geometry.vertices[j].velocity.y, particleSystem.geometry.vertices[j].velocity.z));
+				
+				vec3.add(alignVector, alignVector, sVelocityNorm);
 			}
 			else if (siblingDist < sppParams.attractRange + sppParams.alignRange + sppParams.repulseRange) {
 				var csVec = vec3.create();
@@ -186,17 +174,26 @@ function update() {
 			}
 		}
 		
+		vec3.normalize(repulseVector, repulseVector);
+		vec3.normalize(alignVector, alignVector);
+		vec3.normalize(attractVector, attractVector);
+		
 		var sppVector = vec3.create();
 		
+		vec3.scaleAndAdd(sppVector, sppVector, gravityVector, sppParams.gravityStr);
 		vec3.scaleAndAdd(sppVector, sppVector, getRandomWalk(), sppParams.walkStr);
 		vec3.scaleAndAdd(sppVector, sppVector, repulseVector, sppParams.repulseStr);
 		vec3.scaleAndAdd(sppVector, sppVector, attractVector, sppParams.attractStr);
 		vec3.scaleAndAdd(sppVector, sppVector, alignVector, sppParams.alignStr);
 		
 		vec3.normalize(sppVector, sppVector);
+		
 		vec3.scaleAndAdd(cVelocity, cVelocity, sppVector, sppParams.acceleration);
-		vec3.normalize(cVelocity, cVelocity);
-		vec3.scale(cVelocity, cVelocity, sppParams.maxVelocity);
+		
+		if (vec3.length(cVelocity) > sppParams.maxVelocity) {
+			vec3.normalize(cVelocity, cVelocity);
+			vec3.scale(cVelocity, cVelocity, sppParams.maxVelocity);
+		}
 		
 		vec3.add(cParticle, cParticle, cVelocity);
 		
