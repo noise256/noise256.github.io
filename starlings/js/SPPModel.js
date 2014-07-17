@@ -96,7 +96,7 @@ var sppParams = {
 /**
 	Frame
 **/
-(function() {
+function frame() {
 	fpsMeter.tickStart();
 
 	update();
@@ -105,7 +105,7 @@ var sppParams = {
 	fpsMeter.tick();
 	
 	requestAnimationFrame(frame);
-})();
+}
 
 function update() {
 	for (var i = 0; i < maxParticles; i++) {
