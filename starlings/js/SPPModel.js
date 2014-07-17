@@ -73,10 +73,6 @@ var sppParams = {
 	document.getElementById("canvas").appendChild(renderer.domElement);
 })();
 
-function render() {
-	renderer.render(scene, camera);
-}
-
 (function() {
 	fpsMeter.tickStart();
 
@@ -87,15 +83,6 @@ function render() {
 	
 	requestAnimationFrame(frame);
 })();
-
-function timestamp() {
-	if (window.performance && window.performance.now) {
-		return window.performance.now();
-	}
-	else {
-		return new Date().getTime();
-	}
-}
 
 (function() {
 	var particles = new THREE.Geometry();
@@ -180,6 +167,21 @@ function update() {
 	
 	particleSystem.geometry.verticesNeedUpdate = true;
 }
+
+function render() {
+	renderer.render(scene, camera);
+}
+
+function timestamp() {
+	if (window.performance && window.performance.now) {
+		return window.performance.now();
+	}
+	else {
+		return new Date().getTime();
+	}
+}
+
+
 
 function getRandomWalk() {
 	var rand = vec3.random(vec3.create(), getGaussianAngle());
