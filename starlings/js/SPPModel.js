@@ -97,7 +97,7 @@ function timestamp() {
 	}
 }
 
-function initSPPModel() {
+(function() {
 	var particles = new THREE.Geometry();
 	var pMaterial = new THREE.ParticleBasicMaterial( {size: 1, color: 0xffffff, map: THREE.ImageUtils.loadTexture("images/particle-grey.png"), transparent: true} );
 
@@ -114,7 +114,7 @@ function initSPPModel() {
 	
 	particles.dispose();
 	pMaterial.dispose();
-}
+})();
 
 function update() {
 	for (var i = 0; i < maxParticles; i++) {
