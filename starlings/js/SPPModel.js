@@ -26,6 +26,9 @@ var sppParams = {
 	maxVelocity: 0.5,
 };
 
+window.onload = function() {
+	frame();
+}
 (function() {
 	fpsMeter = new FPSMeter(document.body, { decimals: 0, graph: true, theme: 'dark', left: '5px' });
 
@@ -195,3 +198,5 @@ function getGaussianAngle() {
 	var y = Math.PI * Math.exp(-(Math.random() * 5.0) / (2.0 * 2*2));
 	return Math.random() < 0.5 ? y : -y;
 }
+
+frame();
