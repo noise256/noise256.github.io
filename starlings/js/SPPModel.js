@@ -27,9 +27,13 @@ var sppParams = {
 };
 
 window.onload = function() {
+	initRenderer();
+	initGUI();
+	initSPPModel();
 	frame();
 }
-(function() {
+
+function initGUI() {
 	fpsMeter = new FPSMeter(document.body, { decimals: 0, graph: true, theme: 'dark', left: '5px' });
 
 	var paramGui = new dat.GUI({height: 8 * 32 - 1});
@@ -46,12 +50,12 @@ window.onload = function() {
 	paramGui.add(sppParams, 'maxVelocity').min(0).max(1).step(0.01).name('Max Velocity');
 	
 	var fpsGUI
-})();
+}
 
 /**
-	Initialise renderer.
+	THREE.js Functions
 */
-(function() {
+function initRenderer() {
 	scene = new THREE.Scene();
 	
 	camera = new THREE.PerspectiveCamera(60, canvasWidth / canvasHeight, 0.1, 1000);				
@@ -74,9 +78,9 @@ window.onload = function() {
 	renderer.setSize(canvasWidth, canvasHeight);
 	renderer.setClearColor(0xffffff, 1);
 	document.getElementById("canvas").appendChild(renderer.domElement);
-})();
+}
 
-(function() {
+function initSPPModel() {
 	var particles = new THREE.Geometry();
 	var pMaterial = new THREE.ParticleBasicMaterial( {size: 1, color: 0xffffff, map: THREE.ImageUtils.loadTexture("images/particle-grey.png"), transparent: true} );
 
@@ -89,16 +93,12 @@ window.onload = function() {
 	
 	particleSystem = new THREE.ParticleSystem(particles, pMaterial);
 	particleSystem.sortParticles = true;
-	
 	scene.add(particleSystem);
 	
 	particles.dispose();
 	pMaterial.dispose();
-})();
+}
 
-/**
-	Frame
-**/
 function frame() {
 	fpsMeter.tickStart();
 
@@ -198,5 +198,3 @@ function getGaussianAngle() {
 	var y = Math.PI * Math.exp(-(Math.random() * 5.0) / (2.0 * 2*2));
 	return Math.random() < 0.5 ? y : -y;
 }
-
-frame();
