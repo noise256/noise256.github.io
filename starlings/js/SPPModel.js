@@ -74,17 +74,6 @@ var sppParams = {
 })();
 
 (function() {
-	fpsMeter.tickStart();
-
-	update();
-	render();
-	
-	fpsMeter.tick();
-	
-	requestAnimationFrame(frame);
-})();
-
-(function() {
 	var particles = new THREE.Geometry();
 	var pMaterial = new THREE.ParticleBasicMaterial( {size: 1, color: 0xffffff, map: THREE.ImageUtils.loadTexture("images/particle-grey.png"), transparent: true} );
 
@@ -97,10 +86,25 @@ var sppParams = {
 	
 	particleSystem = new THREE.ParticleSystem(particles, pMaterial);
 	particleSystem.sortParticles = true;
+	
 	scene.add(particleSystem);
 	
 	particles.dispose();
 	pMaterial.dispose();
+})();
+
+/**
+	Frame
+**/
+(function() {
+	fpsMeter.tickStart();
+
+	update();
+	render();
+	
+	fpsMeter.tick();
+	
+	requestAnimationFrame(frame);
 })();
 
 function update() {
@@ -180,8 +184,6 @@ function timestamp() {
 		return new Date().getTime();
 	}
 }
-
-
 
 function getRandomWalk() {
 	var rand = vec3.random(vec3.create(), getGaussianAngle());
