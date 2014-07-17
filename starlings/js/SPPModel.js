@@ -26,13 +26,7 @@ var sppParams = {
 	maxVelocity: 0.5,
 };
 
-window.onload = function() {
-	initGUI();
-	initSPPModel();
-	frame();
-}
-
-function initGUI() {
+(function() {
 	fpsMeter = new FPSMeter(document.body, { decimals: 0, graph: true, theme: 'dark', left: '5px' });
 
 	var paramGui = new dat.GUI({height: 8 * 32 - 1});
@@ -49,7 +43,7 @@ function initGUI() {
 	paramGui.add(sppParams, 'maxVelocity').min(0).max(1).step(0.01).name('Max Velocity');
 	
 	var fpsGUI
-}
+})();
 
 /**
 	Initialise renderer.
@@ -83,7 +77,7 @@ function render() {
 	renderer.render(scene, camera);
 }
 
-function frame() {
+(function() {
 	fpsMeter.tickStart();
 
 	update();
@@ -92,7 +86,7 @@ function frame() {
 	fpsMeter.tick();
 	
 	requestAnimationFrame(frame);
-}
+})();
 
 function timestamp() {
 	if (window.performance && window.performance.now) {
