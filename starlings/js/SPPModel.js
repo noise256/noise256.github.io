@@ -27,7 +27,6 @@ var sppParams = {
 };
 
 window.onload = function() {
-	initRenderer();
 	initGUI();
 	initSPPModel();
 	frame();
@@ -53,11 +52,10 @@ function initGUI() {
 }
 
 /**
-	THREE.js Functions
+	Initialise renderer.
 */
-function initRenderer() {
+(function() {
 	scene = new THREE.Scene();
-	scene.fog = new THREE.FogExp2( 0xff0000, 1);
 	
 	camera = new THREE.PerspectiveCamera(60, canvasWidth / canvasHeight, 0.1, 1000);				
 	camera.position.x = 24;
@@ -79,7 +77,7 @@ function initRenderer() {
 	renderer.setSize(canvasWidth, canvasHeight);
 	renderer.setClearColor(0xffffff, 1);
 	document.getElementById("canvas").appendChild(renderer.domElement);
-}
+})();
 
 function render() {
 	renderer.render(scene, camera);
