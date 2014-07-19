@@ -15,23 +15,25 @@ var renderer = {
 	renderer: new THREE.WebGLRenderer(),
 	
 	initRenderer: function() {		
-		camera.position.x = 24;
-		camera.position.y = 10;
-		camera.position.z = 24;
-		camera.lookAt(new THREE.Vector3(0, 10, 0));
+		this.camera.position.x = 24;
+		this.camera.position.y = 10;
+		this.camera.position.z = 24;
+		this.camera.lookAt(new THREE.Vector3(0, 10, 0));
 		
 		var controls = new THREE.OrbitControls(camera, document.getElementById("canvas"));
-		// controls.target.y = 10;
+		controls.target.y = 10;
 		
 		var ambientLight = new THREE.AmbientLight(0x404040);
-		scene.add(ambientLight);
 		
 		var mainLight = new THREE.PointLight();
 		mainLight.position.set(50, 150, 150);
-		scene.add(mainLight);
+		
+		this.scene.add(ambientLight);
+		this.scene.add(mainLight);
 				
-		renderer.setSize(canvasWidth, canvasHeight);
-		renderer.setClearColor(0xffffff, 1);
+		this.renderer.setSize(canvasWidth, canvasHeight);
+		this.renderer.setClearColor(0xffffff, 1);
+		
 		document.getElementById("canvas").appendChild(renderer.domElement);
 	},
 	
