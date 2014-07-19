@@ -1,7 +1,7 @@
 window.onload = function() {
-	initRenderer();
-	initModel();
-	frame();
+	renderer.initRenderer();
+	renderer.initModel();
+	renderer.frame();
 }
 
 var renderer = {
