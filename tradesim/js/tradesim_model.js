@@ -11,7 +11,7 @@ var renderer = {
 	fpsMeter: new FPSMeter(document.body, { decimals: 0, graph: true, theme: 'dark', left: '5px' }),
 	
 	scene: new THREE.Scene(),
-	camera: new THREE.PerspectiveCamera(60, canvasWidth / canvasHeight, 0.1, 1000),
+	camera: new THREE.PerspectiveCamera(60, this.canvasWidth / this.canvasHeight, 0.1, 1000),
 	renderer: new THREE.WebGLRenderer(),
 	
 	initRenderer: function() {		
