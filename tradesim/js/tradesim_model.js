@@ -48,7 +48,7 @@ var renderer = {
 		
 		this.fpsMeter.tick();
 		
-		requestAnimationFrame(frame);
+		requestAnimationFrame(this.frame);
 	},
 	
 	update: function() {
