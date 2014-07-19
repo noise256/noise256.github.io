@@ -20,7 +20,7 @@ var renderer = {
 		this.camera.position.z = 24;
 		this.camera.lookAt(new THREE.Vector3(0, 10, 0));
 		
-		var controls = new THREE.OrbitControls(camera, document.getElementById("canvas"));
+		var controls = new THREE.OrbitControls(this.camera, document.getElementById("canvas"));
 		controls.target.y = 10;
 		
 		var ambientLight = new THREE.AmbientLight(0x404040);
@@ -31,7 +31,7 @@ var renderer = {
 		this.scene.add(ambientLight);
 		this.scene.add(mainLight);
 				
-		this.renderer.setSize(canvasWidth, canvasHeight);
+		this.renderer.setSize(this.canvasWidth, this.canvasHeight);
 		this.renderer.setClearColor(0xffffff, 1);
 		
 		document.getElementById("canvas").appendChild(renderer.domElement);
@@ -41,12 +41,12 @@ var renderer = {
 	},
 	
 	frame: function() {
-		fpsMeter.tickStart();
+		this.fpsMeter.tickStart();
 
 		update();
 		render();
 		
-		fpsMeter.tick();
+		this.fpsMeter.tick();
 		
 		requestAnimationFrame(frame);
 	},
@@ -55,6 +55,6 @@ var renderer = {
 	},
 	
 	render: function() {
-		renderer.render(scene, camera);
+		this.renderer.render(scene, camera);
 	}
 }
