@@ -55,6 +55,6 @@ var renderer = {
 	},
 	
 	render: function() {
-		this.renderer.render(scene, camera);
+		this.renderer.render(this.scene, this.camera);
 	}
 }
