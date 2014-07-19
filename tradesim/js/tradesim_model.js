@@ -41,12 +41,12 @@ var renderer = {
 	},
 	
 	frame: function() {
-		this.fpsMeter.tickStart();
+		//this.fpsMeter.tickStart();
 
 		this.update();
 		this.render();
 		
-		this.fpsMeter.tick();
+		//this.fpsMeter.tick();
 		
 		requestAnimationFrame(this.frame);
 	},
