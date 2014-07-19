@@ -1,0 +1,17 @@
+body {
+	background-color:#f0ead6;
+	font-family: 'Helvetica Neue', arial, sans-serif;
+	font-weight: 200;
+}
+			
+div.webgl {
+	margin:auto;
+	width: 1000px;
+	height: 800px;
+	text-align:center;
+	border:5px #675C56;
+}
+
+p {
+	text-align:center;
+}

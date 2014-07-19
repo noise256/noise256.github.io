@@ -27,9 +27,9 @@ var sppParams = {
 };
 
 window.onload = function() {
-	initRenderer();
 	initGUI();
-	initSPPModel();
+	initRenderer();
+	initModel();
 	frame();
 }
 
@@ -48,8 +48,6 @@ function initGUI() {
 	paramGui.add(sppParams, 'gravityStr').min(0).max(10).step(0.1).name('Gravity Strength');
 	paramGui.add(sppParams, 'acceleration').min(0).max(1).step(0.01).name('Acceleration');
 	paramGui.add(sppParams, 'maxVelocity').min(0).max(1).step(0.01).name('Max Velocity');
-	
-	var fpsGUI
 }
 
 /**
@@ -80,7 +78,7 @@ function initRenderer() {
 	document.getElementById("canvas").appendChild(renderer.domElement);
 }
 
-function initSPPModel() {
+function initModel() {
 	var particles = new THREE.Geometry();
 	var pMaterial = new THREE.ParticleBasicMaterial( {size: 1, color: 0xffffff, map: THREE.ImageUtils.loadTexture("images/particle-grey.png"), transparent: true} );
 
