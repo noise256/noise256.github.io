@@ -4,7 +4,7 @@ window.onload = function() {
 	renderer.frame();
 }
 
-var renderer {
+var renderer = {
 	canvasWidth: 1000,
 	canvasHeight: 800,
 	
