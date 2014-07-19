@@ -34,7 +34,7 @@ var renderer = {
 		this.renderer.setSize(this.canvasWidth, this.canvasHeight);
 		this.renderer.setClearColor(0xffffff, 1);
 		
-		document.getElementById("canvas").appendChild(renderer.domElement);
+		document.getElementById("canvas").appendChild(this.renderer.domElement);
 	},
 	
 	initModel: function() {
