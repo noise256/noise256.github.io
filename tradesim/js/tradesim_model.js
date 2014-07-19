@@ -40,6 +40,13 @@ var renderer = {
 	initModel: function() {
 	},
 	
+	update: function() {
+	},
+	
+	render: function() {
+		this.renderer.render(this.scene, this.camera);
+	},
+	
 	frame: function() {
 		//this.fpsMeter.tickStart();
 
@@ -49,12 +56,5 @@ var renderer = {
 		//this.fpsMeter.tick();
 		
 		requestAnimationFrame(this.frame);
-	},
-	
-	update: function() {
-	},
-	
-	render: function() {
-		this.renderer.render(this.scene, this.camera);
 	}
 }
