@@ -43,8 +43,8 @@ var renderer = {
 	frame: function() {
 		this.fpsMeter.tickStart();
 
-		update();
-		render();
+		this.update();
+		this.render();
 		
 		this.fpsMeter.tick();
 		
