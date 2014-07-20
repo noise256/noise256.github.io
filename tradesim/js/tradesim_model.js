@@ -61,3 +61,34 @@ var TradeSimModel = {
 		requestAnimationFrame(TradeSimModel.frame);
 	}
 }
+
+var SimulationController = {
+}
+
+var TraderController = {
+}
+
+var ColonyController = {
+}
+
+var ShipController = {
+}
+
+//TODO is an object needed for resource? Should it just be a value on Planet, Ship and Colony objects? How to do enum that defines resource chain? Should each container have a single Resources object that contains the name and quantity of each resource?
+var Resource = function(params) {
+}
+
+var Planet = function(params) {
+}
+
+var StarSystem = function(params) {
+}
+
+var Ship = function() {
+}
+
+var Trader = function() {
+}
+
+var Colony = function() {
+}
