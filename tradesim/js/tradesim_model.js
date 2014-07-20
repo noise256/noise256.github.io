@@ -1,63 +1,63 @@
-var renderer = {
+window.onload = function() {
+	TradeSimModel.init();
+	TradeSimModel.frame();
+}
+
+var TradeSimModel = {
 	canvasWidth: 1000,
 	canvasHeight: 800,
 	
-	fpsMeter: null, new FPSMeter(document.body, { decimals: 0, graph: true, theme: 'dark', left: '5px' }),
+	fpsMeter: null, 
 	
 	scene: null, 
 	camera: null, 
 	renderer: null,
 	
-	initRenderer: function() {
+	init: function() {
+		fpsMeter = new FPSMeter(document.body, { decimals: 0, graph: true, theme: 'dark', left: '5px' });
+		
 		scene = new THREE.Scene();
 		
-		camera = new THREE.PerspectiveCamera(60, this.canvasWidth / this.canvasHeight, 0.1, 1000);
-		this.camera.position.x = 24;
-		this.camera.position.y = 10;
-		this.camera.position.z = 24;
-		this.camera.lookAt(new THREE.Vector3(0, 10, 0));
+		camera = new THREE.PerspectiveCamera(60, TradeSimModel.canvasWidth / TradeSimModel.canvasHeight, 0.1, 1000);
+		camera.position.x = 24;
+		camera.position.y = 10;
+		camera.position.z = 24;
+		camera.lookAt(new THREE.Vector3(0, 10, 0));
 		
-		var controls = new THREE.OrbitControls(this.camera, document.getElementById("canvas"));
+		var controls = new THREE.OrbitControls(camera, document.getElementById("canvas"));
 		controls.target.y = 10;
 		
 		var ambientLight = new THREE.AmbientLight(0x404040);
 		var mainLight = new THREE.PointLight();
 		mainLight.position.set(50, 150, 150);
 		
-		this.scene.add(ambientLight);
-		this.scene.add(mainLight);
+		scene.add(ambientLight);
+		scene.add(mainLight);
 		
 		renderer = new THREE.WebGLRenderer();
-		this.renderer.setSize(this.canvasWidth, this.canvasHeight);
-		this.renderer.setClearColor(0xffffff, 1);
+		renderer.setSize(TradeSimModel.canvasWidth, TradeSimModel.canvasHeight);
+		renderer.setClearColor(0xffffff, 1);
 		
-		document.getElementById("canvas").appendChild(this.renderer.domElement);
-	},
-	
-	initModel: function() {
+		document.getElementById("canvas").appendChild(renderer.domElement);
 	},
 	
 	update: function() {
 	},
 	
 	render: function() {
-		this.renderer.render(this.scene, this.camera);
+		if (TradeSimModel.renderer) {
+			TradeSimModel.renderer.render(TradeSimModel.scene, TradeSimModel.camera);
+		}
 	},
 	
 	frame: function() {
-		//this.fpsMeter.tickStart();
+		fpsMeter.tickStart();
 
-		this.update();
-		this.render();
+		TradeSimModel.update();
+		TradeSimModel.render();
 		
-		//this.fpsMeter.tick();
+		fpsMeter.tick();
 		
-		requestAnimationFrame(this.frame);
+		requestAnimationFrame(TradeSimModel.frame);
 	}
-}
-
-window.onload = function() {
-	renderer.initRenderer();
-	renderer.initModel();
-	renderer.frame();
 }
