@@ -188,7 +188,7 @@ function timestamp() {
 
 function getRandomWalk() {
 	var rand = vec3.random(vec3.create()); //TODO the angle parameter here is scaling a random vector, i don't think this is what is needed
-	if (Math.random() < 0.5) {vec3.negate(rand, rand)};
+	//if (Math.random() < 0.5) {vec3.negate(rand, rand)};
 	return rand;
 }
 
