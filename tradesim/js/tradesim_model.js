@@ -1,5 +1,7 @@
 window.onload = function() {
 	SimulationView.init();
+	SkyBox.init();
+	
 	SimulationController.init();
 	
 	SimulationView.frame();
@@ -65,8 +67,34 @@ var SimulationView = {
 	}
 }
 
+/**
+	Based on view-source:http://stemkoski.github.io/Three.js/Skybox.html 23.07.2014
+**/
+var SkyBox = {
+	
+	init:function() {
+		var imagePrefix = "images/red_blue_space/";
+		var images = ["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
+		var imageSuffix = ".png";
+		
+		var materialArray = [];
+		for (var i = 0; i < 6; i++) {
+			materialArray.push(new THREE.MeshBasicMaterial({
+				map: THREE.ImageUtils.loadTexture(imagePrefix + images[i] + imageSuffix),
+				side: THREE.BackSide
+			}));
+		}
+		
+		SimulationView.scene.add(new THREE.Mesh(
+			new THREE.BoxGeometry(5000, 5000, 5000), 
+			new THREE.MeshFaceMaterial(materialArray)
+		));
+	}
+}
+
 var SimulationController = {
 	numPlanets:50,
+	numTraders:150,
 	
 	planets:[],
 	colonies:[],
@@ -75,12 +103,24 @@ var SimulationController = {
 	init:function() {
 		//create planets
 		for (var i = 0; i < SimulationController.numPlanets; i++) {
-			var planetBody = new Body(vec3.random(vec3.create(), Math.random() * 1000), 0);
+			var planetBody = new Body(vec3.random(vec3.create(), Math.random() * 300), 0);
 			var planetView = new View(new THREE.SphereGeometry(5, 32, 32), new THREE.MeshPhongMaterial({color: 0x443300}));
 			SimulationController.planets.push(new Planet(planetBody, planetView));
 			
 			if (SimulationView.scene) {
 				SimulationView.scene.add(planetView.mesh);
+			}
+		}
+		
+		//create traders
+		for (var i = 0; i < SimulationController.numTraders; i++) {
+			var traderBody = new Body(vec3.create(), 1);
+			var traderView = new View(new THREE.SphereGeometry(1, 32, 32), new THREE.MeshPhongMaterial({color: 0x003344}));
+			
+			SimulationController.traders.push(new Trader(traderBody, traderView));
+			
+			if (SimulationView.scene) {
+				SimulationView.scene.add(traderView.mesh);
 			}
 		}
 	},
@@ -90,10 +130,37 @@ var SimulationController = {
 		for (var i = 0; i < SimulationController.planets.length; i++) {
 			SimulationController.planets[i].update();
 		}
+		for (var i = 0; i < SimulationController.traders.length; i++) {
+			TraderController.updateTrader(SimulationController.traders[i]);
+		}
 	}
 }
 
 var TraderController = {
+	updateTrader:function(trader) {
+		if (trader.destination == null) {
+			TraderController.getNewDestination(trader);
+		}
+		
+		if (trader.destination != null) {
+			var destinationVec = vec3.subtract(vec3.create(), trader.destination, trader.body.position);
+			
+			if (vec3.length(destinationVec) <= trader.interactionRange) {
+				trader.destination = null;
+				return;
+			}
+			
+			var direction = vec3.normalize(vec3.create(), destinationVec);
+			
+			trader.body.move(direction);
+		}
+		
+		trader.view.update(trader.body.position);
+	},
+	
+	getNewDestination:function(trader) {
+		trader.destination = SimulationController.planets[Math.floor(Math.random() * SimulationController.planets.length)].body.position;
+	}
 }
 
 var ColonyController = {
@@ -139,7 +206,13 @@ Planet.prototype = {
 	}
 }
 
-function Trader() {
+function Trader(body, view) {
+	this.interactionRange = 5;
+	
+	this.body = body;
+	this.view = view;
+	
+	this.destination = null;
 }
 
 function Colony() {
