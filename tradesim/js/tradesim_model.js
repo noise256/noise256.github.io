@@ -96,6 +96,9 @@ var SimulationController = {
 	numPlanets:50,
 	numTraders:150,
 	
+	minSystemDistance:10,
+	maxPlanetSpread:500,
+	
 	planets:[],
 	colonies:[],
 	traders:[],
@@ -106,7 +109,20 @@ var SimulationController = {
 		var planetMaterial = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('images/sedna.jpg')});
 			
 		for (var i = 0; i < SimulationController.numPlanets; i++) {
-			var planetBody = new Body(vec3.random(vec3.create(), Math.random() * 300), 0, 0, 0);
+			//find free locations for planets using crude monte carlo method(?)
+			var planetPosition = null;
+			var foundPosition = false;
+			while(!foundPosition) {
+				foundPosition = true;
+				planetPosition = vec3.random(vec3.create(), Math.random() * SimulationController.maxPlanetSpread);
+				for (var j = 0; j < planets.length; j++) {
+					if (vec3.distance(planetPosition, planets[i].body.position) < SimulationController.minSystemDistance) {
+						foundPosition = false;
+					}
+				}
+			}
+			
+			var planetBody = new Body(planetPosition, 0, 0, 0);
 			var planetView = new View(planetGeometry, planetMaterial);
 			SimulationController.planets.push(new Planet(planetBody, planetView));
 			if (SimulationView.scene) {
