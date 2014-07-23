@@ -73,7 +73,7 @@ var SimulationView = {
 var SkyBox = {
 	
 	init:function() {
-		var imagePrefix = "images/simple_purple/";
+		var imagePrefix = "images/spacebox/";
 		var images = ["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
 		var imageSuffix = ".png";
 		
