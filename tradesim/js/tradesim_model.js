@@ -101,11 +101,12 @@ var SimulationController = {
 	
 	init:function() {
 		//create planets
+		var planetGeometry = new THREE.SphereGeometry(5, 32, 32);
+		var planetMaterial = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('images/sedna.jpg')});
+			
 		for (var i = 0; i < SimulationController.numPlanets; i++) {
 			var planetBody = new Body(vec3.random(vec3.create(), Math.random() * 300), 0);
 			
-			var planetGeometry = new THREE.SphereGeometry(5, 32, 32);
-			var planetMaterial = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('images/sedna.jpg')});
 			var planetView = new View(planetGeometry, planetMaterial);
 			//var planetView = new View(new THREE.SphereGeometry(5, 32, 32), new THREE.MeshPhongMaterial({color: 0x443300}));
 			SimulationController.planets.push(new Planet(planetBody, planetView));
