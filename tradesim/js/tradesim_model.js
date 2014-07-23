@@ -106,7 +106,7 @@ var SimulationController = {
 		var planetMaterial = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('images/sedna.jpg')});
 			
 		for (var i = 0; i < SimulationController.numPlanets; i++) {
-			var planetBody = new Body(vec3.random(vec3.create(), Math.random() * 300), 0);
+			var planetBody = new Body(vec3.random(vec3.create(), Math.random() * 300), 0, 0, 0);
 			var planetView = new View(planetGeometry, planetMaterial);
 			SimulationController.planets.push(new Planet(planetBody, planetView));
 			if (SimulationView.scene) {
@@ -118,7 +118,7 @@ var SimulationController = {
 		var traderGeometry = new THREE.SphereGeometry(1, 32, 32);
 		var traderMaterial = new THREE.MeshPhongMaterial({color: 0x003344});
 		for (var i = 0; i < SimulationController.numTraders; i++) {
-			var traderBody = new Body(vec3.create(), 1);
+			var traderBody = new Body(vec3.create(), 1, 1, 1);
 			var traderView = new View(traderGeometry, traderMaterial);
 			
 			SimulationController.traders.push(new Trader(traderBody, traderView));
@@ -174,14 +174,24 @@ var ColonyController = {
 var Resources = function(params) {
 }
 
-function Body(position, velocity) {
+function Body(position, mass, force, maxVelocity) {
 	this.position = position;
-	this.velocity = velocity;
+	this.mass = mass;
+	this.force = force;
+	this.maxVelocity = maxVelocity;
+	this.velocity = vec3.create();
 }
 
 Body.prototype = {
-	move:function(direction) {
-		vec3.scaleAndAdd(this.position, this.position, direction, this.velocity); 
+	move:function(direction, acceleration) {
+		vec3.scaleAndAdd(this.velocity, this.velocity, direction, this.force / this.mass);
+		
+		if (vec3.length(this.velocity) > this.maxVelocity) {
+			vec3.normalize(this.velocity, this.velocity);
+			vec3.scale(this.velocity, this.velocity, this.maxVelocity);
+		}
+		
+		vec3.add(this.position, this.position, this.velocity); 
 	}
 }
 
