@@ -117,9 +117,11 @@ var SimulationController = {
 		}
 		
 		//create traders
+		var traderGeometry = new THREE.SphereGeometry(1, 32, 32);
+		var traderMaterial = new THREE.MeshPhongMaterial({color: 0x003344});
 		for (var i = 0; i < SimulationController.numTraders; i++) {
 			var traderBody = new Body(vec3.create(), 1);
-			var traderView = new View(new THREE.SphereGeometry(1, 32, 32), new THREE.MeshPhongMaterial({color: 0x003344}));
+			var traderView = new View(traderGeometry, traderMaterial);
 			
 			SimulationController.traders.push(new Trader(traderBody, traderView));
 			
