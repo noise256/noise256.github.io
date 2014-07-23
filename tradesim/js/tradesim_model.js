@@ -30,7 +30,7 @@ var SimulationView = {
 		
 		var controls = new THREE.OrbitControls(SimulationView.camera, document.getElementById("canvas"));
 		controls.target.y = 10;
-		controls.maxDistance = 5000;
+		controls.maxDistance = 2500;
 		
 		var ambientLight = new THREE.AmbientLight(0x404040);
 		var mainLight = new THREE.PointLight();
