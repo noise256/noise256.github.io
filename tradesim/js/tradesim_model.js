@@ -115,8 +115,8 @@ var SimulationController = {
 			while(!foundPosition) {
 				foundPosition = true;
 				planetPosition = vec3.random(vec3.create(), Math.random() * SimulationController.maxPlanetSpread);
-				for (var j = 0; j < planets.length; j++) {
-					if (vec3.distance(planetPosition, planets[i].body.position) < SimulationController.minSystemDistance) {
+				for (var j = 0; j < SimulationController.planets.length; j++) {
+					if (vec3.distance(planetPosition, SimulationController.planets[i].body.position) < SimulationController.minSystemDistance) {
 						foundPosition = false;
 					}
 				}
