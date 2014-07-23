@@ -68,12 +68,12 @@ var SimulationView = {
 }
 
 /**
-	Based on view-source:http://stemkoski.github.io/Three.js/Skybox.html 23.07.2014
+	based on view-source:http://stemkoski.github.io/three.js/skybox.html 23.07.2014
 **/
 var SkyBox = {
 	
 	init:function() {
-		var imagePrefix = "images/red_blue_space/";
+		var imagePrefix = "images/simple_purple/";
 		var images = ["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
 		var imageSuffix = ".png";
 		
