@@ -96,7 +96,7 @@ var SimulationController = {
 	numPlanets:20,
 	numTraders:150,
 	
-	minSystemDistance:10,
+	minSystemDistance:30,
 	maxPlanetSpread:500,
 	
 	planets:[],
