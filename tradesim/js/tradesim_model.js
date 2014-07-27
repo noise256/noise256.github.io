@@ -222,12 +222,12 @@ var TraderController = {
 		
 		for (var i = 0; i < SimulationController.colonies.length; i++) {
 			for (var j = 0; j < SimulationController.colonies[i].economy.resources.length; j++) {
-				if (SimulationController.colonies[i].economy.resources[j].sellPrice < lowSellPrice) {
+				if (SimulationController.colonies[i].economy.resources[j].sellPrice <= lowSellPrice) {
 					lowSellColony = SimulationController.colonies[i];
 					lowSellResource = SimulationController.colonies[i].economy.resources[j].name;
 					lowSellPrice = SimulationController.colonies[i].economy.resources[j].sellPrice;
 				}
-				if (SimulationController.colonies[i].economy.resources[j].buyPrice > highBuyPrice) {
+				if (SimulationController.colonies[i].economy.resources[j].buyPrice >= highBuyPrice) {
 					highBuyColony = SimulationController.colonies[i];
 					highBuyPrice = SimulationController.colonies[i].economy.resources[j].buyPrice;
 				}
