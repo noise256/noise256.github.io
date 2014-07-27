@@ -132,7 +132,7 @@ var SimulationController = {
 	init:function() {
 		//create planets
 		var planetGeometry = new THREE.SphereGeometry(5, 32, 32);
-		var planetMaterial = new THREE.MeshPhongMaterial();//{map: THREE.ImageUtils.loadTexture('images/sedna.jpg')});
+		var planetMaterial = new THREE.MeshPhongMaterial({color: 0xffffff});//{map: THREE.ImageUtils.loadTexture('images/sedna.jpg')});
 			
 		for (var i = 0; i < SimulationController.numPlanets; i++) {
 			//find free locations for planets using crude monte carlo method(?)
