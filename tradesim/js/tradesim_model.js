@@ -234,14 +234,14 @@ var TraderController = {
 			trader.destination = lowSellColony.planet.body.position;
 			trader.targetResource = lowSellResource;
 		}
-	}
+	},
 	
 	sellResources:function(trader) {
 		//TODO currently just dumps resources
 		for (var i = 0; i < trader.economy.resources.length; i++) {
 			trader.economy.setResourceQuantity(trader.economy.resources[i].name, 0); //TODO replace setResourceQuantity() with clearResource().
 		}
-	}
+	},
 	
 	buyResources:function(trader) {
 		//TODO currently just adds resource to trader without removing it from colony, need to add trade interaction with colony
