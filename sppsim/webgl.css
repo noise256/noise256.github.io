@@ -5,11 +5,13 @@ body {
 }
 			
 div.webgl {
-	margin:auto;
-	width: 1000px;
-	height: 800px;
-	text-align:center;
-	border:5px #675C56;
+	margin: auto;
+	width: 100%;
+	height: 100%;
+	max-width: 1000px;
+	max-height: 800px;
+	text-align: center;
+	border: 5px #675C56;
 }
 
 p {
