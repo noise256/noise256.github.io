@@ -164,10 +164,15 @@ var SimulationController = {
 	update:function() {
 		//update colonies and traders using TraderController and ColonyController
 		for (var i = 0; i < SimulationController.planets.length; i++) {
-			//PlanetController.updatePlanet(SimulationController.planets[i]);
+			if (planet.view.needsUpdate) {
+				planet.view.update(planet.body.position);
+			}
 		}
 		for (var i = 0; i < SimulationController.traders.length; i++) {
 			TraderController.updateTrader(SimulationController.traders[i]);
+			if (trader.view.needsUpdate) {
+				trader.view.update(trader.body.position);
+			}
 		}
 		for (var i = 0; i < SimulationController.colonies.length; i++) {
 			ColonyController.updateColony(SimulationController.colonies[i]);
@@ -200,7 +205,8 @@ var TraderController = {
 			trader.body.move(direction);
 		}
 		
-		trader.view.update(trader.body.position);
+		trader.view.needsUpdate = true;
+		//trader.view.update(trader.body.position);
 	},
 	
 	getNewDestination:function(trader) {
@@ -336,6 +342,7 @@ function View(geometry, material, position) {
 	var material = material;
 	
 	this.mesh = new THREE.Mesh(geometry, material);
+	this.needsUpdate = true;
 }
 
 View.prototype = {
