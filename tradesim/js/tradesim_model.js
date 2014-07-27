@@ -93,12 +93,12 @@ var SkyBox = {
 }
 
 var SimulationController = {
-	numPlanets:20,
+	numPlanets:10,
 	numColonies:20,
 	numTraders:150,
 	
-	minSystemDistance:30,
-	maxPlanetSpread:500,
+	minSystemDistance:20,
+	maxPlanetSpread:350,
 	
 	planets:[],
 	colonies:[],
