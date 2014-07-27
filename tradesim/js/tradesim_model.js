@@ -56,7 +56,7 @@ var SimulationView = {
 		SimulationView.renderer.setClearColor(0x000000, 1);
 		
 		SimulationView.domElement = SimulationView.renderer.domElement;
-		SimulationView.boundingRect = domElement.getBoundingClientRect();
+		SimulationView.boundingRect = SimulationView.domElement.getBoundingClientRect();
 		
 		SimulationView.projector = new THREE.Projector();
 		SimulationView.mouseVector = new THREE.Vector3();
