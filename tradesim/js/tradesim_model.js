@@ -74,6 +74,7 @@ var SimulationView = {
 	onMouseMove:function(e) {
 		SimulationView.mouseVector.x = 2 * ((e.clientX - SimulationView.canvasOffsetLeft) / SimulationView.canvasWidth) - 1;
 		SimulationView.mouseVector.y = 1 - 2 * ((e.clientY - SimulationView.canvasOffsetTop) / SimulationView.canvasHeight);
+		SimulationView.mouseVector.z = 1;
 		
 		var raycaster = SimulationView.projector.pickingRay(SimulationView.mouseVector.clone(), SimulationView.camera);
 		var intersects = raycaster.intersectObjects(SimulationView.worldObjects.children);
