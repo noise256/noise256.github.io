@@ -93,7 +93,7 @@ var SkyBox = {
 }
 
 var SimulationController = {
-	numPlanets:10,
+	numPlanets:5,
 	numColonies:20,
 	numTraders:150,
 	
@@ -260,7 +260,7 @@ var TraderController = {
 var ColonyController = {
 	updateColony:function(colony) {
 		//harvest resources
-		for (var i = 0;i < colony.planet.economy.resources.length; i++) {
+		for (var i = 0; i < colony.planet.economy.resources.length; i++) {
 			if (colony.planet.economy.resources[i].quantity > 0) {
 				colony.economy.changeResourceQuantity(colony.planet.economy.resources[i].name, 1);
 				//colony.planet.economy.changeResourceQuantity(colony.planet.economy.resources[i].name, -1);
