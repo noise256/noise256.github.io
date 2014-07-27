@@ -109,10 +109,10 @@ var SkyBox = {
 			}));
 		}
 		
-		SimulationView.scene.add(new THREE.Mesh(
+		SimulationView.scene.add(new THREE.Object3D(new THREE.Mesh(
 			new THREE.BoxGeometry(5000, 5000, 5000), 
 			new THREE.MeshFaceMaterial(materialArray)
-		));
+		)));
 	}
 }
 
