@@ -62,7 +62,9 @@ var SimulationView = {
 		SimulationView.mouseVector.x = 2 * (e.clientX / SimulationView.canvasWidth) - 1;
 		SimulationView.mouseVector.y = 1 - 2 * (e.clientY / SimulationView.canvasHeight);
 		
-		console.warn('x = ' + SimulationView.mouseVector.x + ' y = ' + SimulationView.mouseVector.y);
+		var raycaster = projector.pickingRay(SimulationView.mouseVector.clone(), SimulationView.camera),
+		intersects = raycaster.intersectObjects( SimulationView.scene.children );
+		console.warn('intersects ' + intersects.length);
 	},
 	
 	update: function() {
