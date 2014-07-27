@@ -142,7 +142,7 @@ var SimulationController = {
 		
 		//create colonies
 		for (var i = 0; i < SimulationController.numColonies; i++) {
-			SimulationController.colonies.push(new Colony(SimulationController.planets[i], new Economy()));
+			SimulationController.colonies.push(new Colony(SimulationController.planets[i % Simulation.planets.length], new Economy()));
 		}
 		
 		//create traders
