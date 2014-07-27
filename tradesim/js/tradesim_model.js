@@ -166,12 +166,14 @@ var SimulationController = {
 		for (var i = 0; i < SimulationController.planets.length; i++) {
 			if (planet.view.needsUpdate) {
 				planet.view.update(planet.body.position);
+				planet.view.needsUpdate = false;
 			}
 		}
 		for (var i = 0; i < SimulationController.traders.length; i++) {
 			TraderController.updateTrader(SimulationController.traders[i]);
 			if (trader.view.needsUpdate) {
 				trader.view.update(trader.body.position);
+				trader.view.needsUpdate = false;
 			}
 		}
 		for (var i = 0; i < SimulationController.colonies.length; i++) {
