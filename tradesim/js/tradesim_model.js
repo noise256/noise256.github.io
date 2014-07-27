@@ -53,7 +53,7 @@ var SimulationView = {
 		SimulationView.projector = new THREE.Projector();
 		SimulationView.mouseVector = new THREE.Vector3();
 		
-		window.addEventListener('mousemove', onMouseMove, false);
+		window.addEventListener('mousemove', SimulationView.onMouseMove, false);
 		
 		canvas.appendChild(SimulationView.renderer.domElement);
 	},
