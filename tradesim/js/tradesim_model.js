@@ -66,7 +66,7 @@ var SimulationView = {
 		var intersects = raycaster.intersectObjects( SimulationView.scene.children );
 		
 		for (var i = 0; i < SimulationView.scene.children.length; i++) {
-			SimulationView.children[i].material.color.setRGB(1, 1, 1);
+			SimulationView.scene.children[i].material.color.setRGB(1, 1, 1);
 		}
 		
 		for (var i = 0; i < intersects.length; i++) {
