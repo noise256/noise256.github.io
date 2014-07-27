@@ -9,8 +9,6 @@ div.webgl {
 	height: 800px;
 	position: static;
 	border:5px solid black;
-	top:100px;
-	left:100px;
 }
 
 p {
