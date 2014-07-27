@@ -8,16 +8,23 @@ window.onload = function() {
 }
 
 var SimulationView = {
-	canvasWidth: 1000,
-	canvasHeight: 800,
+	canvasWidth: null,
+	canvasHeight: null,
 	
 	fpsMeter: null, 
 	
 	scene: null,
 	camera: null, 
 	renderer: null,
+	projector: null,
+	mouseVector: null,
 	
 	init: function() {
+		var canvas = document.getElementById("canvas");
+		
+		canvasWidth = canvas.clientWidth;
+		canvasHeight = canvas.clientHeight;
+		
 		fpsMeter = new FPSMeter(document.body, { decimals: 0, graph: true, theme: 'dark', left: '5px' });
 		
 		SimulationView.scene = new THREE.Scene();
@@ -28,7 +35,7 @@ var SimulationView = {
 		SimulationView.camera.position.z = 24;
 		SimulationView.camera.lookAt(new THREE.Vector3(0, 10, 0));
 		
-		var controls = new THREE.OrbitControls(SimulationView.camera, document.getElementById("canvas"));
+		var controls = new THREE.OrbitControls(SimulationView.camera, canvas);
 		controls.target.y = 10;
 		controls.maxDistance = 2000;
 		
@@ -43,7 +50,19 @@ var SimulationView = {
 		SimulationView.renderer.setSize(SimulationView.canvasWidth, SimulationView.canvasHeight);
 		SimulationView.renderer.setClearColor(0x000000, 1);
 		
-		document.getElementById("canvas").appendChild(SimulationView.renderer.domElement);
+		SimulationView.projector = new THREE.Projector();
+		SimulationView.mouseVector = new THREE.Vector3();
+		
+		window.addEventListener('mousemove', onMouseMove, false);
+		
+		canvas.appendChild(SimulationView.renderer.domElement);
+	},
+	
+	onMouseMove:function(e) {
+		mouseVector.x = 2 * (e.clientX / containerWidth) - 1;
+		mouseVector.y = 1 - 2 * (e.clientY / containerHeight);
+		
+		console.warn('x = ' + mouseVector.x + ' y = ' + mouseVector.y);
 	},
 	
 	update: function() {
