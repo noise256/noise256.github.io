@@ -204,7 +204,7 @@ var TraderController = {
 
 var ColonyController = {
 	updateColony:function(colony) {
-		for (var i = 0; i < colony.economy.reources.length; i++) {
+		for (var i = 0; i < colony.economy.resources.length; i++) {
 			if (colony.economy.resources[i].quantity <= 0) {
 				console.warn('No resources of type ' + colony.economy.resources[i].name);
 			}
@@ -231,10 +231,6 @@ Economy.prototype = {
 		}
 	}
 }
-
-var econ = new Economy();
-
-console.warn(econ.resources.length);
 
 function Body(position, mass, force, maxVelocity) {
 	this.position = position;
