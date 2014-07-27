@@ -27,6 +27,8 @@ var SimulationView = {
 		SimulationView.canvasWidth = canvas.clientWidth;
 		SimulationView.canvasHeight = canvas.clientHeight;
 		
+		console.warn('canvas size = ' + SimulationView.canvasWidth + ' ' + SimulationView.canvasHeight);
+		
 		SimulationView.fpsMeter = new FPSMeter(document.body, { decimals: 0, graph: true, theme: 'dark', left: '5px' });
 		
 		SimulationView.scene = new THREE.Scene();
@@ -80,8 +82,11 @@ var SimulationView = {
 	},
 	
 	onWindowResize:function(e) {
-		SimulationView.canvasWidth = document.getElementById("canvas").clientWidth;
-		SimulationView.canvasHeight = document.getElementById("canvas").clientHeight;
+		var canvas = document.getElementById("canvas");
+		SimulationView.canvasWidth = canvas.clientWidth;
+		SimulationView.canvasHeight = canvas.clientHeight;
+		
+		console.warn('canvas size = ' + SimulationView.canvasWidth + ' ' + SimulationView.canvasHeight);
 		
 		SimulationView.renderer.setSize(SimulationView.canvasWidth, SimulationView.canvasHeight);
 		SimulationView.camera.aspect = SimulationView.canvasWidth / SimulationView.canvasHeight;
