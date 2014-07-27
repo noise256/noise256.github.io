@@ -55,6 +55,8 @@ var SimulationView = {
 		SimulationView.renderer.setSize(SimulationView.canvasWidth, SimulationView.canvasHeight);
 		SimulationView.renderer.setClearColor(0x000000, 1);
 		
+		document.getElementById("canvas").appendChild(SimulationView.renderer.domElement);
+		
 		SimulationView.domElement = SimulationView.renderer.domElement;
 		SimulationView.boundingRect = SimulationView.domElement.getBoundingClientRect();
 		
@@ -66,8 +68,6 @@ var SimulationView = {
 		
 		window.addEventListener('mousemove', SimulationView.onMouseMove, false);
 		window.addEventListener('resize', SimulationView.onWindowResize, false);
-		
-		document.getElementById("canvas").appendChild(SimulationView.renderer.domElement);
 	},
 	
 	onMouseMove:function(e) {
