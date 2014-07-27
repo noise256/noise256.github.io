@@ -76,12 +76,12 @@ var SimulationView = {
 	},
 	
 	frame: function() {
-		fpsMeter.tickStart();
+		SimulationView.fpsMeter.tickStart();
 
 		SimulationView.update();
 		SimulationView.render();
 		
-		fpsMeter.tick();
+		SimulationView.fpsMeter.tick();
 		
 		requestAnimationFrame(SimulationView.frame);
 	}
