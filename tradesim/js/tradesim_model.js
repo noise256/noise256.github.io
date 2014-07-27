@@ -79,6 +79,15 @@ var SimulationView = {
 		}
 	},
 	
+	onWindowResize:function(e) {
+		SimulationView.canvasWidth = document.getElementById("canvas").clientWidth;
+		SimulationView.canvasHeight = document.getElementById("canvas").clientHeight;
+		
+		SimulationView.renderer.setSize(SimulationView.canvasWidth, SimulationView.canvasHeight);
+		SimulationView.camera.aspect = SimulationView.canvasWidth / SimulationView.canvasHeight;
+		SimulationView.camera.updateProjectionMatrix();
+	},
+	
 	update: function() {
 		SimulationController.update();
 	},
