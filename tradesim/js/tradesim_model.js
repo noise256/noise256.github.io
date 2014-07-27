@@ -94,6 +94,7 @@ var SkyBox = {
 
 var SimulationController = {
 	numPlanets:20,
+	numColonies:20,
 	numTraders:150,
 	
 	minSystemDistance:30,
@@ -124,10 +125,24 @@ var SimulationController = {
 			
 			var planetBody = new Body(planetPosition, 0, 0, 0);
 			var planetView = new View(planetGeometry, planetMaterial);
-			SimulationController.planets.push(new Planet(planetBody, planetView));
+			
+			//generate planet resources
+			var planetEconomy = new Economy();
+			planetEconomy.setResourceQuantity('FOOD', Math.floor(Math.random() * 100));
+			planetEconomy.setResourceQuantity('WATER', Math.floor(Math.random() * 100));
+			planetEconomy.setResourceQuantity('FUEL', Math.floor(Math.random() * 100));
+			planetEconomy.setResourceQuantity('METAL', Math.floor(Math.random() * 100));
+			
+			SimulationController.planets.push(new Planet(planetBody, planetView, planetEconomy));
+			
 			if (SimulationView.scene) {
 				SimulationView.scene.add(planetView.mesh);
 			}
+		}
+		
+		//create colonies
+		for (var i = 0; i < SimulationController.numColonies; i++) {
+			SimulationController.colonies.push(new Colony(SimulationController.planets[i], new Economy()));
 		}
 		
 		//create traders
@@ -136,8 +151,9 @@ var SimulationController = {
 		for (var i = 0; i < SimulationController.numTraders; i++) {
 			var traderBody = new Body(vec3.create(), 1, 0.001, 0.1);
 			var traderView = new View(traderGeometry, traderMaterial);
+			var traderEconomy = new Economy();
 			
-			SimulationController.traders.push(new Trader(traderBody, traderView));
+			SimulationController.traders.push(new Trader(traderBody, traderView, traderEconomy));
 			
 			if (SimulationView.scene) {
 				SimulationView.scene.add(traderView.mesh);
@@ -152,6 +168,9 @@ var SimulationController = {
 		}
 		for (var i = 0; i < SimulationController.traders.length; i++) {
 			TraderController.updateTrader(SimulationController.traders[i]);
+		}
+		for (var i = 0; i < SimulationController.colonies.length; i++) {
+			ColonyController.updateColony(SimulationController.colonies[i]);
 		}
 	}
 }
@@ -184,10 +203,33 @@ var TraderController = {
 }
 
 var ColonyController = {
+	updateColony:function(colony) {
+		for (var i = 0; i < colony.economy.reources.length; i++) {
+			if (colony.economy.resources[i].quantity <= 0) {
+				console.warn('No resources of type ' + colony.economy.resources[i].name);
+			}
+		}
+	}
 }
 
 //TODO is an object needed for resource? Should it just be a value on Planet, Ship and Colony objects? How to do enum that defines resource chain? Should each container have a single Resources object that contains the name and quantity of each resource?
-var Resources = function(params) {
+function Economy() {
+	var resources = [	
+		{name: FOOD, quantity: 0},
+		{name: WATER, quantity: 0},
+		{name: FUEL, quantity: 0},
+		{name: METAL, quantity: 0}
+	];
+}
+
+Economy.prototype = {
+	setResourceQuantity:function(name, quantity) {
+		for (var i = 0; i < resources.length; i++) {
+			if (resources[i].name == name) {
+				resources[i].quantity = quantity;
+			}
+		}
+	}
 }
 
 function Body(position, mass, force, maxVelocity) {
@@ -224,9 +266,10 @@ View.prototype = {
 	}
 }
 
-function Planet(body, view) {
+function Planet(body, view, economy) {
 	this.body = body;
 	this.view = view;
+	this.economy = economy;
 	this.colonies = [];
 }
 
@@ -236,14 +279,17 @@ Planet.prototype = {
 	}
 }
 
-function Trader(body, view) {
-	this.interactionRange = 5;
-	
+function Trader(body, view, economy) {
 	this.body = body;
 	this.view = view;
+	this.economy = economy;
+	
+	this.interactionRange = 5;
 	
 	this.destination = null;
 }
 
-function Colony() {
+function Colony(planet, economy) {
+	this.planet = planet;
+	this.economy = economy;
 }
