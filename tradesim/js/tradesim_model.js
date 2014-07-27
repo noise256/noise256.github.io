@@ -149,7 +149,7 @@ var SimulationController = {
 		var traderGeometry = new THREE.SphereGeometry(1, 32, 32);
 		var traderMaterial = new THREE.MeshPhongMaterial({color: 0x003344});
 		for (var i = 0; i < SimulationController.numTraders; i++) {
-			var traderBody = new Body(vec3.create(), 1, 0.001, 0.1);
+			var traderBody = new Body(vec3.create(), 1, 0.005, 0.3);
 			var traderView = new View(traderGeometry, traderMaterial);
 			var traderEconomy = new Economy();
 			
@@ -213,7 +213,7 @@ var TraderController = {
 	
 	getNewDestination:function(trader) {
 		var highColony;
-		var highResource;
+		
 		var lowColony;
 		var lowResource;
 		
@@ -222,7 +222,7 @@ var TraderController = {
 		
 		for (var i = 0; i < SimulationController.colonies.length; i++) {
 			for (var j = 0; j < SimulationController.colonies[i].economy.resources.length; j++) {
-				if (SimulationController.colonies[i].economy.resources[j].buyPrice <= lowPrice) {
+				if (SimulationController.colonies[i].economy.resources[j].quantity > 0 && SimulationController.colonies[i].economy.resources[j].buyPrice <= lowPrice) { //TODO what if multiple traders purchase resource and there is not enough present
 					lowColony = SimulationController.colonies[i];
 					lowResource = SimulationController.colonies[i].economy.resources[j].name;
 					lowPrice = SimulationController.colonies[i].economy.resources[j].buyPrice;
