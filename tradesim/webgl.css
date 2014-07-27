@@ -7,8 +7,10 @@ body {
 div.webgl {
 	width: 1000px;
 	height: 800px;
-	position: static;
+	position: fixed;
 	border:5px solid black;
+	top:100px;
+	left:100px;
 }
 
 p {
