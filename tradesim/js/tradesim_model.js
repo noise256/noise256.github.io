@@ -19,6 +19,8 @@ var SimulationView = {
 	projector: null,
 	mouseVector: null,
 	
+	worldObjects: null,
+	
 	init: function() {
 		var canvas = document.getElementById("canvas");
 		
@@ -53,6 +55,9 @@ var SimulationView = {
 		SimulationView.projector = new THREE.Projector();
 		SimulationView.mouseVector = new THREE.Vector3();
 		
+		SimulationView.worldObjects = new THREE.Object3D();
+		SimulationView.scene.add(worldObjects);
+		
 		window.addEventListener('mousemove', SimulationView.onMouseMove, false);
 		
 		document.getElementById("canvas").appendChild(SimulationView.renderer.domElement);
@@ -63,10 +68,10 @@ var SimulationView = {
 		SimulationView.mouseVector.y = 1 - 2 * (e.clientY / SimulationView.canvasHeight);
 		
 		var raycaster = SimulationView.projector.pickingRay(SimulationView.mouseVector.clone(), SimulationView.camera);
-		var intersects = raycaster.intersectObjects( SimulationView.scene.children );
+		var intersects = raycaster.intersectObjects(SimulationView.worldObjects.children);
 		
-		for (var i = 0; i < SimulationView.scene.children.length; i++) {
-			SimulationView.scene.children[i].material.color.setRGB(1, 1, 1);
+		for (var i = 0; i < SimulationView.worldObjects.children.length; i++) {
+			SimulationView.worldObjects.children[i].material.color.setRGB(1, 1, 1);
 		}
 		
 		for (var i = 0; i < intersects.length; i++) {
@@ -174,8 +179,8 @@ var SimulationController = {
 			
 			SimulationController.planets.push(new Planet(planetBody, planetView, planetEconomy));
 			
-			if (SimulationView.scene) {
-				SimulationView.scene.add(planetView.mesh);
+			if (SimulationView.worldObjects) {
+				SimulationView.worldObjects.add(planetView.mesh);
 			}
 		}
 		
@@ -194,8 +199,8 @@ var SimulationController = {
 			
 			SimulationController.traders.push(new Trader(traderBody, traderView, traderEconomy));
 			
-			if (SimulationView.scene) {
-				SimulationView.scene.add(traderView.mesh);
+			if (SimulationView.worldObjects) {
+				SimulationView.worldObjects.add(traderView.mesh);
 			}
 		}
 	},
