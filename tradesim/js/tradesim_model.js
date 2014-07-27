@@ -65,6 +65,10 @@ var SimulationView = {
 		var raycaster = SimulationView.projector.pickingRay(SimulationView.mouseVector.clone(), SimulationView.camera);
 		var intersects = raycaster.intersectObjects( SimulationView.scene.children );
 		
+		for (var i = 0; i < SimulationView.scene.children.length; i++) {
+			SimulationView.children.material.color.setRGB(1, 1, 1);
+		}
+		
 		for (var i = 0; i < intersects.length; i++) {
 			console.warn('intersects ' + intersects[i].object.uuid);
 			intersects[i].object.material.color.setRGB(1, 0, 0);
@@ -105,6 +109,7 @@ var SkyBox = {
 		var materialArray = [];
 		for (var i = 0; i < 6; i++) {
 			materialArray.push(new THREE.MeshBasicMaterial({
+				color: 0xffffff,
 				map: THREE.ImageUtils.loadTexture(imagePrefix + images[i] + imageSuffix),
 				side: THREE.BackSide
 			}));
