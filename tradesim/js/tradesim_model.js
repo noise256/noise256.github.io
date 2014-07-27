@@ -61,6 +61,7 @@ var SimulationView = {
 		SimulationView.scene.add(SimulationView.worldObjects);
 		
 		window.addEventListener('mousemove', SimulationView.onMouseMove, false);
+		window.addEventListener('resize', SimulationView.onWindowResize, false);
 		
 		document.getElementById("canvas").appendChild(SimulationView.renderer.domElement);
 	},
