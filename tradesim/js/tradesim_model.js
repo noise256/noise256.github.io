@@ -224,9 +224,9 @@ function Economy() {
 
 Economy.prototype = {
 	setResourceQuantity:function(name, quantity) {
-		for (var i = 0; i < resources.length; i++) {
-			if (resources[i].name == name) {
-				resources[i].quantity = quantity;
+		for (var i = 0; i < this.resources.length; i++) {
+			if (this.resources[i].name == name) {
+				this.resources[i].quantity = quantity;
 			}
 		}
 	}
