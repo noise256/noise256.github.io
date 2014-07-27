@@ -59,8 +59,8 @@ var SimulationView = {
 	},
 	
 	onMouseMove:function(e) {
-		mouseVector.x = 2 * (e.clientX / containerWidth) - 1;
-		mouseVector.y = 1 - 2 * (e.clientY / containerHeight);
+		mouseVector.x = 2 * (e.clientX / canvasWidth) - 1;
+		mouseVector.y = 1 - 2 * (e.clientY / canvasHeight);
 		
 		console.warn('x = ' + mouseVector.x + ' y = ' + mouseVector.y);
 	},
