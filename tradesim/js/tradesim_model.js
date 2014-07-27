@@ -279,7 +279,7 @@ Economy.prototype = {
 				this.resources[i].quantity += change;
 			}
 		}
-	}
+	},
 	
 	hasResources:function() {
 		for (var i = 0; i < this.resources.length; i++) {
