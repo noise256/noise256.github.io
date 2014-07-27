@@ -164,16 +164,16 @@ var SimulationController = {
 	update:function() {
 		//update colonies and traders using TraderController and ColonyController
 		for (var i = 0; i < SimulationController.planets.length; i++) {
-			if (planet.view.needsUpdate) {
-				planet.view.update(planet.body.position);
-				planet.view.needsUpdate = false;
+			if (SimulationController.planets[i].view.needsUpdate) {
+				SimulationController.planets[i].view.update(SimulationController.planets[i].body.position);
+				SimulationController.planets[i].view.needsUpdate = false;
 			}
 		}
 		for (var i = 0; i < SimulationController.traders.length; i++) {
 			TraderController.updateTrader(SimulationController.traders[i]);
-			if (trader.view.needsUpdate) {
-				trader.view.update(trader.body.position);
-				trader.view.needsUpdate = false;
+			if (SimulationController.traders[i].view.needsUpdate) {
+				SimulationController.traders[i].view.update(SimulationController.traders[i].body.position);
+				SimulationController.traders[i].view.needsUpdate = false;
 			}
 		}
 		for (var i = 0; i < SimulationController.colonies.length; i++) {
