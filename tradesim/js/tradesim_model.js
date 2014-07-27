@@ -212,35 +212,34 @@ var TraderController = {
 	},
 	
 	getNewDestination:function(trader) {
-		var highBuyColony;
-		var highBuyResource;
-		var lowSellColony;
-		var lowSellResource;
+		var highColony;
+		var highResource;
+		var lowColony;
+		var lowResource;
 		
-		var highBuyPrice = Number.MIN_VALUE;
-		var lowSellPrice = Number.MAX_VALUE;
+		var highPrice = Number.MIN_VALUE;
+		var lowPrice = Number.MAX_VALUE;
 		
 		for (var i = 0; i < SimulationController.colonies.length; i++) {
 			for (var j = 0; j < SimulationController.colonies[i].economy.resources.length; j++) {
-				if (SimulationController.colonies[i].economy.resources[j].sellPrice <= lowSellPrice) {
-					lowSellColony = SimulationController.colonies[i];
-					lowSellResource = SimulationController.colonies[i].economy.resources[j].name;
-					lowSellPrice = SimulationController.colonies[i].economy.resources[j].sellPrice;
+				if (SimulationController.colonies[i].economy.resources[j].buyPrice <= lowPrice) {
+					lowColony = SimulationController.colonies[i];
+					lowResource = SimulationController.colonies[i].economy.resources[j].name;
+					lowPrice = SimulationController.colonies[i].economy.resources[j].buyPrice;
 				}
-				if (SimulationController.colonies[i].economy.resources[j].buyPrice >= highBuyPrice) {
-					highBuyColony = SimulationController.colonies[i];
-					highBuyPrice = SimulationController.colonies[i].economy.resources[j].buyPrice;
+				if (SimulationController.colonies[i].economy.resources[j].buyPrice >= highPrice) {
+					highColony = SimulationController.colonies[i];
+					highPrice = SimulationController.colonies[i].economy.resources[j].buyPrice;
 				}
 			}
 		}
 		
 		if (trader.economy.hasResources()) {
-			trader.destination = highBuyColony.planet.body.position;
+			trader.destination = highColony.planet.body.position; //TODO does not check whether or not the high price was for the correct resource
 		}
 		else {
-			console.warn('best purchase is @ ' + lowSellColony + ' for a purchase of ' + lowSellResource + ' @ a price of ' + lowSellPrice);
-			trader.destination = lowSellColony.planet.body.position;
-			trader.targetResource = lowSellResource;
+			trader.destination = lowColony.planet.body.position;
+			trader.targetResource = lowResource;
 		}
 	},
 	
@@ -271,11 +270,9 @@ var ColonyController = {
 		for (var i = 0; i < colony.economy.resources.length; i++) {
 			if (colony.economy.resources[i].quantity < 1) {
 				colony.economy.resources[i].buyPrice += 1;
-				colony.economy.resources[i].sellPrice -= 1;
 			}
 			else if (colony.economy.resources[i].quantity > 0) {
 				colony.economy.resources[i].buyPrice -= 1;
-				colony.economy.resources[i].sellPrice += 1;
 			}
 		}
 	}
@@ -284,10 +281,10 @@ var ColonyController = {
 //TODO is an object needed for resource? Should it just be a value on Planet, Ship and Colony objects? How to do enum that defines resource chain? Should each container have a single Resources object that contains the name and quantity of each resource?
 function Economy() {
 	this.resources = [	
-		{name: 'FOOD', quantity: 0, buyPrice: 1500, sellPrice: 1500},
-		{name: 'WATER', quantity: 0, buyPrice: 1500, sellPrice: 1500},
-		{name: 'FUEL', quantity: 0, buyPrice: 1500, sellPrice: 1500},
-		{name: 'METAL', quantity: 0, buyPrice: 1500, sellPrice: 1500}
+		{name: 'FOOD', quantity: 0, buyPrice: 1500},
+		{name: 'WATER', quantity: 0, buyPrice: 1500},
+		{name: 'FUEL', quantity: 0, buyPrice: 1500},
+		{name: 'METAL', quantity: 0, buyPrice: 1500}
 	];
 }
 
