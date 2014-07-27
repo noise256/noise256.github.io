@@ -56,7 +56,7 @@ var SimulationView = {
 		SimulationView.mouseVector = new THREE.Vector3();
 		
 		SimulationView.worldObjects = new THREE.Object3D();
-		SimulationView.scene.add(worldObjects);
+		SimulationView.scene.add(SimulationView.worldObjects);
 		
 		window.addEventListener('mousemove', SimulationView.onMouseMove, false);
 		
