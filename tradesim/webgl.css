@@ -7,7 +7,7 @@ body {
 div.webgl {
 	width: 1000px;
 	height: 800px;
-	position: fixed;
+	position: static;
 	border:5px solid black;
 	top:100px;
 	left:100px;
