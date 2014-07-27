@@ -67,7 +67,7 @@ var SimulationView = {
 		
 		for (var i = 0; i < intersects.length; i++) {
 			console.warn('intersects ' + intersects[i].object.uuid);
-			intersects[i].object.material.setRGB(1, 0, 0);
+			intersects[i].object.material.color.setRGB(1, 0, 0);
 		}
 	},
 	
