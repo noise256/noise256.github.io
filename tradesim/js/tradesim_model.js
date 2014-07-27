@@ -232,14 +232,14 @@ var TraderController = {
 			var distance = vec3.distance(SimulationController.colonies[i].planet.body.position, trader.body.position);
 			
 			for (var j = 0; j < SimulationController.colonies[i].economy.resources.length; j++) { //TODO dividing and multiplying by distance is probably an inaccurate method of ensuring that the best price/distance ratio is found
-				if (SimulationController.colonies[i].economy.resources[j].quantity > 0 && SimulationController.colonies[i].economy.resources[j].buyPrice / distance <= lowPrice) { //TODO what if multiple traders purchase resource and there is not enough present
+				if (SimulationController.colonies[i].economy.resources[j].quantity > 0 && SimulationController.colonies[i].economy.resources[j].buyPrice * distance <= lowPrice) { //TODO what if multiple traders purchase resource and there is not enough present
 					lowColony = SimulationController.colonies[i];
 					lowResource = SimulationController.colonies[i].economy.resources[j].name;
-					lowPrice = SimulationController.colonies[i].economy.resources[j].buyPrice / distance;
+					lowPrice = SimulationController.colonies[i].economy.resources[j].buyPrice * distance;
 				}
-				if (SimulationController.colonies[i].economy.resources[j].buyPrice * distance >= highPrice) {
+				if (SimulationController.colonies[i].economy.resources[j].buyPrice / distance >= highPrice) {
 					highColony = SimulationController.colonies[i];
-					highPrice = SimulationController.colonies[i].economy.resources[j].buyPrice * distance;
+					highPrice = SimulationController.colonies[i].economy.resources[j].buyPrice / distance;
 				}
 			}
 		}
