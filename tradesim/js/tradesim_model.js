@@ -22,10 +22,10 @@ var SimulationView = {
 	init: function() {
 		var canvas = document.getElementById("canvas");
 		
-		canvasWidth = canvas.clientWidth;
-		canvasHeight = canvas.clientHeight;
+		SimulationView.canvasWidth = canvas.clientWidth;
+		SimulationView.canvasHeight = canvas.clientHeight;
 		
-		fpsMeter = new FPSMeter(document.body, { decimals: 0, graph: true, theme: 'dark', left: '5px' });
+		SimulationView.fpsMeter = new FPSMeter(document.body, { decimals: 0, graph: true, theme: 'dark', left: '5px' });
 		
 		SimulationView.scene = new THREE.Scene();
 		
@@ -55,7 +55,7 @@ var SimulationView = {
 		
 		window.addEventListener('mousemove', SimulationView.onMouseMove, false);
 		
-		canvas.appendChild(SimulationView.renderer.domElement);
+		document.getElementById("canvas").appendChild(SimulationView.renderer.domElement);
 	},
 	
 	onMouseMove:function(e) {
