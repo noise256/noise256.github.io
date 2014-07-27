@@ -66,7 +66,7 @@ var SimulationView = {
 		intersects = raycaster.intersectObjects( SimulationView.scene.children );
 		
 		for (var i = 0; i < intersects.length; i++) {
-			console.warn('intersects ' + intersects[i]);
+			console.warn('intersects ' + intersects[i].uuid);
 		}
 	},
 	
