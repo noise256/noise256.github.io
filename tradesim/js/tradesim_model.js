@@ -128,10 +128,18 @@ var SimulationController = {
 			
 			//generate planet resources
 			var planetEconomy = new Economy();
-			planetEconomy.setResourceQuantity('FOOD', Math.floor(Math.random() * 100));
-			planetEconomy.setResourceQuantity('WATER', Math.floor(Math.random() * 100));
-			planetEconomy.setResourceQuantity('FUEL', Math.floor(Math.random() * 100));
-			planetEconomy.setResourceQuantity('METAL', Math.floor(Math.random() * 100));
+			if (Math.random() > 0.5) {
+				planetEconomy.setResourceQuantity('FOOD', 1);
+			}
+			if (Math.random() > 0.5) {
+				planetEconomy.setResourceQuantity('WATER', 1);
+			}
+			if (Math.random() > 0.5) {
+				planetEconomy.setResourceQuantity('FUEL', 1);
+			}
+			if (Math.random() > 0.5) {
+				planetEconomy.setResourceQuantity('METAL', 1);
+			}
 			
 			SimulationController.planets.push(new Planet(planetBody, planetView, planetEconomy));
 			
