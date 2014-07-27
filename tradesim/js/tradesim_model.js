@@ -185,8 +185,14 @@ var TraderController = {
 			var destinationVec = vec3.subtract(vec3.create(), trader.destination, trader.body.position);
 			
 			if (vec3.length(destinationVec) <= trader.interactionRange) {
+				if (trader.hasResources()) {
+					sellResources(trader);
+				}
+				else {
+					buyResources(trader);
+				}
 				trader.destination = null;
-				return;
+				//return; TODO why do we need to return here?
 			}
 			
 			var direction = vec3.normalize(vec3.create(), destinationVec);
