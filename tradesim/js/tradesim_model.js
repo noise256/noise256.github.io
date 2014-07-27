@@ -8,6 +8,8 @@ window.onload = function() {
 }
 
 var SimulationView = {
+	canvasOffsetLeft: null,
+	canvasOffsetTop: null,
 	canvasWidth: null,
 	canvasHeight: null,
 	
@@ -27,6 +29,8 @@ var SimulationView = {
 		
 		SimulationView.canvasWidth = canvas.clientWidth;
 		SimulationView.canvasHeight = canvas.clientHeight;
+		SimulationView.canvasOffsetLeft = canvas.offsetLeft;
+		SimulationView.canvasOffsetTop = canvas.offsetTop;
 		
 		console.warn('canvas size = ' + SimulationView.canvasWidth + ' ' + SimulationView.canvasHeight);
 		
@@ -68,8 +72,8 @@ var SimulationView = {
 	},
 	
 	onMouseMove:function(e) {
-		SimulationView.mouseVector.x = 2 * (e.clientX / SimulationView.canvasWidth) - 1;
-		SimulationView.mouseVector.y = 1 - 2 * (e.clientY / SimulationView.canvasHeight);
+		SimulationView.mouseVector.x = 2 * ((e.clientX - SimulationView.canvasOffsetLeft) / SimulationView.canvasWidth) - 1;
+		SimulationView.mouseVector.y = 1 - 2 * ((e.clientY - SimulationView.canvasOffsetTop) / SimulationView.canvasHeight);
 		
 		var raycaster = SimulationView.projector.pickingRay(SimulationView.mouseVector.clone(), SimulationView.camera);
 		var intersects = raycaster.intersectObjects(SimulationView.worldObjects.children);
