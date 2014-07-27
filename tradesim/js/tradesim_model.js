@@ -39,7 +39,7 @@ var SimulationView = {
 		SimulationView.camera.position.z = 24;
 		SimulationView.camera.lookAt(new THREE.Vector3(0, 10, 0));
 		
-		var controls = new THREE.OrbitControls(SimulationView.camera, canvas);
+		var controls = new THREE.TrackballControls(SimulationView.camera);
 		controls.target.y = 10;
 		controls.maxDistance = 2000;
 		
@@ -106,7 +106,9 @@ var SimulationView = {
 	
 	frame: function() {
 		SimulationView.fpsMeter.tickStart();
-
+		
+		SimulationView.controls.update();
+		
 		SimulationView.update();
 		SimulationView.render();
 		
