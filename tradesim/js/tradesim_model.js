@@ -193,10 +193,10 @@ var TraderController = {
 			
 			if (vec3.length(destinationVec) <= trader.interactionRange) {
 				if (trader.economy.hasResources()) {
-					sellResources(trader);
+					TraderController.sellResources(trader);
 				}
 				else {
-					buyResources(trader);
+					TraderController.buyResources(trader);
 				}
 				trader.destination = null;
 				//return; TODO why do we need to return here?
