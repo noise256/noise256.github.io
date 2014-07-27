@@ -242,10 +242,10 @@ var TraderController = {
 			}
 		}
 		
-		if (trader.economy.hasResources()) {
+		if (trader.economy.hasResources() && highColony) {
 			trader.destination = highColony.planet.body.position; //TODO does not check whether or not the high price was for the correct resource
 		}
-		else {
+		else if (lowColony) {
 			trader.destination = lowColony.planet.body.position;
 			trader.targetResource = lowResource;
 		}
