@@ -16,6 +16,7 @@ var SimulationView = {
 	scene: null,
 	camera: null, 
 	renderer: null,
+	controls: null,
 	projector: null,
 	mouseVector: null,
 	
@@ -39,9 +40,9 @@ var SimulationView = {
 		SimulationView.camera.position.z = 24;
 		SimulationView.camera.lookAt(new THREE.Vector3(0, 10, 0));
 		
-		var controls = new THREE.TrackballControls(SimulationView.camera);
-		controls.target.y = 10;
-		controls.maxDistance = 2000;
+		SimulationView.controls = new THREE.TrackballControls(SimulationView.camera);
+		SimulationView.controls.target.y = 10;
+		SimulationView.controls.maxDistance = 2000;
 		
 		var ambientLight = new THREE.AmbientLight(0x404040);
 		var mainLight = new THREE.PointLight();
