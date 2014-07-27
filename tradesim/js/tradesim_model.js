@@ -198,15 +198,36 @@ var TraderController = {
 	},
 	
 	getNewDestination:function(trader) {
-		trader.destination = SimulationController.planets[Math.floor(Math.random() * SimulationController.planets.length)].body.position;
+		var newDestination = null;
+		var bestPrice = 0;
+		
+		for (var i = 0; i < SimulationController.colonies.length; i++) {
+			for (var j = 0; j < SimulationController.colonies[i].economy.resources.length; j++) {
+				if (SimulationController.colonies[i].economy.resources[j].price > bestPrice) {
+					newDestination = SimulationController.colonies[i].planet.body.position;
+					bestPrice = SimulationController.colonies[i].economy.resources[j].price;
+				}
+			}
+		}
+		
+		trader.destination = newDestination;
 	}
 }
 
 var ColonyController = {
 	updateColony:function(colony) {
+		//harvest resources
+		for (var i = 0;i < colony.planet.economy.resources.length; i++) {
+			if (colony.planet.economy.resources[i].quantity > 0) {
+				colony.economy.changeResourceQuantity(colony.planet.economy.resources[i].name, 1);
+				//colony.planet.economy.changeResourceQuantity(colony.planet.economy.resources[i].name, -1);
+			}
+		}
+		
+		//set prices
 		for (var i = 0; i < colony.economy.resources.length; i++) {
 			if (colony.economy.resources[i].quantity <= 0) {
-				console.warn('No resources of type ' + colony.economy.resources[i].name);
+				colony.economy.resources[i].price += 1;
 			}
 		}
 	}
@@ -215,10 +236,10 @@ var ColonyController = {
 //TODO is an object needed for resource? Should it just be a value on Planet, Ship and Colony objects? How to do enum that defines resource chain? Should each container have a single Resources object that contains the name and quantity of each resource?
 function Economy() {
 	this.resources = [	
-		{name: 'FOOD', quantity: 0},
-		{name: 'WATER', quantity: 0},
-		{name: 'FUEL', quantity: 0},
-		{name: 'METAL', quantity: 0}
+		{name: 'FOOD', quantity: 0, price: 0},
+		{name: 'WATER', quantity: 0, price: 0},
+		{name: 'FUEL', quantity: 0, price: 0},
+		{name: 'METAL', quantity: 0, price: 0}
 	];
 }
 
@@ -227,6 +248,14 @@ Economy.prototype = {
 		for (var i = 0; i < this.resources.length; i++) {
 			if (this.resources[i].name == name) {
 				this.resources[i].quantity = quantity;
+			}
+		}
+	},
+	
+	changeResourceQuantity:function(name, change) {
+		for (var i = 0; i < this.resources.length; i++) {
+			if (this.resources[i].name == name) {
+				this.resources[i].quantity += change;
 			}
 		}
 	}
