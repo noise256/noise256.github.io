@@ -64,7 +64,10 @@ var SimulationView = {
 		
 		var raycaster = SimulationView.projector.pickingRay(SimulationView.mouseVector.clone(), SimulationView.camera),
 		intersects = raycaster.intersectObjects( SimulationView.scene.children );
-		console.warn('intersects ' + intersects.length);
+		
+		for (var i = 0;i < intersects.length; i++) {
+			console.warn('intersects ' + intersects[i].id);
+		}
 	},
 	
 	update: function() {
