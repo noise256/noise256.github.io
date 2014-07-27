@@ -245,9 +245,11 @@ var TraderController = {
 		}
 		
 		if (trader.economy.hasResources() && highColony) {
+			console.warn('Added sell destination');
 			trader.destination = highColony.planet.body.position; //TODO does not check whether or not the high price was for the correct resource
 		}
 		else if (lowColony) {
+			console.warn('Added buy destination');
 			trader.destination = lowColony.planet.body.position;
 			trader.targetResource = lowResource;
 		}
