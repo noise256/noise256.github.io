@@ -8,8 +8,6 @@ window.onload = function() {
 }
 
 var SimulationView = {
-	canvasOffsetLeft: null,
-	canvasOffsetTop: null,
 	canvasWidth: null,
 	canvasHeight: null,
 	
@@ -29,8 +27,6 @@ var SimulationView = {
 		
 		SimulationView.canvasWidth = canvas.clientWidth;
 		SimulationView.canvasHeight = canvas.clientHeight;
-		SimulationView.canvasOffsetLeft = canvas.offsetLeft;
-		SimulationView.canvasOffsetTop = canvas.offsetTop;
 		
 		console.warn('canvas size = ' + SimulationView.canvasWidth + ' ' + SimulationView.canvasHeight);
 		
@@ -59,6 +55,9 @@ var SimulationView = {
 		SimulationView.renderer.setSize(SimulationView.canvasWidth, SimulationView.canvasHeight);
 		SimulationView.renderer.setClearColor(0x000000, 1);
 		
+		SimulationView.domElement = SimulationView.renderer.domElement;
+		SimulationView.boundingRect = domElement.getBoundingClientRect();
+		
 		SimulationView.projector = new THREE.Projector();
 		SimulationView.mouseVector = new THREE.Vector3();
 		
@@ -72,13 +71,9 @@ var SimulationView = {
 	},
 	
 	onMouseMove:function(e) {
-		var domElement = SimulationView.renderer.domElement;
-		var boundingRect = domElement.getBoundingClientRect();
+		var x = (event.clientX - SimulationView.boundingRect.left) * (SimulationView.domElement.width / SimulationView.boundingRect.width);
+		var y = (event.clientY - SimulationView.boundingRect.top) * (SimulationView.domElement.height / SimulationView.boundingRect.height);
 		
-		var x = (event.clientX - boundingRect.left) * (domElement.width / boundingRect.width);
-		var y = (event.clientY - boundingRect.top) * (domElement.height / boundingRect.height);
-		//SimulationView.mouseVector.x = 2 * ((e.clientX - SimulationView.canvasOffsetLeft) / SimulationView.canvasWidth) - 1;
-		//SimulationView.mouseVector.y = 1 - 2 * ((e.clientY - SimulationView.canvasOffsetTop) / SimulationView.canvasHeight);
 		SimulationView.mouseVector.x = (x / SimulationView.canvasWidth) * 2 - 1;
 		SimulationView.mouseVector.y = 1 - (y / SimulationView.canvasHeight) * 2;
 		SimulationView.mouseVector.z = 0.5;
