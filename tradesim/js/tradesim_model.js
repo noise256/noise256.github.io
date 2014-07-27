@@ -225,6 +225,7 @@ var TraderController = {
 			trader.destination = highBuyColony.planet.body.position;
 		}
 		else {
+			console.warn('best purchase is @ ' + lowSellColony + ' for a purchase of ' + lowSellResource + ' @ a price of ' + lowSellPrice);
 			trader.destination = lowSellColony.planet.body.position;
 		}
 	}
