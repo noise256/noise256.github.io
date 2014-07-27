@@ -164,7 +164,7 @@ var SimulationController = {
 	update:function() {
 		//update colonies and traders using TraderController and ColonyController
 		for (var i = 0; i < SimulationController.planets.length; i++) {
-			SimulationController.planets[i].update();
+			//PlanetController.updatePlanet(SimulationController.planets[i]);
 		}
 		for (var i = 0; i < SimulationController.traders.length; i++) {
 			TraderController.updateTrader(SimulationController.traders[i]);
