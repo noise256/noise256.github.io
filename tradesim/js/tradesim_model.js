@@ -215,10 +215,10 @@ var ColonyController = {
 //TODO is an object needed for resource? Should it just be a value on Planet, Ship and Colony objects? How to do enum that defines resource chain? Should each container have a single Resources object that contains the name and quantity of each resource?
 function Economy() {
 	var resources = [	
-		{name: FOOD, quantity: 0},
-		{name: WATER, quantity: 0},
-		{name: FUEL, quantity: 0},
-		{name: METAL, quantity: 0}
+		{name: 'FOOD', quantity: 0},
+		{name: 'WATER', quantity: 0},
+		{name: 'FUEL', quantity: 0},
+		{name: 'METAL', quantity: 0}
 	];
 }
 
