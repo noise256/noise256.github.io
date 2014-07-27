@@ -100,8 +100,6 @@ var SimulationView = {
 		SimulationView.canvasWidth = canvas.clientWidth;
 		SimulationView.canvasHeight = canvas.clientHeight;
 		
-		console.warn('canvas size = ' + SimulationView.canvasWidth + ' ' + SimulationView.canvasHeight);
-		
 		SimulationView.renderer.setSize(SimulationView.canvasWidth, SimulationView.canvasHeight);
 		SimulationView.camera.aspect = SimulationView.canvasWidth / SimulationView.canvasHeight;
 		SimulationView.camera.updateProjectionMatrix();
