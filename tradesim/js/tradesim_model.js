@@ -79,8 +79,8 @@ var SimulationView = {
 		var y = (event.clientY - boundingRect.top) * (domElement.height / boundingRect.height);
 		//SimulationView.mouseVector.x = 2 * ((e.clientX - SimulationView.canvasOffsetLeft) / SimulationView.canvasWidth) - 1;
 		//SimulationView.mouseVector.y = 1 - 2 * ((e.clientY - SimulationView.canvasOffsetTop) / SimulationView.canvasHeight);
-		SimulationView.mouseVector.x = (x / canvasWidth) * 2 - 1;
-		SimulationView.mouseVector.y = 1 - (y / canvasHeight) * 2;
+		SimulationView.mouseVector.x = (x / SimulationView.canvasWidth) * 2 - 1;
+		SimulationView.mouseVector.y = 1 - (y / SimulationView.canvasHeight) * 2;
 		SimulationView.mouseVector.z = 0.5;
 		
 		var raycaster = SimulationView.projector.pickingRay(SimulationView.mouseVector.clone(), SimulationView.camera);
