@@ -215,7 +215,6 @@ var TraderController = {
 				}
 				if (SimulationController.colonies[i].economy.resources[j].buyPrice > highBuyPrice) {
 					highBuyColony = SimulationController.colonies[i];
-					highBuyResource = SimulationController.colonies[i].economy.resources[j].name;
 					highBuyPrice = SimulationController.colonies[i].economy.resources[j].buyPrice;
 				}
 			}
@@ -227,7 +226,20 @@ var TraderController = {
 		else {
 			console.warn('best purchase is @ ' + lowSellColony + ' for a purchase of ' + lowSellResource + ' @ a price of ' + lowSellPrice);
 			trader.destination = lowSellColony.planet.body.position;
+			trader.targetResource = lowSellResource;
 		}
+	}
+	
+	sellResources:function(trader) {
+		//TODO currently just dumps resources
+		for (var i = 0; i < trader.economy.resources.length; i++) {
+			trader.economy.setResourceQuantity(trader.economy.resources[i].name, 0); //TODO replace setResourceQuantity() with clearResource().
+		}
+	}
+	
+	buyResources:function(trader) {
+		//TODO currently just adds resource to trader without removing it from colony, need to add trade interaction with colony
+		trader.economy.changeResourceQuantity(trader.targetResource, 1);
 	}
 }
 
@@ -331,12 +343,6 @@ function Planet(body, view, economy) {
 	this.view = view;
 	this.economy = economy;
 	this.colonies = [];
-}
-
-Planet.prototype = {
-	update:function() {
-		this.view.update(this.body.position);
-	}
 }
 
 function Trader(body, view, economy) {
