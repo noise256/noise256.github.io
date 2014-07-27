@@ -232,6 +232,10 @@ Economy.prototype = {
 	}
 }
 
+var econ = new Economy();
+
+console.warn(econ.resources.length);
+
 function Body(position, mass, force, maxVelocity) {
 	this.position = position;
 	this.mass = mass;
