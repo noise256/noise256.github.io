@@ -396,8 +396,8 @@ function Economy() {
 Economy.prototype = {
 	getResourceByName:function(name) {
 		for (var i = 0; i < this.resources.length; i++) {
-			if (resources[i].name == name) {	
-				return resources[i];
+			if (this.resources[i].name == name) {	
+				return this.resources[i];
 			}
 		}
 	},
