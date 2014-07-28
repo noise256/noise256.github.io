@@ -172,10 +172,12 @@ var GUIController = {
 	},
 	
 	update:function() {
-		GUIController.resourceGUIParams.food = GUIController.resourceGUITarget.economy.resources.food;
-		GUIController.resourceGUIParams.water = GUIController.resourceGUITarget.economy.resources.water;
-		GUIController.resourceGUIParams.fuel = GUIController.resourceGUITarget.economy.resources.fuel;
-		GUIController.resourceGUIParams.metal = GUIController.resourceGUITarget.economy.resources.metal;
+		if (GUIController.resourceGUITarget) {
+			GUIController.resourceGUIParams.food = GUIController.resourceGUITarget.economy.resources.food;
+			GUIController.resourceGUIParams.water = GUIController.resourceGUITarget.economy.resources.water;
+			GUIController.resourceGUIParams.fuel = GUIController.resourceGUITarget.economy.resources.fuel;
+			GUIController.resourceGUIParams.metal = GUIController.resourceGUITarget.economy.resources.metal;
+		}
 	}
 }
 
