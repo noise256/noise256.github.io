@@ -157,26 +157,38 @@ var GUIController = {
 	resourceGUITarget:null,
 	
 	resourceGUIParams: {
-		food: 0,
-		water: 0,
-		fuel: 0,
-		metal: 0
+		foodQuantity:0,
+		foodPrice:0,
+		waterQuantity:0,
+		waterPrice:0,
+		fuelQuantity:0,
+		fuelPrice:0,
+		metalQuantity:0,
+		metalPrice:0,
 	},
 	
 	init:function() {
 		GUIController.resourceGUI = new dat.GUI({height: 4 * 32 - 1});
-		GUIController.resourceGUI.add(GUIController.resourceGUIParams, 'food').name('Food').listen();
-		GUIController.resourceGUI.add(GUIController.resourceGUIParams, 'water').name('Water').listen();
-		GUIController.resourceGUI.add(GUIController.resourceGUIParams, 'fuel').name('Fuel').listen();
-		GUIController.resourceGUI.add(GUIController.resourceGUIParams, 'metal').name('Metal').listen();
+		GUIController.resourceGUI.add(GUIController.resourceGUIParams, 'foodQuantity').name('Food Quantity').listen();
+		GUIController.resourceGUI.add(GUIController.resourceGUIParams, 'foodPrice').name('Food Price').listen();
+		GUIController.resourceGUI.add(GUIController.resourceGUIParams, 'waterQuantity').name('Water Quantity').listen();
+		GUIController.resourceGUI.add(GUIController.resourceGUIParams, 'waterPrice').name('Water Price').listen();
+		GUIController.resourceGUI.add(GUIController.resourceGUIParams, 'fuelQuantity').name('Fuel Quantity').listen();
+		GUIController.resourceGUI.add(GUIController.resourceGUIParams, 'fuelPrice').name('Fuel Price').listen();
+		GUIController.resourceGUI.add(GUIController.resourceGUIParams, 'metalQuantity').name('Metal Quantity').listen();
+		GUIController.resourceGUI.add(GUIController.resourceGUIParams, 'metalPrice').name('Metal Price').listen();
 	},
 	
 	update:function() {
 		if (GUIController.resourceGUITarget) {
-			GUIController.resourceGUIParams.food = GUIController.resourceGUITarget.economy.getResourceByName('food').quantity;
-			GUIController.resourceGUIParams.water = GUIController.resourceGUITarget.economy.getResourceByName('water').quantity
-			GUIController.resourceGUIParams.fuel = GUIController.resourceGUITarget.economy.getResourceByName('fuel').quantity
-			GUIController.resourceGUIParams.metal = GUIController.resourceGUITarget.economy.getResourceByName('metal').quantity
+			GUIController.resourceGUIParams.foodQuantity = GUIController.resourceGUITarget.economy.getResourceByName('food').quantity;
+			GUIController.resourceGUIParams.waterQuantity = GUIController.resourceGUITarget.economy.getResourceByName('water').quantity
+			GUIController.resourceGUIParams.fuelQuantity = GUIController.resourceGUITarget.economy.getResourceByName('fuel').quantity
+			GUIController.resourceGUIParams.metalQuantity = GUIController.resourceGUITarget.economy.getResourceByName('metal').quantity
+			GUIController.resourceGUIParams.foodPrice = GUIController.resourceGUITarget.economy.getResourceByName('food').price;
+			GUIController.resourceGUIParams.waterPrice = GUIController.resourceGUITarget.economy.getResourceByName('water').price
+			GUIController.resourceGUIParams.fuelPrice = GUIController.resourceGUITarget.economy.getResourceByName('fuel').price
+			GUIController.resourceGUIParams.metalPrice = GUIController.resourceGUITarget.economy.getResourceByName('metal').price
 		}
 	}
 }
@@ -325,14 +337,14 @@ var TraderController = {
 			var distance = vec3.distance(SimulationController.colonies[i].planet.body.position, trader.body.position);
 			
 			for (var j = 0; j < SimulationController.colonies[i].economy.resources.length; j++) { //TODO dividing and multiplying by distance is probably an inaccurate method of ensuring that the best price/distance ratio is found
-				if (SimulationController.colonies[i].economy.resources[j].quantity > 0 && SimulationController.colonies[i].economy.resources[j].buyPrice * distance <= lowPrice) { //TODO what if multiple traders purchase resource and there is not enough present
+				if (SimulationController.colonies[i].economy.resources[j].quantity > 0 && SimulationController.colonies[i].economy.resources[j].price * distance <= lowPrice) { //TODO what if multiple traders purchase resource and there is not enough present
 					lowColony = SimulationController.colonies[i];
 					lowResource = SimulationController.colonies[i].economy.resources[j].name;
-					lowPrice = SimulationController.colonies[i].economy.resources[j].buyPrice * distance;
+					lowPrice = SimulationController.colonies[i].economy.resources[j].price * distance;
 				}
-				if (SimulationController.colonies[i].economy.resources[j].buyPrice / distance >= highPrice) {
+				if (SimulationController.colonies[i].economy.resources[j].price / distance >= highPrice) {
 					highColony = SimulationController.colonies[i];
-					highPrice = SimulationController.colonies[i].economy.resources[j].buyPrice / distance;
+					highPrice = SimulationController.colonies[i].economy.resources[j].price / distance;
 				}
 			}
 		}
@@ -386,10 +398,10 @@ var ColonyController = {
 //TODO possibly change this to use names as array indices, e.g. resources["food"] = {quantity:0, buyPrice:0}, etc.
 function Economy() {
 	this.resources = [
-		{name: 'food', quantity: 0, buyPrice: 1500},
-		{name: 'water', quantity: 0, buyPrice: 1500},
-		{name: 'fuel', quantity: 0, buyPrice: 1500},
-		{name: 'metal', quantity: 0, buyPrice: 1500}
+		{name: 'food', quantity: 0, price: 1500},
+		{name: 'water', quantity: 0, price: 1500},
+		{name: 'fuel', quantity: 0, price: 1500},
+		{name: 'metal', quantity: 0, price: 1500}
 	];
 }
 
