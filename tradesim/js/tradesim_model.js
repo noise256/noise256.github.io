@@ -259,9 +259,17 @@ var SimulationController = {
 		
 		//create traders
 		var traderGeometry = new THREE.BoxGeometry(1, 1, 1);
+		
+		SHADER_LOADER.load(
+			function (data) {
+				var traderVertexShader = data.shader.vertex;
+				var traderFragmentShader = data.shader.fragment;
+			}
+		);
+		
 		var traderMaterial = new THREE.ShaderMaterial({
-			vertexShader: $('#vertexshader').text(),
-			fragmentShader: $('#fragmentshader').text()
+			vertexShader: traderVertexShader,
+			fragmentShader: traderFragmentShader
 		});
 		
 		//var traderMaterial = new THREE.MeshBasicMaterial({color: 0x003344});
