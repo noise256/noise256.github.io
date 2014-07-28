@@ -312,7 +312,7 @@ var TraderController = {
 		}
 		
 		if (trader.destination != null) {
-			var destinationVec = vec3.subtract(vec3.create(), trader.destination, trader.body.position);
+			var destinationVec = vec3.subtract(vec3.create(), trader.destination.body.position, trader.body.position);
 			
 			if (vec3.length(destinationVec) <= trader.interactionRange) {
 				if (trader.economy.hasResources()) {
@@ -363,24 +363,26 @@ var TraderController = {
 		}
 		
 		if (trader.economy.hasResources() && highColony) {
-			trader.destination = highColony.planet.body.position; //TODO does not check whether or not the high price was for the correct resource
+			trader.destination = highColony; //TODO does not check whether or not the high price was for the correct resource
 		}
 		else if (lowColony) {
-			trader.destination = lowColony.planet.body.position;
+			trader.destination = lowColony;
 			trader.targetResource = lowResource;
 		}
 	},
 	
-	sellResources:function(trader) {
+	sellResources:function(trader, colony) {
 		//TODO currently just dumps resources
 		for (var i = 0; i < trader.economy.resources.length; i++) {
+			colony.economy.changeResourceQuantity(trader.economy.resources[i].name, trader.economy.resources[i].quantity);
 			trader.economy.setResourceQuantity(trader.economy.resources[i].name, 0); //TODO replace setResourceQuantity() with clearResource().
 		}
 	},
 	
-	buyResources:function(trader) {
+	buyResources:function(trader, colony) {
 		//TODO currently just adds resource to trader without removing it from colony, need to add trade interaction with colony
 		trader.economy.changeResourceQuantity(trader.targetResource, 1);
+		colony.economy.changeResourceQuantity(trader.targetResource, -1);
 	}
 }
 
