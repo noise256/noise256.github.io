@@ -263,7 +263,7 @@ var SimulationController = {
 		
 		SHADER_LOADER.load(
 			function (data) {
-				var traderMaterial = new THREE.ShaderMaterial({
+				traderMaterial = new THREE.ShaderMaterial({
 					vertexShader: data.shader.vertex,
 					fragmentShader: data.shader.fragment
 				});
