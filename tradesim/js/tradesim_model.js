@@ -172,7 +172,7 @@ var GUIController = {
 		GUIController.resourceGUI.add(SimulationView.datGuiParams, 'metal').name('Metal');
 	},
 	
-	updateGui:function() {
+	update:function() {
 		console.warn(resourceGUITarget);
 	}
 }
