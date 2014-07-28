@@ -384,7 +384,7 @@ Economy.prototype = {
 				this.resources[i].price = Math.max(0, this.resources[i].price);
 			}
 		}
-	}
+	},
 	
 	hasResources:function() {
 		for (var i = 0; i < this.resources.length; i++) {
