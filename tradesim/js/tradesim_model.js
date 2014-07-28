@@ -340,7 +340,7 @@ var TraderController = {
 		var lowColony;
 		var lowResource;
 		
-		var highPrice = Number.MIN_VALUE;
+		var highPrice = 0;
 		var lowPrice = Number.MAX_VALUE;
 		
 		for (var i = 0; i < SimulationController.colonies.length; i++) {
