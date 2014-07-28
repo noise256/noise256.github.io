@@ -270,7 +270,7 @@ var SimulationController = {
 		var traderMaterial = new THREE.MeshBasicMaterial({color: 0x003344});
 		for (var i = 0; i < SimulationController.numTraders; i++) {
 			var traderPosition = vec3.random(vec3.create(), Math.random() * SimulationController.maxPlanetSpread); //TODO implement max trader spread
-			var traderBody = new Body(traderPosition, 1, 0.005, 0.3);
+			var traderBody = new Body(traderPosition, 1, 0.05, 0.3);
 			
 			var traderView = new View(traderGeometry, traderMaterial);
 			
