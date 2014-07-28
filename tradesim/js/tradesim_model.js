@@ -85,7 +85,7 @@ var SimulationView = {
 			var worldParent = intersects[0].object.worldParent;
 			
 			if (worldParent instanceof Planet) {
-				GUIController.resourceGUITarget = worldParent.colony;
+				GUIController.resourceGUITarget = worldParent.colonies[0];
 			}
 			else {
 				GUIController.resourceGUITarget = worldParent;
