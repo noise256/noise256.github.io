@@ -21,14 +21,6 @@ var SimulationView = {
 	
 	fpsMeter: null,
 	
-	datGui: null,
-	datGuiParams: {
-		food: 0,
-		water: 0,
-		fuel: 0,
-		metal: 0
-	},
-	
 	worldObjects: null,
 	
 	init: function() {
@@ -164,16 +156,26 @@ var SkyBox = {
 var GUIController = {
 	resourceGUITarget:null,
 	
+	resourceGUIParams: {
+		food: 0,
+		water: 0,
+		fuel: 0,
+		metal: 0
+	},
+	
 	init:function() {
-		GUIController.resourceGUI = new dat.GUI({height: 8 * 32 - 1});
-		GUIController.resourceGUI.add(SimulationView.datGuiParams, 'food').name('Food');
-		GUIController.resourceGUI.add(SimulationView.datGuiParams, 'water').name('Water');
-		GUIController.resourceGUI.add(SimulationView.datGuiParams, 'fuel').name('Fuel');
-		GUIController.resourceGUI.add(SimulationView.datGuiParams, 'metal').name('Metal');
+		GUIController.resourceGUI = new dat.GUI({height: 4 * 32 - 1});
+		GUIController.resourceGUI.add(GUIController.resourceGUIParams, 'food').name('Food');
+		GUIController.resourceGUI.add(GUIController.resourceGUIParams, 'water').name('Water');
+		GUIController.resourceGUI.add(GUIController.resourceGUIParams, 'fuel').name('Fuel');
+		GUIController.resourceGUI.add(GUIController.resourceGUIParams, 'metal').name('Metal');
 	},
 	
 	update:function() {
-		console.warn(GUIController.resourceGUITarget);
+		resourceGUIParams.food = resourceGUITarget.economy.resources.food;
+		resourceGUIParams.water = resourceGUITarget.economy.resources.water;
+		resourceGUIParams.fuel = resourceGUITarget.economy.resources.fuel;
+		resourceGUIParams.metal = resourceGUITarget.economy.resources.metal;
 	}
 }
 
