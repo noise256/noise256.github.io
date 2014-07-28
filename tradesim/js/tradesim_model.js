@@ -267,7 +267,12 @@ var SimulationController = {
 		
 		//create traders
 		var traderGeometry = new THREE.BoxGeometry(1, 1, 1);
-		var traderMaterial = new THREE.MeshBasicMaterial({color: 0x003344});
+		var traderMaterial = new THREE.MeshShaderMaterial({
+			vertexShader: $("#vertexshader").text(),
+			fragmentShader: $("#fragmentshader").text()
+		});
+		
+		//var traderMaterial = new THREE.MeshBasicMaterial({color: 0x003344});
 		for (var i = 0; i < SimulationController.numTraders; i++) {
 			var traderPosition = vec3.random(vec3.create(), Math.random() * SimulationController.maxPlanetSpread); //TODO implement max trader spread
 			var traderBody = new Body(traderPosition, 1, 0.05, 0.3);
