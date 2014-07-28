@@ -453,7 +453,7 @@ function View(geometry, material, position) {
 View.prototype = {
 	update:function(position) {
 		this.mesh.position.set(position[0], position[1], position[2]);
-	}
+	},
 	
 	setWorldParent:function(worldParent) {
 		this.mesh.worldParent = worldParent;
