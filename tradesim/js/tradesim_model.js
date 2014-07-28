@@ -312,7 +312,7 @@ var TraderController = {
 		}
 		
 		if (trader.destination != null) {
-			var destinationVec = vec3.subtract(vec3.create(), trader.destination.body.position, trader.body.position);
+			var destinationVec = vec3.subtract(vec3.create(), trader.destination.planet.body.position, trader.body.position);
 			
 			if (vec3.length(destinationVec) <= trader.interactionRange) {
 				if (trader.economy.hasResources()) {
