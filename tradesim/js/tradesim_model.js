@@ -173,10 +173,10 @@ var GUIController = {
 	
 	update:function() {
 		if (GUIController.resourceGUITarget) {
-			GUIController.resourceGUIParams.food = GUIController.resourceGUITarget.economy.resources.food;
-			GUIController.resourceGUIParams.water = GUIController.resourceGUITarget.economy.resources.water;
-			GUIController.resourceGUIParams.fuel = GUIController.resourceGUITarget.economy.resources.fuel;
-			GUIController.resourceGUIParams.metal = GUIController.resourceGUITarget.economy.resources.metal;
+			GUIController.resourceGUIParams.food = GUIController.resourceGUITarget.economy.getResourceByName('food').quantity;
+			GUIController.resourceGUIParams.water = GUIController.resourceGUITarget.economy.getResourceByName('water').quantity
+			GUIController.resourceGUIParams.fuel = GUIController.resourceGUITarget.economy.getResourceByName('fuel').quantity
+			GUIController.resourceGUIParams.metal = GUIController.resourceGUITarget.economy.getResourceByName('metal').quantity
 		}
 	}
 }
@@ -219,16 +219,16 @@ var SimulationController = {
 			//generate planet resources
 			var planetEconomy = new Economy();
 			if (Math.random() > 0.5) {
-				planetEconomy.setResourceQuantity('FOOD', 1);
+				planetEconomy.setResourceQuantity('food', 1);
 			}
 			if (Math.random() > 0.5) {
-				planetEconomy.setResourceQuantity('WATER', 1);
+				planetEconomy.setResourceQuantity('water', 1);
 			}
 			if (Math.random() > 0.5) {
-				planetEconomy.setResourceQuantity('FUEL', 1);
+				planetEconomy.setResourceQuantity('fuel', 1);
 			}
 			if (Math.random() > 0.5) {
-				planetEconomy.setResourceQuantity('METAL', 1);
+				planetEconomy.setResourceQuantity('metal', 1);
 			}
 			
 			SimulationController.planets.push(new Planet(planetBody, planetView, planetEconomy));
@@ -382,16 +382,26 @@ var ColonyController = {
 }
 
 //TODO is an object needed for resource? Should it just be a value on Planet, Ship and Colony objects? How to do enum that defines resource chain? Should each container have a single Resources object that contains the name and quantity of each resource?
+
+//TODO possibly change this to use names as array indices, e.g. resources["food"] = {quantity:0, buyPrice:0}, etc.
 function Economy() {
-	this.resources = [	
-		{name: 'FOOD', quantity: 0, buyPrice: 1500},
-		{name: 'WATER', quantity: 0, buyPrice: 1500},
-		{name: 'FUEL', quantity: 0, buyPrice: 1500},
-		{name: 'METAL', quantity: 0, buyPrice: 1500}
-	];
+	this.resources = {
+		{name: 'food', quantity: 0, buyPrice: 1500},
+		{name: 'water', quantity: 0, buyPrice: 1500},
+		{name: 'fuel', quantity: 0, buyPrice: 1500},
+		{name: 'metal', quantity: 0, buyPrice: 1500}
+	};
 }
 
 Economy.prototype = {
+	getResourceByName:function(name) {
+		for (var i = 0; i < this.resources.length; i++) {
+			if (resources[i].name == name) {	
+				return resources[i];
+			}
+		}
+	},
+	
 	setResourceQuantity:function(name, quantity) {
 		for (var i = 0; i < this.resources.length; i++) {
 			if (this.resources[i].name == name) {
