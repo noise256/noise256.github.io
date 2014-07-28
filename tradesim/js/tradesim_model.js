@@ -165,10 +165,10 @@ var GUIController = {
 	
 	init:function() {
 		GUIController.resourceGUI = new dat.GUI({height: 4 * 32 - 1});
-		GUIController.resourceGUI.add(GUIController.resourceGUIParams, 'food').name('Food');
-		GUIController.resourceGUI.add(GUIController.resourceGUIParams, 'water').name('Water');
-		GUIController.resourceGUI.add(GUIController.resourceGUIParams, 'fuel').name('Fuel');
-		GUIController.resourceGUI.add(GUIController.resourceGUIParams, 'metal').name('Metal');
+		GUIController.resourceGUI.add(GUIController.resourceGUIParams, 'food').name('Food').listen();
+		GUIController.resourceGUI.add(GUIController.resourceGUIParams, 'water').name('Water').listen();
+		GUIController.resourceGUI.add(GUIController.resourceGUIParams, 'fuel').name('Fuel').listen();
+		GUIController.resourceGUI.add(GUIController.resourceGUIParams, 'metal').name('Metal').listen();
 	},
 	
 	update:function() {
