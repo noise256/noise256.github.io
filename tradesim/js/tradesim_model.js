@@ -1,7 +1,7 @@
 window.onload = function() {
 	SimulationView.init();
 	SkyBox.init();
-	
+	GUIController.init();
 	SimulationController.init();
 	
 	SimulationView.frame();
@@ -11,14 +11,23 @@ var SimulationView = {
 	canvasWidth: null,
 	canvasHeight: null,
 	
-	fpsMeter: null, 
-	
 	scene: null,
 	camera: null, 
 	renderer: null,
 	controls: null,
+	
 	projector: null,
 	mouseVector: null,
+	
+	fpsMeter: null,
+	
+	datGui: null,
+	datGuiParams: {
+		food: 0,
+		water: 0,
+		fuel: 0,
+		metal: 0
+	},
 	
 	worldObjects: null,
 	
@@ -28,10 +37,6 @@ var SimulationView = {
 		SimulationView.canvasWidth = canvas.clientWidth;
 		SimulationView.canvasHeight = canvas.clientHeight;
 		
-		console.warn('canvas size = ' + SimulationView.canvasWidth + ' ' + SimulationView.canvasHeight);
-		
-		SimulationView.fpsMeter = new FPSMeter(document.body, { decimals: 0, graph: true, theme: 'dark', left: '5px' });
-		
 		SimulationView.scene = new THREE.Scene();
 		
 		SimulationView.camera = new THREE.PerspectiveCamera(60, SimulationView.canvasWidth / SimulationView.canvasHeight, 1, 10000);
@@ -39,10 +44,6 @@ var SimulationView = {
 		SimulationView.camera.position.y = 10;
 		SimulationView.camera.position.z = 24;
 		SimulationView.camera.lookAt(new THREE.Vector3(0, 10, 0));
-		
-		SimulationView.controls = new THREE.TrackballControls(SimulationView.camera);
-		SimulationView.controls.target.y = 10;
-		SimulationView.controls.maxDistance = 2000;
 		
 		var ambientLight = new THREE.AmbientLight(0x404040);
 		var mainLight = new THREE.PointLight();
@@ -55,6 +56,12 @@ var SimulationView = {
 		SimulationView.renderer.setSize(SimulationView.canvasWidth, SimulationView.canvasHeight);
 		SimulationView.renderer.setClearColor(0x000000, 1);
 		
+		SimulationView.controls = new THREE.TrackballControls(SimulationView.camera);
+		SimulationView.controls.target.y = 10;
+		SimulationView.controls.maxDistance = 2000;
+		
+		SimulationView.fpsMeter = new FPSMeter(document.body, { decimals: 0, graph: true, theme: 'dark', left: '5px' });
+		
 		document.getElementById("canvas").appendChild(SimulationView.renderer.domElement);
 		
 		SimulationView.domElement = SimulationView.renderer.domElement;
@@ -63,11 +70,11 @@ var SimulationView = {
 		SimulationView.projector = new THREE.Projector();
 		SimulationView.mouseVector = new THREE.Vector3();
 		
-		SimulationView.worldObjects = new THREE.Object3D();
-		SimulationView.scene.add(SimulationView.worldObjects);
-		
 		window.addEventListener('mousemove', SimulationView.onMouseMove, false);
 		window.addEventListener('resize', SimulationView.onWindowResize, false);
+		
+		SimulationView.worldObjects = new THREE.Object3D();
+		SimulationView.scene.add(SimulationView.worldObjects);
 	},
 	
 	onMouseMove:function(e) {
@@ -80,6 +87,10 @@ var SimulationView = {
 		
 		var raycaster = SimulationView.projector.pickingRay(SimulationView.mouseVector.clone(), SimulationView.camera);
 		var intersects = raycaster.intersectObjects(SimulationView.worldObjects.children);
+		
+		if (intersects.length > 0) {
+			GUIController.resourceGUITarget = intersects[0].object.worldParent;
+		}
 		
 		for (var i = 0; i < SimulationView.worldObjects.children.length; i++) {
 			SimulationView.worldObjects.children[i].material.color.setRGB(1, 1, 1);
@@ -115,6 +126,7 @@ var SimulationView = {
 		
 		SimulationView.controls.update();
 		
+		GUIController.update();
 		SimulationView.update();
 		SimulationView.render();
 		
@@ -146,6 +158,22 @@ var SkyBox = {
 			new THREE.BoxGeometry(5000, 5000, 5000), 
 			new THREE.MeshFaceMaterial(materialArray)
 		));
+	}
+}
+
+var GUIController = {
+	resourceGUITarget:null,
+	
+	init:function() {
+		GUIController.resourceGUI = new dat.GUI({height: 8 * 32 - 1});
+		GUIController.resourceGUI.add(SimulationView.datGuiParams, 'food').name('Food');
+		GUIController.resourceGUI.add(SimulationView.datGuiParams, 'water').name('Water');
+		GUIController.resourceGUI.add(SimulationView.datGuiParams, 'fuel').name('Fuel');
+		GUIController.resourceGUI.add(SimulationView.datGuiParams, 'metal').name('Metal');
+	},
+	
+	updateGui:function() {
+		console.warn(resourceGUITarget);
 	}
 }
 
@@ -418,9 +446,6 @@ Body.prototype = {
 }
 
 function View(geometry, material, position) {
-	var geometry = geometry;
-	var material = material;
-	
 	this.mesh = new THREE.Mesh(geometry, material);
 	this.needsUpdate = true;
 }
@@ -429,6 +454,10 @@ View.prototype = {
 	update:function(position) {
 		this.mesh.position.set(position[0], position[1], position[2]);
 	}
+	
+	setWorldParent:function(worldParent) {
+		this.mesh.worldParent = worldParent;
+	}
 }
 
 function Planet(body, view, economy) {
@@ -436,6 +465,8 @@ function Planet(body, view, economy) {
 	this.view = view;
 	this.economy = economy;
 	this.colonies = [];
+	
+	this.view.setWorldParent(this);
 }
 
 function Trader(body, view, economy) {
@@ -447,6 +478,8 @@ function Trader(body, view, economy) {
 	
 	this.targetResource = null;
 	this.destination = null;
+	
+	this.view.setWorldParent(this)
 }
 
 function Colony(planet, economy) {
