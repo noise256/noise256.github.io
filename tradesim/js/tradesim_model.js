@@ -340,10 +340,10 @@ var ColonyController = {
 		//set prices
 		for (var i = 0; i < colony.economy.resources.length; i++) {
 			if (colony.economy.resources[i].quantity < 1) {
-				colony.economy.changeResourcePrice(resources[i].name, 1);
+				colony.economy.changeResourcePrice(colony.economy.resources[i].name, 1);
 			}
 			else if (colony.economy.resources[i].quantity > 0) {
-				colony.economy.changeResourcePrice(resources[i].name, -1);
+				colony.economy.changeResourcePrice(colony.economy.resources[i].name, -1);
 			}
 		}
 	}
