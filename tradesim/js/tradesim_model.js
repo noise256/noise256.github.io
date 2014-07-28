@@ -69,6 +69,7 @@ var SimulationView = {
 		SimulationView.scene.add(SimulationView.worldObjects);
 	},
 	
+	//TODO there is a lot of game logic here that should not be in the view logic
 	onMouseMove:function(e) {
 		var x = (event.clientX - SimulationView.boundingRect.left) * (SimulationView.domElement.width / SimulationView.boundingRect.width);
 		var y = (event.clientY - SimulationView.boundingRect.top) * (SimulationView.domElement.height / SimulationView.boundingRect.height);
@@ -81,7 +82,14 @@ var SimulationView = {
 		var intersects = raycaster.intersectObjects(SimulationView.worldObjects.children);
 		
 		if (intersects.length > 0) {
-			GUIController.resourceGUITarget = intersects[0].object.worldParent;
+			var worldParent = intersects[0].object.worldParent;
+			
+			if (worldParent instanceof Planet) {
+				GUIController.resourceGUITarget = worldParent.colony;
+			}
+			else {
+				GUIController.resourceGUITarget = worldParent;
+			}
 		}
 		
 		for (var i = 0; i < SimulationView.worldObjects.children.length; i++) {
@@ -383,7 +391,7 @@ var ColonyController = {
 		
 		//set prices
 		for (var i = 0; i < colony.economy.resources.length; i++) {
-			if (colony.economy.resources[i].quantity < 1) {
+			if (colony.economy.resources[i].quantity <= 0) {
 				colony.economy.changeResourcePrice(colony.economy.resources[i].name, 1);
 			}
 			else if (colony.economy.resources[i].quantity > 0) {
