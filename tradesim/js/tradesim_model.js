@@ -340,10 +340,10 @@ var ColonyController = {
 		//set prices
 		for (var i = 0; i < colony.economy.resources.length; i++) {
 			if (colony.economy.resources[i].quantity < 1) {
-				colony.economy.resources[i].buyPrice += 1;
+				colony.economy.changeResourcePrice(resources[i].name, 1);
 			}
 			else if (colony.economy.resources[i].quantity > 0) {
-				colony.economy.resources[i].buyPrice -= 1;
+				colony.economy.changeResourcePrice(resources[i].name, -1);
 			}
 		}
 	}
@@ -363,7 +363,7 @@ Economy.prototype = {
 	setResourceQuantity:function(name, quantity) {
 		for (var i = 0; i < this.resources.length; i++) {
 			if (this.resources[i].name == name) {
-				this.resources[i].quantity = quantity;
+				this.resources[i].quantity = Math.max(0, quantity);
 			}
 		}
 	},
@@ -372,9 +372,19 @@ Economy.prototype = {
 		for (var i = 0; i < this.resources.length; i++) {
 			if (this.resources[i].name == name) {
 				this.resources[i].quantity += change;
+				this.resources[i].quantity = Math.max(0, this.resources[i].quantity);
 			}
 		}
 	},
+	
+	changeResourcePrice:function(name, change) {
+		for (var i = 0; i < this.resources.length; i++) {
+			if (this.resources[i].name == name) {
+				this.resources[i].price += change;
+				this.resources[i].price = Math.max(0, this.resources[i].price);
+			}
+		}
+	}
 	
 	hasResources:function() {
 		for (var i = 0; i < this.resources.length; i++) {
