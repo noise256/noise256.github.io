@@ -357,7 +357,7 @@ var TraderController = {
 			for (var j = 0; j < trader.economy.resources.length; j++) {
 				if (SimulationController.colonies[i].economy.getResourceByName(trader.economy.resources[j].name).price / distance >= highPrice) {
 					highColony = SimulationController.colonies[i];
-					highPrice = SimulationController.colonies[i].economy.resources[j].price / distance;
+					highPrice = SimulationController.colonies[i].economy.getResourceByName(trader.economy.resources[j].name).price / distance;
 				}
 			}
 		}
