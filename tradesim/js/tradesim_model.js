@@ -173,7 +173,7 @@ var GUIController = {
 	},
 	
 	update:function() {
-		console.warn(resourceGUITarget);
+		console.warn(GUIController.resourceGUITarget);
 	}
 }
 
