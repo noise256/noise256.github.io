@@ -91,14 +91,6 @@ var SimulationView = {
 				GUIController.resourceGUITarget = worldParent;
 			}
 		}
-		
-		for (var i = 0; i < SimulationView.worldObjects.children.length; i++) {
-			SimulationView.worldObjects.children[i].material.color.setRGB(1, 1, 1);
-		}
-		
-		for (var i = 0; i < intersects.length; i++) {
-			intersects[i].object.material.color.setRGB(1, 0, 0);
-		}
 	},
 	
 	onWindowResize:function(e) {
