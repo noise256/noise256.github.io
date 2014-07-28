@@ -260,10 +260,13 @@ var SimulationController = {
 		//create traders
 		var traderGeometry = new THREE.BoxGeometry(1, 1, 1);
 		
+		var traderVertexShader = null;
+		var traderFragmentShader = null;
+		
 		SHADER_LOADER.load(
 			function (data) {
-				var traderVertexShader = data.shader.vertex;
-				var traderFragmentShader = data.shader.fragment;
+				traderVertexShader = data.shader.vertex;
+				traderFragmentShader = data.shader.fragment;
 			}
 		);
 		
