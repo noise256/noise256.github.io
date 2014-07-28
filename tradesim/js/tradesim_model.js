@@ -385,12 +385,12 @@ var ColonyController = {
 
 //TODO possibly change this to use names as array indices, e.g. resources["food"] = {quantity:0, buyPrice:0}, etc.
 function Economy() {
-	this.resources = {
+	this.resources = [
 		{name: 'food', quantity: 0, buyPrice: 1500},
 		{name: 'water', quantity: 0, buyPrice: 1500},
 		{name: 'fuel', quantity: 0, buyPrice: 1500},
 		{name: 'metal', quantity: 0, buyPrice: 1500}
-	};
+	];
 }
 
 Economy.prototype = {
