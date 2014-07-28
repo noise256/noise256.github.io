@@ -172,10 +172,10 @@ var GUIController = {
 	},
 	
 	update:function() {
-		resourceGUIParams.food = resourceGUITarget.economy.resources.food;
-		resourceGUIParams.water = resourceGUITarget.economy.resources.water;
-		resourceGUIParams.fuel = resourceGUITarget.economy.resources.fuel;
-		resourceGUIParams.metal = resourceGUITarget.economy.resources.metal;
+		GUIController.resourceGUIParams.food = resourceGUITarget.economy.resources.food;
+		GUIController.resourceGUIParams.water = resourceGUITarget.economy.resources.water;
+		GUIController.resourceGUIParams.fuel = resourceGUITarget.economy.resources.fuel;
+		GUIController.resourceGUIParams.metal = resourceGUITarget.economy.resources.metal;
 	}
 }
 
