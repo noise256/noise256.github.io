@@ -141,9 +141,13 @@ var SkyBox = {
 		
 		var materialArray = [];
 		for (var i = 0; i < 6; i++) {
-			materialArray.push(new THREE.MeshBasicMaterial({
-				color: 0xffffff,
-				map: THREE.ImageUtils.loadTexture(imagePrefix + images[i] + imageSuffix),
+			var uniforms = {
+				texture1: {type: "t", value: THREE.ImageUtils.loadTexture(imagePrefix + images[i] + imageSuffix)}
+			};
+			materialArray.push(new THREE.ShaderMaterial({
+				uniforms: uniforms,
+				vertexShader: $('skyboxvertexshader').text(),
+				fragmentShader: $('skyboxfragmentshader').text(),
 				side: THREE.BackSide
 			}));
 		}
