@@ -1,13 +1,13 @@
 window.onload = function() {
-	ResourceLoader.loadShaders();
-	
-	while (!ResourceLoader.shadersLoaded) {}; //TODO currently waiting until shaders are fully loaded.
-	
 	SimulationView.init();
 	SkyBox.init();
 	GUIController.init();
-	SimulationController.init();
 	
+	ResourceLoader.loadShaders();
+	while (!ResourceLoader.shadersLoaded) {}; //TODO currently waiting until shaders are fully loaded.
+	
+	SimulationController.init();
+
 	SimulationView.frame();
 }
 
