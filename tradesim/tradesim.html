@@ -71,7 +71,11 @@
 			varying vec3 secondaryColor;
 			varying vec3 direction;
 			
+			varying vec2 vUv;
+			
 			void main() {
+				vUv = uv;
+				
 				//1
 				vec3 pos = position.xyz; //TODO gl_Vertex.xyz = position.xyz?
 				vec3 ray = pos - cameraPosition;
@@ -123,12 +127,15 @@
 			}
 		</script>
 		<script type="x-shader/x-fragment" id="planet_f_shader">
+			uniform sampler2D texture1;
 			uniform vec3 lightPos;
 			uniform lightDir;
 			
 			varying vec3 color;
 			varying vec3 secondaryColor;
 			varying vec3 direction;
+			
+			varying vec2 vUv;
 			
 			const float g = -0.90;
 			const float g2 = g * g;
@@ -141,7 +148,7 @@
 				float rayleighPhase = 0.75 * (1.0 + cos * cos);
 				float miePhase = ((1.0 - g2) / (2.0 + g2)) * (1.0 + cos * cos) / pow(1.0 + g2 - 2.0 * g * cos, 1.5);
 				
-				gl_FragColor.rgb = 1.0 - exp(-exposure * (rayleighPhase * color * miePhase * secondaryColor));
+				gl_FragColor.rgb = 1.0 - exp(-exposure * (texture2D(texture1, vUv) * rayleighPhase * color * miePhase * secondaryColor));
 				gl_FragColor.a = 1.0;
 			}
 		</script>
