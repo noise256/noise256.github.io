@@ -223,7 +223,8 @@ var SimulationController = {
 		
 		var planetMaterial = new THREE.ShaderMaterial({
 			vertexShader: $('#unlit_tex_v_shader').text(),
-			fragmentShader: $('#unlit_tex_f_shader').text()
+			fragmentShader: $('#unlit_tex_f_shader').text(),
+			color:0x888888
 		});
 		
 		//var planetMaterial = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('images/sedna.jpg')});
