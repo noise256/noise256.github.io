@@ -156,7 +156,7 @@ var SkyBox = {
 		}
 		
 		SimulationView.scene.add(new THREE.Mesh(
-			new THREE.BoxGeometry(5000, 5000, 5000), 
+			new THREE.BoxGeometry(15000, 15000, 15000), 
 			new THREE.MeshFaceMaterial(materialArray)
 		));
 	}
