@@ -139,15 +139,18 @@ var SkyBox = {
 		var images = ["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
 		var imageSuffix = ".png";
 		
+		var skyboxUniforms = {
+			texture1: {type: "t", value: THREE.ImageUtils.loadTexture(imagePrefix + images[i] + imageSuffix)}
+		};
+		var skyboxVertShader = $('skyboxvertexshader').text();
+		var skyboxFragmentShader = $('skyboxfragmentshader').text();
+		
 		var materialArray = [];
 		for (var i = 0; i < 6; i++) {
-			var uniforms = {
-				texture1: {type: "t", value: THREE.ImageUtils.loadTexture(imagePrefix + images[i] + imageSuffix)}
-			};
 			materialArray.push(new THREE.ShaderMaterial({
-				uniforms: uniforms,
-				vertexShader: $('skyboxvertexshader').text(),
-				fragmentShader: $('skyboxfragmentshader').text(),
+				uniforms: skyboxUniforms,
+				vertexShader: skyboxVertShader,
+				fragmentShader: skyboxFragmentShader,
 				side: THREE.BackSide
 			}));
 		}
