@@ -21,6 +21,14 @@ var ResourceLoader = {
 			ResourceLoader.shaders.push({name:'fragment', shader:data.shader.fragment});
 			ResourceLoader.shadersLoaded = true;
 		});
+	},
+	
+	getShaderByName:function(name) {
+		for (var i = 0; i < shaders.length; i++) {
+			if (shaders[i].name = name) {
+				return shaders[i].shader;
+			}
+		}
 	}
 }
 
@@ -276,11 +284,10 @@ var SimulationController = {
 		
 		//create traders
 		var traderGeometry = new THREE.BoxGeometry(1, 1, 1);
-		var traderMaterial = null;
 		
-		traderMaterial = new THREE.ShaderMaterial({
-			vertexShader: data.shader.vertex,
-			fragmentShader: data.shader.fragment
+		var traderMaterial = new THREE.ShaderMaterial({
+			vertexShader: ResourceLoader.getShaderByName('vertex'),
+			fragmentShader: ResourceLoader.getShaderByName('fragment')
 		});
 		
 		//var traderMaterial = new THREE.MeshBasicMaterial({color: 0x003344});
