@@ -17,6 +17,8 @@ var SimulationView = {
 	renderer: null,
 	controls: null,
 	
+	planetLight: null,
+	
 	projector: null,
 	mouseVector: null,
 	
@@ -39,11 +41,11 @@ var SimulationView = {
 		SimulationView.camera.lookAt(new THREE.Vector3(0, 10, 0));
 		
 		var ambientLight = new THREE.AmbientLight(0x404040);
-		var mainLight = new THREE.PointLight();
-		mainLight.position.set(50, 150, 150);
+		SimulationView.planetLight = new THREE.PointLight();
+		SimulationView.planetLight.position.set(50, 150, 150);
 		
 		SimulationView.scene.add(ambientLight);
-		SimulationView.scene.add(mainLight);
+		SimulationView.scene.add(SimulationView.planetLight);
 		
 		SimulationView.renderer = new THREE.WebGLRenderer();
 		SimulationView.renderer.setSize(SimulationView.canvasWidth, SimulationView.canvasHeight);
@@ -141,7 +143,7 @@ var SkyBox = {
 		var imageSuffix = ".png";
 		
 		var skyboxVertShader = $('#unlit_tex_v_shader').text();
-		var skyboxFragmentShader = $('#unlit_tex_f_shader').text();
+		var skyboxFragShader = $('#unlit_tex_f_shader').text();
 		
 		var materialArray = [];
 		for (var i = 0; i < 6; i++) {
@@ -151,7 +153,7 @@ var SkyBox = {
 			materialArray.push(new THREE.ShaderMaterial({
 				uniforms: skyboxUniforms,
 				vertexShader: skyboxVertShader,
-				fragmentShader: skyboxFragmentShader,
+				fragmentShader: skyboxFragShader,
 				side: THREE.BackSide
 			}));
 		}
@@ -218,7 +220,13 @@ var SimulationController = {
 	init:function() {
 		//create planets
 		var planetGeometry = new THREE.SphereGeometry(5, 32, 32);
-		var planetMaterial = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('images/sedna.jpg')});
+		
+		var planetMaterial = new THREE.ShaderMaterial({
+			vertexShader: $('#unlit_tex_v_shader').text(),
+			fragmentShader: $('#unlit_tex_f_shader').text()
+		});
+		
+		//var planetMaterial = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('images/sedna.jpg')});
 		
 		for (var i = 0; i < SimulationController.numPlanets; i++) {
 			//find free locations for planets using crude monte carlo method(?)
@@ -235,6 +243,25 @@ var SimulationController = {
 			}
 			
 			var planetBody = new Body(planetPosition, 0, 0, 0);
+			
+			planetMaterial.uniforms = {
+				cameraHeight2: {type:'f', value: 100},
+				lightPos: {type:'v3', value: SimulationView.planetLight.position},
+				lightDir: {type:'v3', value: new THREE.Vector3(0, 0, 0).subVectors(planetPosition, SimulationView.planetLight.position).normalize()},
+				invWaveLength: {type:'v3', value: new THREE.Vector3(1.0/0.650, 1.0/0.570, 1.0/0.475)},
+				outerRadius: {type:'f', value:5.125},
+				outerRadius2: {type:'f', value:26.265625},
+				innerRadius: {type:'f', value:5},
+				innerRadius2: {type:'f', value:25},
+				krESun: {type:'f', value:0.375},
+				kmESun: {type:'f', value:0.15},
+				kr4Pi: {type:'f', value:0.03141592653},
+				km4Pi: {type:'f', value:0.012566370612},
+				scale: {type:'f', value:8},
+				scaleDepth: {type:'f', value:0.25},
+				scaleOverScaleDepth: {type:'f', value:32},
+			};
+			
 			var planetView = new View(planetGeometry, planetMaterial);
 			
 			//generate planet resources

@@ -43,6 +43,108 @@
 				gl_FragColor = texture2D(texture1, vUv);
 			}
 		</script>
+		<script type="x-shader/x-vertex" id="planet_v_shader">
+			uniform float cameraHeight2;
+			
+			uniform vec3 lightPos;
+			uniform vec3 lightDir;
+			uniform vec3 invWaveLength;
+			
+			uniform float outerRadius;
+			uniform float outerRadius2;
+			uniform float innerRadius;
+			uniform float innerRadius2;
+			
+			uniform float krESun;
+			uniform float kmESun;
+			uniform float kr4Pi;
+			uniform float km4Pi;
+			
+			uniform float scale;
+			uniform float scaleDepth;
+			uniform float scaleOverScaleDepth;
+			
+			const int samples = 4;
+			const float invSamples = 0.25;
+			
+			varying vec3 color;
+			varying vec3 secondaryColor;
+			varying vec3 direction;
+			
+			void main() {
+				//1
+				vec3 pos = position.xyz; //TODO gl_Vertex.xyz = position.xyz?
+				vec3 ray = pos - cameraPosition;
+				
+				float far = length(ray);
+				ray = ray / far;
+				
+				//2
+				float b = 2.0 * dot(cameraPosition, ray);
+				float c = cameraHeight2 - outerRadius2;
+				float det = max(0.0, b * b - 4.0 * c);
+				float near = 0.5 * (-b - sqrt(det));
+				
+				//3
+				vec3 start = cameraPosition + ray * near;
+				far = far - near;
+				float startAngle = dot(ray, start) / outerRadius;
+				float startDepth = exp(-1.0 / scaleDepth);
+				float startOffset = startDepth * scale(startAngle);
+				
+				//4
+				float sampleLength = far * invSamples;
+				float scaledLength = sampleLength * scale;
+				vec3 sampleRay = ray * sampleLength;
+				vec3 samplePoint = start + sampleRay * 0.5;
+				
+				//sample loop
+				vec3 frontColor = vec3(0.0, 0.0, 0.0);
+				for (int i = 0; i < samples; i++) {
+					float height = length(samplePoint);
+					float depth = exp(scaleOverScaleDepth * (innerRadius - height));
+					float lightAngle = dot(lightPos, samplePoint) / height;
+					float cameraAngle = dot(ray, samplePoint) / height;
+					float scatter = (startOffset + depth * (scale(lightAngle) - scale(cameraAngle)));
+					vec3 attenuate = exp(scatter * (invWaveLength * kr4PI + km4Pi));
+					frontColor += attenuate * (depth * scaledLength);
+					samplePoint += sampleRay;
+				}
+				
+				secondaryColor = frontColor * kmESun;
+				color = frontColor * (invWaveLength * krESun);
+				gl_Position = projectionMatrix * viewMatrix * vec4(position, 1.0);
+				direction = cameraPosition - pos;
+			}
+			
+			float scale(float cos)	{	
+				float x = 1.0 - cos; 	
+				return fScaleDepth * exp(-0.00287 + x*(0.459 + x*(3.83 + x*(-6.80 + x*5.25))));	//TODO what are these numbers? the samples?
+			}
+		</script>
+		<script type="x-shader/x-fragment" id="planet_f_shader">
+			uniform vec3 lightPos;
+			uniform lightDir;
+			
+			varying vec3 color;
+			varying vec3 secondaryColor;
+			varying vec3 direction;
+			
+			const float g = -0.90;
+			const float g2 = g * g;
+			const float exposure = 2;
+			
+			void main() {
+				float cos = dot(lightDir, direction) / length(direction);
+				float cos2 = cos * cos;
+				
+				float rayleighPhase = 0.75 * (1.0 + cos * cos);
+				float miePhase = ((1.0 - g2) / (2.0 + g2)) * (1.0 + cos * cos) / pow(1.0 + g2 - 2.0 * g * cos, 1.5);
+				
+				gl_FragColor.rgb = 1.0 - exp(-exposure * (rayleighPhase * color * miePhase * secondaryColor));
+				gl_FragColor.a = 1.0;
+			}
+		</script>
 	</head>
 	
 	<body>
