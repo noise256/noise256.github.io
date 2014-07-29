@@ -143,7 +143,7 @@
 			const float exposure = 2.0;
 			
 			void main() {
-				float cos = dot(lightDir, direction) / length(direction);
+				float cos = dot(lightPos, direction) / length(direction);
 				float cos2 = cos * cos;
 				
 				float rayleighPhase = 0.75 * (1.0 + cos * cos);
