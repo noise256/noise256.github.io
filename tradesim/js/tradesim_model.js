@@ -142,8 +142,8 @@ var SkyBox = {
 		var skyboxUniforms = {
 			texture1: {type: "t", value: THREE.ImageUtils.loadTexture(imagePrefix + images[i] + imageSuffix)}
 		};
-		var skyboxVertShader = $('skyboxvertexshader').text();
-		var skyboxFragmentShader = $('skyboxfragmentshader').text();
+		var skyboxVertShader = $('#skyboxvertexshader').text();
+		var skyboxFragmentShader = $('#skyboxfragmentshader').text();
 		
 		var materialArray = [];
 		for (var i = 0; i < 6; i++) {
