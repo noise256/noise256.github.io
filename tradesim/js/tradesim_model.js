@@ -263,7 +263,7 @@ var SimulationController = {
 				scaleOverScaleDepth: {type:'f', value:32},
 			};
 			
-			var planetView = new View(planetGeometry, planetMaterial);
+			var planetView = new View(planetGeometry, planetMaterial, planetPosition);
 			
 			//generate planet resources
 			var planetEconomy = new Economy();
@@ -306,7 +306,7 @@ var SimulationController = {
 			var traderPosition = vec3.random(vec3.create(), Math.random() * SimulationController.maxPlanetSpread); //TODO implement max trader spread
 			var traderBody = new Body(traderPosition, 1, 0.02, 0.3);
 			
-			var traderView = new View(traderGeometry, traderMaterial);
+			var traderView = new View(traderGeometry, traderMaterial, traderPosition);
 			
 			var traderEconomy = new Economy();
 			
@@ -522,6 +522,7 @@ Body.prototype = {
 
 function View(geometry, material, position) {
 	this.mesh = new THREE.Mesh(geometry, material);
+	this.mesh.position.set(position[0], position[1], position[2]);
 	this.needsUpdate = true;
 }
 
