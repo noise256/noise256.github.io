@@ -139,8 +139,8 @@ var SkyBox = {
 		var images = ["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
 		var imageSuffix = ".png";
 		
-		var skyboxVertShader = $('#skyboxvertexshader').text();
-		var skyboxFragmentShader = $('#skyboxfragmentshader').text();
+		var skyboxVertShader = $('#unlit_tex_v_shader').text();
+		var skyboxFragmentShader = $('#unlit_tex_f_shader').text();
 		
 		var materialArray = [];
 		for (var i = 0; i < 6; i++) {
@@ -207,8 +207,8 @@ var SimulationController = {
 	numColonies:25,
 	numTraders:500,
 	
-	minSystemDistance:20,
-	maxPlanetSpread:350,
+	minSystemDistance:300,
+	maxPlanetSpread:5500,
 	
 	planets:[],
 	colonies:[],

@@ -15,17 +15,17 @@
 		<script src="js/lib/dat.gui.min.js" type="text/javascript"></script>
 		<script src="js/lib/fpsmeter.js" type="text/javascript"></script>
 		
-		<script type="x-shader/x-vertex" id="vertexshader">
+		<script type="x-shader/x-vertex" id="unlit_v_shader">
 			void main() {
 				gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
 			}
 		</script>
-		<script type="x-shader/x-fragment" id="fragmentshader">
+		<script type="x-shader/x-fragment" id="unlit_f_shader">
 			void main() {
 				gl_FragColor = vec4(1.0,0.0,1.0,1.0);
 			}
 		</script>
-		<script type="x-shader/x-vertex" id="skyboxvertexshader">
+		<script type="x-shader/x-vertex" id="unlit_tex_v_shader">
 			varying vec2 vUv;
 			
 			void main() {
@@ -34,7 +34,7 @@
 				gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 			}
 		</script>
-		<script type="x-shader/x-fragment" id="skyboxfragmentshader">
+		<script type="x-shader/x-fragment" id="unlit_tex_f_shader">
 			uniform sampler2D texture1;
 			
 			varying vec2 vUv;
