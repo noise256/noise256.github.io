@@ -4,7 +4,9 @@ window.onload = function() {
 	GUIController.init();
 	
 	ResourceLoader.loadShaders();
-	//while (!ResourceLoader.shadersLoaded) {}; //TODO currently waiting until shaders are fully loaded.
+	while (!ResourceLoader.shadersLoaded) {
+		
+	}; //TODO currently waiting until shaders are fully loaded.
 	
 	SimulationController.init();
 
