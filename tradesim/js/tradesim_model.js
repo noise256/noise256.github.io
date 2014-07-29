@@ -32,7 +32,7 @@ var SimulationView = {
 		
 		SimulationView.scene = new THREE.Scene();
 		
-		SimulationView.camera = new THREE.PerspectiveCamera(60, SimulationView.canvasWidth / SimulationView.canvasHeight, 1, 13000);
+		SimulationView.camera = new THREE.PerspectiveCamera(60, SimulationView.canvasWidth / SimulationView.canvasHeight, 1, 15000);
 		SimulationView.camera.position.x = 24;
 		SimulationView.camera.position.y = 10;
 		SimulationView.camera.position.z = 24;
