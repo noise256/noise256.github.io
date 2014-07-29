@@ -131,6 +131,7 @@ var SimulationView = {
 
 /**
 	based on view-source:http://stemkoski.github.io/three.js/skybox.html 23.07.2014
+	Milky Way skybox source: https://code.google.com/p/osghimmel/downloads/detail?name=resources_milkyway_equatorial_1024.zip&can=1&q= 29.07.2014
 **/
 var SkyBox = {
 	init:function() {
