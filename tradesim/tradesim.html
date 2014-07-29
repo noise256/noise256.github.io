@@ -73,7 +73,7 @@
 			
 			varying vec2 vUv;
 			
-			float scale(float cos) {	
+			float scaleFunc(float cos) {	
 				float x = 1.0 - cos; 	
 				return scaleDepth * exp(-0.00287 + x*(0.459 + x*(3.83 + x*(-6.80 + x*5.25))));	//TODO what are these numbers? the samples?
 			}
@@ -99,7 +99,7 @@
 				far = far - near;
 				float startAngle = dot(ray, start) / outerRadius;
 				float startDepth = exp(-1.0 / scaleDepth);
-				float startOffset = startDepth * scale(startAngle);
+				float startOffset = startDepth * scaleFunc(startAngle);
 				
 				//4
 				float sampleLength = far * invSamples;
@@ -114,7 +114,7 @@
 					float depth = exp(scaleOverScaleDepth * (innerRadius - height));
 					float lightAngle = dot(lightPos, samplePoint) / height;
 					float cameraAngle = dot(ray, samplePoint) / height;
-					float scatter = (startOffset + depth * (scale(lightAngle) - scale(cameraAngle)));
+					float scatter = (startOffset + depth * (scaleFunc(lightAngle) - scaleFunc(cameraAngle)));
 					vec3 attenuate = exp(scatter * (invWaveLength * kr4Pi + km4Pi));
 					frontColor += attenuate * (depth * scaledLength);
 					samplePoint += sampleRay;
