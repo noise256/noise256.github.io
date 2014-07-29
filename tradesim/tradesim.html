@@ -122,12 +122,13 @@
 				
 				secondaryColor = frontColor * kmESun;
 				color = frontColor * (invWaveLength * krESun);
-				gl_Position = projectionMatrix * viewMatrix * vec4(position, 1.0);
+				gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 				direction = cameraPosition - pos;
 			}
 		</script>
 		<script type="x-shader/x-fragment" id="planet_f_shader">
 			uniform sampler2D planetTexture;
+			
 			uniform vec3 lightPos;
 			uniform vec3 lightDir;
 			
