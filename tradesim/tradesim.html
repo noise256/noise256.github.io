@@ -139,7 +139,7 @@
 			
 			const float g = -0.90;
 			const float g2 = g * g;
-			const float exposure = 2;
+			const float exposure = 2.0;
 			
 			void main() {
 				float cos = dot(lightDir, direction) / length(direction);
@@ -148,8 +148,9 @@
 				float rayleighPhase = 0.75 * (1.0 + cos * cos);
 				float miePhase = ((1.0 - g2) / (2.0 + g2)) * (1.0 + cos * cos) / pow(1.0 + g2 - 2.0 * g * cos, 1.5);
 				
-				gl_FragColor.rgb = texture2D(planetTexture, vUv);//1.0 - exp(-exposure * ( + rayleighPhase * color * miePhase * secondaryColor));
-				gl_FragColor.a = 1.0;
+				gl_FragColor = texture2D(planetTexture, vUv);
+				//gl_FragColor.rgb = 1.0 - exp(-exposure * (texture2D(planetTexture, vUv) + rayleighPhase * color * miePhase * secondaryColor));
+				//gl_FragColor.a = 1.0;
 			}
 		</script>
 	</head>
