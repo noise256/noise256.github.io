@@ -24,9 +24,9 @@ var ResourceLoader = {
 	},
 	
 	getShaderByName:function(name) {
-		for (var i = 0; i < shaders.length; i++) {
-			if (shaders[i].name = name) {
-				return shaders[i].shader;
+		for (var i = 0; i < ResourceLoader.shaders.length; i++) {
+			if (ResourceLoader.shaders[i].name = name) {
+				return ResourceLoader.shaders[i].shader;
 			}
 		}
 	}
