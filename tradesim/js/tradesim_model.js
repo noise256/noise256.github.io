@@ -3,35 +3,9 @@ window.onload = function() {
 	SkyBox.init();
 	GUIController.init();
 	
-	ResourceLoader.loadShaders();
-	while (!ResourceLoader.shadersLoaded) {
-		
-	}; //TODO currently waiting until shaders are fully loaded.
-	
 	SimulationController.init();
 
 	SimulationView.frame();
-}
-
-var ResourceLoader = {
-	shadersLoaded:false,
-	shaders:[],
-	
-	loadShaders:function() {
-		SHADER_LOADER.load(function(data) {
-			ResourceLoader.shaders.push({name:'vertex', shader:data.shader.vertex});
-			ResourceLoader.shaders.push({name:'fragment', shader:data.shader.fragment});
-			ResourceLoader.shadersLoaded = true;
-		});
-	},
-	
-	getShaderByName:function(name) {
-		for (var i = 0; i < ResourceLoader.shaders.length; i++) {
-			if (ResourceLoader.shaders[i].name = name) {
-				return ResourceLoader.shaders[i].shader;
-			}
-		}
-	}
 }
 
 var SimulationView = {
@@ -286,10 +260,9 @@ var SimulationController = {
 		
 		//create traders
 		var traderGeometry = new THREE.BoxGeometry(1, 1, 1);
-		
 		var traderMaterial = new THREE.ShaderMaterial({
-			vertexShader: ResourceLoader.getShaderByName('vertex'),
-			fragmentShader: ResourceLoader.getShaderByName('fragment')
+			vertexShader: $('vertexshader').text(),
+			fragmentShader: $('fragmentshader').text(),
 		});
 		
 		//var traderMaterial = new THREE.MeshBasicMaterial({color: 0x003344});

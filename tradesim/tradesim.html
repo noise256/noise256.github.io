@@ -14,11 +14,17 @@
 		<script src="js/lib/TrackballControls.js" type="text/javascript"></script>
 		<script src="js/lib/dat.gui.min.js" type="text/javascript"></script>
 		<script src="js/lib/fpsmeter.js" type="text/javascript"></script>
-		<script src="js/lib/ShaderLoader.min.js" type="text/javascript"></script>
-		<script data-src="shaders/vertex.js" data-name="shader" type="x-shader/x-vertex"></script>
-		<script data-src="shaders/fragment.js" data-name="shader" type="x-shader/x-fragment"></script>
-		<!-- <script data-src="shaders/vertex.shader" type="x-shader/x-vertex" id="vertexshader"></script> -->
-		<!-- <script data-src="shaders/fragment.shader" type="x-shader/x-fragment" id="fragmentshader"></script> -->
+		
+		<script type="x-shader/x-vertex" id="vertexshader">
+			void main() {
+				gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+			}
+		</script>
+		<script type="x-shader/x-fragment" id="fragmentshader">
+			void main() {
+				gl_FragColor = vec4(1.0,0.0,1.0,1.0);
+			}
+		</script>
 	</head>
 	
 	<body>
