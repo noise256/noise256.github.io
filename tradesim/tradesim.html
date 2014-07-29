@@ -73,6 +73,11 @@
 			
 			varying vec2 vUv;
 			
+			float scale(float cos) {	
+				float x = 1.0 - cos; 	
+				return scaleDepth * exp(-0.00287 + x*(0.459 + x*(3.83 + x*(-6.80 + x*5.25))));	//TODO what are these numbers? the samples?
+			}
+			
 			void main() {
 				vUv = uv;
 				
@@ -119,11 +124,6 @@
 				color = frontColor * (invWaveLength * krESun);
 				gl_Position = projectionMatrix * viewMatrix * vec4(position, 1.0);
 				direction = cameraPosition - pos;
-			}
-			
-			float scale(float cos) {	
-				float x = 1.0 - cos; 	
-				return scaleDepth * exp(-0.00287 + x*(0.459 + x*(3.83 + x*(-6.80 + x*5.25))));	//TODO what are these numbers? the samples?
 			}
 		</script>
 		<script type="x-shader/x-fragment" id="planet_f_shader">
