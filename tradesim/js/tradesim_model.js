@@ -248,7 +248,7 @@ var SimulationController = {
 				planetTexture: {type: "t", value: THREE.ImageUtils.loadTexture('images/sedna.jpg')},
 				cameraHeight2: {type:'f', value: 100},
 				lightPos: {type:'v3', value: SimulationView.planetLight.position},
-				lightDir: {type:'v3', value: new THREE.Vector3(0, 0, 0).subVectors(planetPosition, SimulationView.planetLight.position).normalize()},
+				lightDir: {type:'v3', value: new THREE.Vector3(1.0, 0.0, 0.0)},//{type:'v3', value: new THREE.Vector3(0, 0, 0).subVectors(planetPosition, SimulationView.planetLight.position).normalize()},
 				invWaveLength: {type:'v3', value: new THREE.Vector3(1.0/0.650, 1.0/0.570, 1.0/0.475)},
 				outerRadius: {type:'f', value:5.125},
 				outerRadius2: {type:'f', value:26.265625},
