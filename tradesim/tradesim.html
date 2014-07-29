@@ -149,10 +149,12 @@
 				float rayleighPhase = 0.75 * (1.0 + cos * cos);
 				float miePhase = ((1.0 - g2) / (2.0 + g2)) * (1.0 + cos * cos) / pow(1.0 + g2 - 2.0 * g * cos, 1.5);
 				
-				//gl_FragColor = texture2D(planetTexture, vUv);
-				gl_FragColor.rgb = 1.0 - exp(-exposure * (color + texture2D(planetTexture, vUv).rgb * secondaryColor));
-				//gl_FragColor.rgb = 1.0 - exp(-exposure * (texture2D(planetTexture, vUv).rgb + rayleighPhase * color * miePhase * secondaryColor));
+				gl_FragColor.rgb = miePhase * secondaryColor;
 				gl_FragColor.a = 1.0;
+				//gl_FragColor = texture2D(planetTexture, vUv);
+				//gl_FragColor.rgb = 1.0 - exp(-exposure * (color + texture2D(planetTexture, vUv).rgb * secondaryColor));
+				//gl_FragColor.rgb = 1.0 - exp(-exposure * (texture2D(planetTexture, vUv).rgb + rayleighPhase * color * miePhase * secondaryColor));
+				//gl_FragColor.a = 1.0;
 			}
 		</script>
 	</head>
