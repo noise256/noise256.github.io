@@ -261,14 +261,16 @@ var SimulationController = {
 		var traderGeometry = new THREE.BoxGeometry(1, 1, 1);
 		var traderMaterial = null;
 		
-		SHADER_LOADER.load(
-			function (data) {
-				traderMaterial = new THREE.ShaderMaterial({
+		var callback = function(data) {
+			traderMaterial = new THREE.ShaderMaterial({
 					vertexShader: data.shader.vertex,
 					fragmentShader: data.shader.fragment
-				});
-			}
-		);
+			});
+		}
+		
+		SHADER_LOADER.load(callback);
+		
+		callback();
 		
 		//var traderMaterial = new THREE.MeshBasicMaterial({color: 0x003344});
 		for (var i = 0; i < SimulationController.numTraders; i++) {
