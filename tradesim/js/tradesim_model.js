@@ -134,6 +134,7 @@ var SimulationView = {
 	Milky Way skybox source: https://code.google.com/p/osghimmel/downloads/detail?name=resources_milkyway_equatorial_1024.zip&can=1&q= 29.07.2014
 **/
 var SkyBox = {
+	//TODO skybox image order is incorrect for milky way images.
 	init:function() {
 		var imagePrefix = "images/milkyway_skybox1/";
 		var images = ["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
