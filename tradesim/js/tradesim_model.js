@@ -226,7 +226,7 @@ var SimulationController = {
 			
 			var planetBody = new Body(planetPosition, 0, 0, 0);
 			
-			var planetMaterial = new THREE.MeshPhongMaterial({color: 0xffffff});//{map: THREE.ImageUtils.loadTexture('images/sedna.jpg')}); //TODO move this back to make planet texture non-independent if not needed
+			var planetMaterial = new THREE.MeshPhongMaterial({{map: THREE.ImageUtils.loadTexture('images/sedna.jpg')}); //TODO move this back to make planet texture non-independent if not needed
 			var planetView = new View(planetGeometry, planetMaterial);
 			
 			//generate planet resources
@@ -268,7 +268,7 @@ var SimulationController = {
 		//var traderMaterial = new THREE.MeshBasicMaterial({color: 0x003344});
 		for (var i = 0; i < SimulationController.numTraders; i++) {
 			var traderPosition = vec3.random(vec3.create(), Math.random() * SimulationController.maxPlanetSpread); //TODO implement max trader spread
-			var traderBody = new Body(traderPosition, 1, 0.05, 0.3);
+			var traderBody = new Body(traderPosition, 1, 0.02, 0.3);
 			
 			var traderView = new View(traderGeometry, traderMaterial);
 			
