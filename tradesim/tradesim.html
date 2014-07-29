@@ -110,7 +110,7 @@
 					float lightAngle = dot(lightPos, samplePoint) / height;
 					float cameraAngle = dot(ray, samplePoint) / height;
 					float scatter = (startOffset + depth * (scale(lightAngle) - scale(cameraAngle)));
-					vec3 attenuate = exp(scatter * (invWaveLength * kr4PI + km4Pi));
+					vec3 attenuate = exp(scatter * (invWaveLength * kr4Pi + km4Pi));
 					frontColor += attenuate * (depth * scaledLength);
 					samplePoint += sampleRay;
 				}
@@ -121,9 +121,9 @@
 				direction = cameraPosition - pos;
 			}
 			
-			float scale(float cos)	{	
+			float scale(float cos) {	
 				float x = 1.0 - cos; 	
-				return fScaleDepth * exp(-0.00287 + x*(0.459 + x*(3.83 + x*(-6.80 + x*5.25))));	//TODO what are these numbers? the samples?
+				return scaleDepth * exp(-0.00287 + x*(0.459 + x*(3.83 + x*(-6.80 + x*5.25))));	//TODO what are these numbers? the samples?
 			}
 		</script>
 		<script type="x-shader/x-fragment" id="planet_f_shader">
