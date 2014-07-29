@@ -224,7 +224,6 @@ var SimulationController = {
 		var planetMaterial = new THREE.ShaderMaterial({
 			vertexShader: $('#unlit_tex_v_shader').text(),
 			fragmentShader: $('#unlit_tex_f_shader').text(),
-			color:0x888888
 		});
 		
 		//var planetMaterial = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('images/sedna.jpg')});
@@ -246,6 +245,7 @@ var SimulationController = {
 			var planetBody = new Body(planetPosition, 0, 0, 0);
 			
 			planetMaterial.uniforms = {
+				texture1: {type: "t", value: THREE.ImageUtils.loadTexture('images/sedna.jpg')}
 				cameraHeight2: {type:'f', value: 100},
 				lightPos: {type:'v3', value: SimulationView.planetLight.position},
 				lightDir: {type:'v3', value: new THREE.Vector3(0, 0, 0).subVectors(planetPosition, SimulationView.planetLight.position).normalize()},
