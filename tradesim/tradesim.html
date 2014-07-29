@@ -127,7 +127,7 @@
 			}
 		</script>
 		<script type="x-shader/x-fragment" id="planet_f_shader">
-			uniform sampler2D texture1;
+			uniform sampler2D planetTexture;
 			uniform vec3 lightPos;
 			uniform lightDir;
 			
@@ -148,7 +148,7 @@
 				float rayleighPhase = 0.75 * (1.0 + cos * cos);
 				float miePhase = ((1.0 - g2) / (2.0 + g2)) * (1.0 + cos * cos) / pow(1.0 + g2 - 2.0 * g * cos, 1.5);
 				
-				gl_FragColor.rgb = 1.0 - exp(-exposure * (texture2D(texture1, vUv) * rayleighPhase * color * miePhase * secondaryColor));
+				gl_FragColor.rgb = 1.0 - exp(-exposure * (texture2D(planetTexture, vUv) + rayleighPhase * color * miePhase * secondaryColor));
 				gl_FragColor.a = 1.0;
 			}
 		</script>

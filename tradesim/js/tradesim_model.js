@@ -245,7 +245,7 @@ var SimulationController = {
 			var planetBody = new Body(planetPosition, 0, 0, 0);
 			
 			planetMaterial.uniforms = {
-				texture1: {type: "t", value: THREE.ImageUtils.loadTexture('images/sedna.jpg')}
+				planetTexture: {type: "t", value: THREE.ImageUtils.loadTexture('images/sedna.jpg')}
 				cameraHeight2: {type:'f', value: 100},
 				lightPos: {type:'v3', value: SimulationView.planetLight.position},
 				lightDir: {type:'v3', value: new THREE.Vector3(0, 0, 0).subVectors(planetPosition, SimulationView.planetLight.position).normalize()},
