@@ -226,7 +226,7 @@ var SimulationController = {
 			
 			var planetBody = new Body(planetPosition, 0, 0, 0);
 			
-			var planetMaterial = new THREE.MeshPhongMaterial({{map: THREE.ImageUtils.loadTexture('images/sedna.jpg')}); //TODO move this back to make planet texture non-independent if not needed
+			var planetMaterial = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('images/sedna.jpg')}); //TODO move this back to make planet texture non-independent if not needed
 			var planetView = new View(planetGeometry, planetMaterial);
 			
 			//generate planet resources
