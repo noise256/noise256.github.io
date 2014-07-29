@@ -210,7 +210,8 @@ var SimulationController = {
 	init:function() {
 		//create planets
 		var planetGeometry = new THREE.SphereGeometry(5, 32, 32);
-			
+		var planetMaterial = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('images/sedna.jpg')});
+		
 		for (var i = 0; i < SimulationController.numPlanets; i++) {
 			//find free locations for planets using crude monte carlo method(?)
 			var planetPosition = null;
@@ -226,8 +227,6 @@ var SimulationController = {
 			}
 			
 			var planetBody = new Body(planetPosition, 0, 0, 0);
-			
-			var planetMaterial = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('images/sedna.jpg')}); //TODO move this back to make planet texture non-independent if not needed
 			var planetView = new View(planetGeometry, planetMaterial);
 			
 			//generate planet resources
