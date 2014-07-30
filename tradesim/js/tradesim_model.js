@@ -351,20 +351,21 @@ var SimulationController = {
 	},
 	
 	update:function() {
-		//update colonies and traders using TraderController and ColonyController
+		//update colonies and traders using TraderController and ColonyController#
+		var lightPos = SimulationView.planetLight.position;
 		for (var i = 0; i < SimulationController.planets.length; i++) {
 			var planetPos = new THREE.Vector3(SimulationController.planets[i].body.position[0], SimulationController.planets[i].body.position[1], SimulationController.planets[i].body.position[2]);
 			var relativeCameraPos = new THREE.Vector3().subVectors(SimulationView.camera.position, planetPos);
 			var cameraHeight = relativeCameraPos.length();
 			var cameraHeight2 = cameraHeight * cameraHeight;
-			var lightPos = SimulationView.planetLight.position;
+			
 			var lightDir = lightPos.sub(planetPos).normalize();
 			
 			for (var j = 0; j < SimulationController.planets[i].view.meshes.length; j++) {
 				SimulationController.planets[i].view.meshes[j].material.uniforms.planetPos.value = planetPos;
 				SimulationController.planets[i].view.meshes[j].material.uniforms.cameraPos.value = relativeCameraPos;
 				SimulationController.planets[i].view.meshes[j].material.uniforms.cameraHeight2.value = cameraHeight2;
-				SimulationController.planets[i].view.meshes[j].material.uniforms.lightDir.value = new THREE.Vector3(1.0, 0.0, 0.0);//lightDir;
+				SimulationController.planets[i].view.meshes[j].material.uniforms.lightDir.value = lightDir;
 			}
 			
 			if (SimulationController.planets[i].view.needsUpdate) {
