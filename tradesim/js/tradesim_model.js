@@ -268,7 +268,7 @@ var SimulationController = {
 			scaleOverScaleDepth: {type:'f', value:32},
 		};
 		
-		for (var i = 0; i < SimulationController.numPlanets; i++) {
+		for (var i = 0; i < 1; i++) {
 			//find free locations for planets using crude monte carlo method(?)
 			var planetPosition = null;
 			var foundPosition = false;
@@ -282,6 +282,7 @@ var SimulationController = {
 				}
 			}
 			
+			planetPosition = vec3.create();
 			var planetBody = new Body(planetPosition, 0, 0, 0)
 			
 			var skyMesh = new THREE.Mesh(skyGeometry, skyMaterial);
