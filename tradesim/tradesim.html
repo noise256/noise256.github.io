@@ -206,6 +206,7 @@
 				float depth = exp((innerRadius - outerRadius) / scaleDepth);
 				float cameraAngle = dot(-ray, position) / length(position);
 				float lightAngle = dot(lightDir, position) / length(position);
+				float lightScale = scaleFunc(lightAngle);
 				float cameraScale = scaleFunc(cameraAngle);
 				float cameraOffset = depth*cameraScale;
 				float temp = lightScale + cameraScale;
