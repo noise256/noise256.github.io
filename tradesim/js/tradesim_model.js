@@ -42,7 +42,7 @@ var SimulationView = {
 		
 		var ambientLight = new THREE.AmbientLight(0x404040);
 		SimulationView.planetLight = new THREE.PointLight();
-		SimulationView.planetLight.position.set(50, 150, 150);
+		SimulationView.planetLight.position.set(0, 0, 0);
 		
 		SimulationView.scene.add(ambientLight);
 		SimulationView.scene.add(SimulationView.planetLight);
@@ -210,8 +210,8 @@ var SimulationController = {
 	numColonies:25,
 	numTraders:500,
 	
-	minSystemDistance:300,
-	maxPlanetSpread:5500,
+	minSystemDistance:30,
+	maxPlanetSpread:550,
 	
 	planets:[],
 	colonies:[],
