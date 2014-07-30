@@ -145,7 +145,7 @@
 				float cos2 = cos * cos;
 				
 				float rayleighPhase = 0.75 + 0.75 * cos2;
-				float miePhase = 1.5 * ((1.0 - g2) / (2.0 + g2)) * (1.0 * cos2) / pow(1.0 + g2 - 2.0 * g * cos, 1.5);
+				float miePhase = 1.5 * ((1.0 - g2) / (2.0 + g2)) * (1.0 * cos2) / pow(abs(1.0 + g2 - 2.0 * g * cos), 1.5);
 				
 				//gl_FragColor = vec4(rayleighPhase * color + miePhase * secondaryColor, 1.0);
 				gl_FragColor = vec4(color + miePhase * secondaryColor, 1.0);
