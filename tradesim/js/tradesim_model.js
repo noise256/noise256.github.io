@@ -240,8 +240,10 @@ var SimulationController = {
 			scaleDepth: {type:'f', value:0.25},
 			scaleOverScaleDepth: {type:'f', value:32},
 		};
+		skyMaterial.side = THREE.BackSide;
+		skyMaterial.transparent = true;
 		
-		var groundGeometry = new THREE.SphereGeometry(5.125, 64, 64);
+		var groundGeometry = new THREE.SphereGeometry(5.0, 64, 64);
 		var groundMaterial = new THREE.ShaderMaterial({
 			vertexShader: $('#ground_v_shader').text(),
 			fragmentShader: $('#ground_f_shader').text(),
@@ -278,11 +280,17 @@ var SimulationController = {
 				}
 			}
 			
-			var planetBody = new Body(planetPosition, 0, 0, 0);
+			var planetBody = new Body(planetPosition, 0, 0, 0)
+			
+			var skyMesh = new THREE.Mesh(skyGeometry, skyMaterial);
+			var groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
 			
 			var planetView = new View();
-			planetView.meshes.push(new THREE.Mesh(skyGeometry, skyMaterial));
-			planetView.meshes.push(new THREE.Mesh(groundGeometry, groundMaterial));
+			
+			planetView.meshes.push();
+			planetView.meshes.push();
+			
+			;
 			
 			//generate planet resources
 			var planetEconomy = new Economy();
