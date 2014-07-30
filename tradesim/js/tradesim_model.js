@@ -284,13 +284,9 @@ var SimulationController = {
 			
 			var skyMesh = new THREE.Mesh(skyGeometry, skyMaterial);
 			var groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
-			
 			var planetView = new View();
-			
-			planetView.meshes.push();
-			planetView.meshes.push();
-			
-			;
+			planetView.meshes.push(skyMesh);
+			planetView.meshes.push(groundMesh);
 			
 			//generate planet resources
 			var planetEconomy = new Economy();
