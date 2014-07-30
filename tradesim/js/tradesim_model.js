@@ -221,43 +221,6 @@ var SimulationController = {
 		//create planets
 		var skyGeometry = new THREE.SphereGeometry(5.125, 500, 500);
 		var groundGeometry = new THREE.SphereGeometry(5.0, 64, 64);
-
-		var skyUniforms = {
-			cameraPos: {type:'v3', value: new THREE.Vector3(0.0, 0.0, 0.0)},
-			cameraHeight2: {type:'f', value: 0},
-			lightDir: {type:'v3', value: new THREE.Vector3(1e8, 0, 1e8).normalize()},
-			invWaveLength: {type:'v3', value: new THREE.Vector3(1.0/Math.pow(0.650,4), 1.0/Math.pow(0.570,4), 1.0/Math.pow(0.475,4))},
-			outerRadius: {type:'f', value:5.125},
-			outerRadius2: {type:'f', value:26.265625},
-			innerRadius: {type:'f', value:5},
-			innerRadius2: {type:'f', value:25},
-			krESun: {type:'f', value:0.375},
-			kmESun: {type:'f', value:0.15},
-			kr4Pi: {type:'f', value:0.03141592653},
-			km4Pi: {type:'f', value:0.012566370612},
-			scale: {type:'f', value:8},
-			scaleDepth: {type:'f', value:0.25},
-			scaleOverScaleDepth: {type:'f', value:32},
-		};
-
-		var groundUniforms = {
-			planetTexture: {type: "t", value: THREE.ImageUtils.loadTexture('images/sedna.jpg')},
-			cameraPos: {type:'v3', value: new THREE.Vector3(0.0, 0.0, 0.0)},
-			cameraHeight2: {type:'f', value: 0},
-			lightDir: {type:'v3', value: new THREE.Vector3(1e8, 0, 1e8).normalize()},
-			invWaveLength: {type:'v3', value: new THREE.Vector3(1.0/Math.pow(0.650,4), 1.0/Math.pow(0.570,4), 1.0/Math.pow(0.475,4))},
-			outerRadius: {type:'f', value:5.125},
-			outerRadius2: {type:'f', value:26.265625},
-			innerRadius: {type:'f', value:5},
-			innerRadius2: {type:'f', value:25},
-			krESun: {type:'f', value:0.375},
-			kmESun: {type:'f', value:0.15},
-			kr4Pi: {type:'f', value:0.03141592653},
-			km4Pi: {type:'f', value:0.012566370612},
-			scale: {type:'f', value:8},
-			scaleDepth: {type:'f', value:0.25},
-			scaleOverScaleDepth: {type:'f', value:32},
-		};
 		
 		for (var i = 0; i < SimulationController.numPlanets; i++) {
 			//find free locations for planets using crude monte carlo method(?)
@@ -276,6 +239,43 @@ var SimulationController = {
 			//planetPosition = vec3.fromValues(300 * Math.random(), 300 * Math.random(), 100);
 			var planetBody = new Body(planetPosition, 0, 0, 0)
 			
+			var skyUniforms = {
+				cameraPos: {type:'v3', value: new THREE.Vector3(0.0, 0.0, 0.0)},
+				cameraHeight2: {type:'f', value: 0},
+				lightDir: {type:'v3', value: new THREE.Vector3(1e8, 0, 1e8).normalize()},
+				invWaveLength: {type:'v3', value: new THREE.Vector3(1.0/Math.pow(0.650,4), 1.0/Math.pow(0.570,4), 1.0/Math.pow(0.475,4))},
+				outerRadius: {type:'f', value:5.125},
+				outerRadius2: {type:'f', value:26.265625},
+				innerRadius: {type:'f', value:5},
+				innerRadius2: {type:'f', value:25},
+				krESun: {type:'f', value:0.375},
+				kmESun: {type:'f', value:0.15},
+				kr4Pi: {type:'f', value:0.03141592653},
+				km4Pi: {type:'f', value:0.012566370612},
+				scale: {type:'f', value:8},
+				scaleDepth: {type:'f', value:0.25},
+				scaleOverScaleDepth: {type:'f', value:32},
+			};
+
+			var groundUniforms = {
+				planetTexture: {type: "t", value: THREE.ImageUtils.loadTexture('images/sedna.jpg')},
+				cameraPos: {type:'v3', value: new THREE.Vector3(0.0, 0.0, 0.0)},
+				cameraHeight2: {type:'f', value: 0},
+				lightDir: {type:'v3', value: new THREE.Vector3(1e8, 0, 1e8).normalize()},
+				invWaveLength: {type:'v3', value: new THREE.Vector3(1.0/Math.pow(0.650,4), 1.0/Math.pow(0.570,4), 1.0/Math.pow(0.475,4))},
+				outerRadius: {type:'f', value:5.125},
+				outerRadius2: {type:'f', value:26.265625},
+				innerRadius: {type:'f', value:5},
+				innerRadius2: {type:'f', value:25},
+				krESun: {type:'f', value:0.375},
+				kmESun: {type:'f', value:0.15},
+				kr4Pi: {type:'f', value:0.03141592653},
+				km4Pi: {type:'f', value:0.012566370612},
+				scale: {type:'f', value:8},
+				scaleDepth: {type:'f', value:0.25},
+				scaleOverScaleDepth: {type:'f', value:32},
+			};
+		
 			var skyMaterial = new THREE.ShaderMaterial({
 				vertexShader: $('#atmosphere_v_shader').text(),
 				fragmentShader: $('#atmosphere_f_shader').text(),
