@@ -46,7 +46,6 @@
 		<script type="x-shader/x-vertex" id="planet_v_shader">
 			uniform float cameraHeight2;
 			
-			uniform vec3 lightPos;
 			uniform vec3 lightDir;
 			uniform vec3 invWaveLength;
 			
@@ -112,7 +111,7 @@
 				for (int i = 0; i < samples; i++) {
 					float height = length(samplePoint);
 					float depth = exp(scaleOverScaleDepth * (innerRadius - height));
-					float lightAngle = dot(lightPos, samplePoint) / height;
+					float lightAngle = dot(lightDir, samplePoint) / height;
 					float cameraAngle = dot(ray, samplePoint) / height;
 					float scatter = (startOffset + depth * (scaleFunc(lightAngle) - scaleFunc(cameraAngle)));
 					vec3 attenuate = exp(scatter * (invWaveLength * kr4Pi + km4Pi));
@@ -129,7 +128,6 @@
 		<script type="x-shader/x-fragment" id="planet_f_shader">
 			uniform sampler2D planetTexture;
 			
-			uniform vec3 lightPos;
 			uniform vec3 lightDir;
 			
 			varying vec3 color;
