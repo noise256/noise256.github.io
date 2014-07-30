@@ -266,7 +266,7 @@ var SimulationController = {
 			scaleOverScaleDepth: {type:'f', value:32},
 		};
 		
-		for (var i = 0; i < SimulationController.numPlanets; i++) {
+		for (var i = 0; i < 1; i++) {
 			//find free locations for planets using crude monte carlo method(?)
 			var planetPosition = null;
 			var foundPosition = false;
@@ -279,7 +279,7 @@ var SimulationController = {
 					}
 				}
 			}
-			
+			planetPosition = vec3.create();
 			var planetBody = new Body(planetPosition, 0, 0, 0)
 			
 			var skyMesh = new THREE.Mesh(skyGeometry, skyMaterial);
@@ -352,7 +352,7 @@ var SimulationController = {
 			var planetPos = SimulationController.planets[i].body.position;
 			var cameraHeight = new THREE.Vector3().subVectors(SimulationView.camera.position, new THREE.Vector3(planetPos[0], planetPos[1], planetPos[2])).length();
 			for (var j = 0; j < SimulationController.planets[i].view.meshes.length; j++) {
-				SimulationController.planets[i].view.meshes[j].material.uniforms.cameraHeight2.value = cameraHeight;
+				SimulationController.planets[i].view.meshes[j].material.uniforms.cameraHeight2.value = cameraHeight * cameraHeight;
 			}
 			
 			if (SimulationController.planets[i].view.needsUpdate) {
