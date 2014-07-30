@@ -151,7 +151,7 @@
 				//gl_FragColor.a = 1.0;
 				//gl_FragColor = texture2D(planetTexture, vUv);
 				//gl_FragColor.rgb = 1.0 - exp(-exposure * (color + texture2D(planetTexture, vUv).rgb * secondaryColor));
-				gl_FragColor.rgb = 1.0 - exp(-exposure * vec3(1.0, 1.0, 1.0));//(color + secondaryColor));
+				gl_FragColor.rgb = 1.0 - exp(-exposure * color + secondaryColor));
 				gl_FragColor.a = 1.0;
 			}
 		</script>
