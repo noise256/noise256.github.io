@@ -364,7 +364,7 @@ var SimulationController = {
 				SimulationController.planets[i].view.meshes[j].material.uniforms.planetPos.value = planetPos;
 				SimulationController.planets[i].view.meshes[j].material.uniforms.cameraPos.value = relativeCameraPos;
 				SimulationController.planets[i].view.meshes[j].material.uniforms.cameraHeight2.value = cameraHeight2;
-				SimulationController.planets[i].view.meshes[j].material.uniforms.lightDir.value = lightDir;
+				SimulationController.planets[i].view.meshes[j].material.uniforms.lightDir.value = new THREE.Vector3(1.0, 0.0, 0.0);//lightDir;
 			}
 			
 			if (SimulationController.planets[i].view.needsUpdate) {
