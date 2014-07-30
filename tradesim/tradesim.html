@@ -141,7 +141,7 @@
 			const float exposure = 2.0;
 			
 			void main() {
-				float cos = dot(normalize(lightPos), direction) / length(direction); //TODO this is giving negative parameter to pow function in miephase function
+				float cos = dot(lightDir, direction) / length(direction); //TODO this is giving negative parameter to pow function in miephase function
 				float cos2 = cos * cos;
 				
 				float rayleighPhase = 0.75 * (1.0 + cos * cos);
