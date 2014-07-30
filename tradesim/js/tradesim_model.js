@@ -222,6 +222,17 @@ var SimulationController = {
 		var skyGeometry = new THREE.SphereGeometry(5.125, 500, 500);
 		var groundGeometry = new THREE.SphereGeometry(5.0, 64, 64);
 		
+		var skyMaterial = new THREE.ShaderMaterial({
+			vertexShader: $('#atmosphere_v_shader').text(),
+			fragmentShader: $('#atmosphere_f_shader').text(),
+		});
+		skyMaterial.side = THREE.BackSide;
+		skyMaterial.transparent = true;
+		var groundMaterial = new THREE.ShaderMaterial({
+			vertexShader: $('#ground_v_shader').text(),
+			fragmentShader: $('#ground_f_shader').text(),
+		});
+			
 		for (var i = 0; i < SimulationController.numPlanets; i++) {
 			//find free locations for planets using crude monte carlo method(?)
 			var planetPosition = null;
@@ -276,18 +287,7 @@ var SimulationController = {
 				scaleOverScaleDepth: {type:'f', value:32},
 			};
 		
-			var skyMaterial = new THREE.ShaderMaterial({
-				vertexShader: $('#atmosphere_v_shader').text(),
-				fragmentShader: $('#atmosphere_f_shader').text(),
-			});
-			skyMaterial.side = THREE.BackSide;
-			skyMaterial.transparent = true;
 			skyMaterial.uniforms = skyUniforms;
-			
-			var groundMaterial = new THREE.ShaderMaterial({
-				vertexShader: $('#ground_v_shader').text(),
-				fragmentShader: $('#ground_f_shader').text(),
-			});
 			groundMaterial.uniforms = groundUniforms;
 			
 			var skyMesh = new THREE.Mesh(skyGeometry, skyMaterial);
