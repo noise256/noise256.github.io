@@ -302,7 +302,9 @@ var SimulationController = {
 			SimulationController.planets.push(new Planet(planetBody, planetView, planetEconomy));
 			
 			if (SimulationView.worldObjects) {
-				SimulationView.worldObjects.add(planetView.mesh);
+				for (var j = 0; j < planetView.meshes.length; j++) {
+					SimulationView.worldObjects.add(planetView.meshes[j]);
+				}
 			}
 		}
 		
@@ -333,7 +335,9 @@ var SimulationController = {
 			SimulationController.traders.push(new Trader(traderBody, traderView, traderEconomy));
 			
 			if (SimulationView.worldObjects) {
-				SimulationView.worldObjects.add(traderView.mesh);
+				for (var j = 0; j < traderView.meshes.length; j++) {
+					SimulationView.worldObjects.add(traderView.meshes[j]);
+				}
 			}
 		}
 	},
