@@ -355,7 +355,8 @@ var SimulationController = {
 			var relativeCameraPos = new THREE.Vector3().subVectors(SimulationView.camera.position, new THREE.Vector3(planetPos[0], planetPos[1], planetPos[2]));
 			var cameraHeight = relativeCameraPos.length();
 			var cameraHeight2 = cameraHeight * cameraHeight;
-			var lightDir = new THREE.Vector3().subVectors(SimulationView.planetLight.position, new THREE.Vector3(planetPos[0], planetPos[1], planetPos[2])).normalize();
+			var lightPos = SimulationView.planetLight.position;
+			var lightDir = lightPos.sub(new THREE.Vector3(planetPos[0], planetPos[1], planetPos[2])).normalize();
 			
 			for (var j = 0; j < SimulationController.planets[i].view.meshes.length; j++) {
 				SimulationController.planets[i].view.meshes[j].material.uniforms.cameraPos.value = relativeCameraPos;
