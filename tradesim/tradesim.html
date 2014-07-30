@@ -224,7 +224,7 @@
 				for (int i = 0; i < samples; i++) {
 					float height = length(samplePoint);
 					float depth = exp(scaleOverScaleDepth * (innerRadius - height));
-					float scatter = (depth * temp) - cameraOffset;
+					float scatter = depth * temp - cameraOffset;
 					attenuate = exp(-scatter * (invWaveLength * kr4Pi + km4Pi));
 					frontColor += attenuate * (depth * scaledLength);
 					samplePoint += sampleRay;
@@ -242,14 +242,16 @@
 			uniform sampler2D planetTexture;
 			//uniform sampler2D nightTexture;
 			
-			uniform vec3 lightDir;
-			
 			varying vec3 color;
 			varying vec3 secondaryColor;
 			varying vec3 vNormal;
 			varying vec2 vUv;
 			
 			void main() {
+				vec3 day = texture2D(planetTexture, vUv).xyz * color;
+				vec3 night = vec3(0.0, 0.0, 0.0);
+				
+				gl_FragColor = vec4(secondaryColor, 1.0) + vec4(day + night, 1.0);
 				gl_FragColor = vec4(secondaryColor, 1.0) + vec4(texture2D(planetTexture, vUv).xyz * color, 1.0);
 			}
 		</script>
