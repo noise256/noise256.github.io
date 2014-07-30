@@ -219,7 +219,7 @@ var SimulationController = {
 	
 	init:function() {
 		//create planets
-		var planetGeometry = new THREE.SphereGeometry(5, 32, 32);
+		var planetGeometry = new THREE.SphereGeometry(5, 64, 64);
 		
 		var planetMaterial = new THREE.ShaderMaterial({
 			vertexShader: $('#planet_v_shader').text(),
