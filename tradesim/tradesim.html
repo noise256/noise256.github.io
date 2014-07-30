@@ -172,6 +172,7 @@
 			uniform float scaleOverScaleDepth;
 			
 			const int samples = 4;
+			const float fSamples = 4.0;
 			const float invSamples = 0.25;
 			
 			varying vec3 color;
@@ -212,7 +213,7 @@
 				float temp = lightScale + cameraScale;
 				
 				//4
-				float sampleLength = far * 4.0; //4.0 = samples
+				float sampleLength = far / fSamples;
 				float scaledLength = sampleLength * scale;
 				vec3 sampleRay = ray * sampleLength;
 				vec3 samplePoint = start + sampleRay * 0.5;
