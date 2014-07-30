@@ -44,6 +44,10 @@
 			}
 		</script>
 		<script type="x-shader/x-vertex" id="atmosphere_v_shader">
+			#ifdef GL_ES
+				precision highp float;
+			#endif
+			
 			uniform vec3 planetPos;
 			uniform vec3 cameraPos;
 			uniform float cameraHeight2;
@@ -126,12 +130,15 @@
 			}
 		</script>
 		<script type="x-shader/x-fragment" id="atmosphere_f_shader">
+			#ifdef GL_ES
+				precision highp float;
+			#endif
+			
 			uniform vec3 lightDir;
 			
 			varying vec3 color;
 			varying vec3 secondaryColor;
 			varying vec3 direction;
-			
 			
 			const float g = -0.90;
 			const float g2 = g * g;
@@ -149,6 +156,10 @@
 			}
 		</script>
 		<script type="x-shader/x-vertex" id="ground_v_shader">
+			#ifdef GL_ES
+				precision highp float;
+			#endif
+			
 			uniform vec3 planetPos;
 			uniform vec3 cameraPos;
 			uniform float cameraHeight2;
@@ -237,6 +248,10 @@
 			}
 		</script>
 		<script type="x-shader/x-fragment" id="ground_f_shader">
+			#ifdef GL_ES
+				precision highp float;
+			#endif
+			
 			uniform sampler2D planetTexture;
 			//uniform sampler2D nightTexture;
 			
