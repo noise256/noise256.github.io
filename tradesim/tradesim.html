@@ -79,23 +79,23 @@
 			}
 			
 			void main() {
-				vUv = uv;
+				float camPos = cameraPosition - position;
 				
 				//1
 				//vec3 pos = position.xyz;
-				vec3 ray = position - cameraPosition;
+				vec3 ray = position - camPos;
 				
 				float far = length(ray);
 				ray = ray / far;
 				
 				//2
-				float b = 2.0 * dot(cameraPosition, ray);
+				float b = 2.0 * dot(camPos, ray);
 				float c = cameraHeight2 - outerRadius2;
 				float det = max(0.0, b * b - 4.0 * c);
 				float near = 0.5 * (-b - sqrt(det));
 				
 				//3
-				vec3 start = cameraPosition + ray * near;
+				vec3 start = camPos + ray * near;
 				far = far - near;
 				float startAngle = dot(ray, start) / outerRadius;
 				float startDepth = exp(-1.0 / scaleDepth);
@@ -123,12 +123,10 @@
 				color = frontColor * (invWaveLength * krESun);
 				secondaryColor = frontColor * kmESun;
 				gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-				direction = cameraPosition - position;
+				direction = camPos - position;
 			}
 		</script>
 		<script type="x-shader/x-fragment" id="atmosphere_f_shader">
-			uniform sampler2D planetTexture;
-			
 			uniform vec3 lightDir;
 			
 			varying vec3 color;
@@ -187,23 +185,23 @@
 			}
 			
 			void main() {
-				vUv = uv;
+				vec3 camPos = cameraPosition - position;
 				
 				//1
 				//vec3 pos = position.xyz;
-				vec3 ray = position - cameraPosition;
+				vec3 ray = position - camPos;
 				
 				float far = length(ray);
 				ray = ray / far;
 				
 				//2
-				float b = 2.0 * dot(cameraPosition, ray);
+				float b = 2.0 * dot(camPos, ray);
 				float c = cameraHeight2 - outerRadius2;//cameraHeight2 - outerRadius2;
 				float det = max(0.0, b * b - 4.0 * c);
 				float near = 0.5 * (-b - sqrt(det));
 				
 				//3
-				vec3 start = cameraPosition + ray * near;
+				vec3 start = camPos + ray * near;
 				far = far - near;
 				float depth = exp((innerRadius - outerRadius) / scaleDepth);
 				float cameraAngle = dot(-ray, position) / length(position);
