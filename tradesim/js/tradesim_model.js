@@ -282,7 +282,7 @@ var SimulationController = {
 				}
 			}
 			
-			planetPosition = vec3.fromValues(100, 0, 0);
+			planetPosition = vec3.fromValues(300, 300, 100);
 			var planetBody = new Body(planetPosition, 0, 0, 0)
 			
 			var skyMesh = new THREE.Mesh(skyGeometry, skyMaterial);
