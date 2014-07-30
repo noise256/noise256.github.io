@@ -89,7 +89,7 @@
 				
 				//2
 				float b = 2.0 * dot(cameraPosition, ray);
-				float c = length(cameraPosition - position)*length(cameraPosition - position) - outerRadius2;//cameraHeight2 - outerRadius2;
+				float c = cameraHeight2 - outerRadius2;
 				float det = max(0.0, b * b - 4.0 * c);
 				float near = 0.5 * (-b - sqrt(det));
 				
@@ -196,7 +196,7 @@
 				
 				//2
 				float b = 2.0 * dot(cameraPosition, ray);
-				float c = length(cameraPosition - position)*length(cameraPosition - position) - outerRadius2;//cameraHeight2 - outerRadius2;
+				float c = cameraHeight2 - outerRadius2;//cameraHeight2 - outerRadius2;
 				float det = max(0.0, b * b - 4.0 * c);
 				float near = 0.5 * (-b - sqrt(det));
 				
