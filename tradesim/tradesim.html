@@ -63,8 +63,8 @@
 			uniform float scaleDepth;
 			uniform float scaleOverScaleDepth;
 			
-			const int samples = 4;
-			const float invSamples = 0.25;
+			const int samples = 16;
+			const float invSamples = 0.0625;
 			
 			varying vec3 color;
 			varying vec3 secondaryColor;
@@ -89,7 +89,7 @@
 				
 				//2
 				float b = 2.0 * dot(cameraPosition, ray);
-				float c = length(cameraPosition - position)*length(cameraPosition - position) - outerRadius2;//cameraHeight2 - outerRadius2;
+				float c = cameraHeight2 - outerRadius2;
 				float det = max(0.0, b * b - 4.0 * c);
 				float near = 0.5 * (-b - sqrt(det));
 				
@@ -101,7 +101,7 @@
 				float startOffset = startDepth * scaleFunc(startAngle);
 				
 				//4
-				float sampleLength = far * 4.0; //4.0 = samples
+				float sampleLength = far * 16.0; //4.0 = samples
 				float scaledLength = sampleLength * scale;
 				vec3 sampleRay = ray * sampleLength;
 				vec3 samplePoint = start + sampleRay * 0.5;
