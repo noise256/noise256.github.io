@@ -220,11 +220,9 @@ var SimulationController = {
 	init:function() {
 		//create planets
 		var skyGeometry = new THREE.SphereGeometry(5.125, 500, 500);
-		var skyMaterial = new THREE.ShaderMaterial({
-			vertexShader: $('#atmosphere_v_shader').text(),
-			fragmentShader: $('#atmosphere_f_shader').text(),
-		});
-		skyMaterial.uniforms = {
+		var groundGeometry = new THREE.SphereGeometry(5.0, 64, 64);
+
+		var skyUniforms = {
 			cameraPos: {type:'v3', value: new THREE.Vector3(0.0, 0.0, 0.0)},
 			cameraHeight2: {type:'f', value: 0},
 			lightDir: {type:'v3', value: new THREE.Vector3(1e8, 0, 1e8).normalize()},
@@ -241,15 +239,8 @@ var SimulationController = {
 			scaleDepth: {type:'f', value:0.25},
 			scaleOverScaleDepth: {type:'f', value:32},
 		};
-		skyMaterial.side = THREE.BackSide;
-		skyMaterial.transparent = true;
-		
-		var groundGeometry = new THREE.SphereGeometry(5.0, 64, 64);
-		var groundMaterial = new THREE.ShaderMaterial({
-			vertexShader: $('#ground_v_shader').text(),
-			fragmentShader: $('#ground_f_shader').text(),
-		});
-		groundMaterial.uniforms = {
+
+		var groundUniforms = {
 			planetTexture: {type: "t", value: THREE.ImageUtils.loadTexture('images/sedna.jpg')},
 			cameraPos: {type:'v3', value: new THREE.Vector3(0.0, 0.0, 0.0)},
 			cameraHeight2: {type:'f', value: 0},
@@ -285,8 +276,23 @@ var SimulationController = {
 			//planetPosition = vec3.fromValues(300 * Math.random(), 300 * Math.random(), 100);
 			var planetBody = new Body(planetPosition, 0, 0, 0)
 			
+			var skyMaterial = new THREE.ShaderMaterial({
+				vertexShader: $('#atmosphere_v_shader').text(),
+				fragmentShader: $('#atmosphere_f_shader').text(),
+			});
+			skyMaterial.side = THREE.BackSide;
+			skyMaterial.transparent = true;
+			skyMaterial.uniforms = skyUniforms;
+			
+			var groundMaterial = new THREE.ShaderMaterial({
+				vertexShader: $('#ground_v_shader').text(),
+				fragmentShader: $('#ground_f_shader').text(),
+			});
+			groundMaterial.uniforms = groundUniforms;
+			
 			var skyMesh = new THREE.Mesh(skyGeometry, skyMaterial);
 			var groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
+			
 			var planetView = new View();
 			planetView.meshes.push(skyMesh);
 			planetView.meshes.push(groundMesh);
