@@ -71,8 +71,6 @@
 			varying vec3 secondaryColor;
 			varying vec3 direction;
 			
-			varying vec2 vUv;
-			
 			float scaleFunc(float cos) {	
 				float x = 1.0 - cos; 	
 				return scaleDepth * exp(-0.00287 + x*(0.459 + x*(3.83 + x*(-6.80 + x*5.25))));	//TODO what are these numbers? the samples?
@@ -133,7 +131,6 @@
 			varying vec3 secondaryColor;
 			varying vec3 direction;
 			
-			varying vec2 vUv;
 			
 			const float g = -0.90;
 			const float g2 = g * g;
