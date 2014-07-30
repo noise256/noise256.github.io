@@ -249,6 +249,7 @@ var SimulationController = {
 			fragmentShader: $('#ground_f_shader').text(),
 		});
 		groundMaterial.uniforms = {
+			planetPosition: {type:'v3', value: new THREE.Vector3(0.0, 0.0, 0.0)},
 			planetTexture: {type: "t", value: THREE.ImageUtils.loadTexture('images/sedna.jpg')},
 			cameraHeight2: {type:'f', value: 0},
 			lightDir: {type:'v3', value: new THREE.Vector3(1e8, 0, 1e8).normalize()},
@@ -279,7 +280,7 @@ var SimulationController = {
 					}
 				}
 			}
-			planetPosition = vec3.fromValues(10, 0, 0);
+			planetPosition = vec3.create();
 			var planetBody = new Body(planetPosition, 0, 0, 0)
 			
 			var skyMesh = new THREE.Mesh(skyGeometry, skyMaterial);
@@ -353,6 +354,7 @@ var SimulationController = {
 			var cameraHeight = new THREE.Vector3().subVectors(SimulationView.camera.position, new THREE.Vector3(planetPos[0], planetPos[1], planetPos[2])).length();
 			for (var j = 0; j < SimulationController.planets[i].view.meshes.length; j++) {
 				SimulationController.planets[i].view.meshes[j].material.uniforms.cameraHeight2.value = cameraHeight * cameraHeight;
+				SimulationController.planets[i].view.meshes[j].material.uniforms.planetPosition.value = planetPos;
 			}
 			
 			if (SimulationController.planets[i].view.needsUpdate) {

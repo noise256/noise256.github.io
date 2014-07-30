@@ -152,6 +152,7 @@
 			}
 		</script>
 		<script type="x-shader/x-vertex" id="ground_v_shader">
+			uniform vec3 planetPosition;
 			uniform float cameraHeight2;
 			
 			uniform vec3 lightDir;
@@ -190,7 +191,7 @@
 				
 				//1
 				//vec3 pos = position.xyz;
-				vec3 ray = position - cameraPosition;
+				vec3 ray = planetPosition - cameraPosition;
 				
 				float far = length(ray);
 				ray = ray / far;
@@ -205,8 +206,8 @@
 				vec3 start = cameraPosition + ray * near;
 				far = far - near;
 				float depth = exp((innerRadius - outerRadius) / scaleDepth);
-				float cameraAngle = dot(-ray, position) / length(position);
-				float lightAngle = dot(lightDir, position) / length(position);
+				float cameraAngle = dot(-ray, planetPosition) / length(planetPosition);
+				float lightAngle = dot(lightDir, planetPosition) / length(planetPosition);
 				float lightScale = scaleFunc(lightAngle);
 				float cameraScale = scaleFunc(cameraAngle);
 				float cameraOffset = depth*cameraScale;
