@@ -64,6 +64,7 @@
 			uniform float scaleOverScaleDepth;
 			
 			const int samples = 4;
+			const float fSamples = 4.0;
 			const float invSamples = 0.25;
 			
 			varying vec3 color;
@@ -101,7 +102,7 @@
 				float startOffset = startDepth * scaleFunc(startAngle);
 				
 				//4
-				float sampleLength = far * 4.0; //4.0 = samples
+				float sampleLength = far / fSamples; //4.0 = samples
 				float scaledLength = sampleLength * scale;
 				vec3 sampleRay = ray * sampleLength;
 				vec3 samplePoint = start + sampleRay * 0.5;
@@ -152,7 +153,6 @@
 			}
 		</script>
 		<script type="x-shader/x-vertex" id="ground_v_shader">
-			uniform vec3 planetPosition;
 			uniform float cameraHeight2;
 			
 			uniform vec3 lightDir;
@@ -191,7 +191,7 @@
 				
 				//1
 				//vec3 pos = position.xyz;
-				vec3 ray = planetPosition - cameraPosition;
+				vec3 ray = position - cameraPosition;
 				
 				float far = length(ray);
 				ray = ray / far;
@@ -206,8 +206,8 @@
 				vec3 start = cameraPosition + ray * near;
 				far = far - near;
 				float depth = exp((innerRadius - outerRadius) / scaleDepth);
-				float cameraAngle = dot(-ray, planetPosition) / length(planetPosition);
-				float lightAngle = dot(lightDir, planetPosition) / length(planetPosition);
+				float cameraAngle = dot(-ray, position) / length(position);
+				float lightAngle = dot(lightDir, position) / length(position);
 				float lightScale = scaleFunc(lightAngle);
 				float cameraScale = scaleFunc(cameraAngle);
 				float cameraOffset = depth*cameraScale;
