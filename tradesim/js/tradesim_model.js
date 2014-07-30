@@ -219,14 +219,50 @@ var SimulationController = {
 	
 	init:function() {
 		//create planets
-		var planetGeometry = new THREE.SphereGeometry(5, 64, 64);
-		
-		var planetMaterial = new THREE.ShaderMaterial({
-			vertexShader: $('#planet_v_shader').text(),
-			fragmentShader: $('#planet_f_shader').text(),
+		var skyGeometry = new THREE.SphereGeometry(5.125, 64, 64);
+		var skyMaterial = new THREE.ShaderMaterial({
+			vertexShader: $('#atmosphere_v_shader').text(),
+			fragmentShader: $('#atmosphere_f_shader').text(),
 		});
+		skyMaterial.uniforms = {
+			cameraHeight2: {type:'f', value: 0},
+			lightDir: {type:'v3', value: new THREE.Vector3(1e8, 0, 1e8).normalize()},
+			invWaveLength: {type:'v3', value: new THREE.Vector3(1.0/Math.pow(0.650,4), 1.0/Math.pow(0.570,4), 1.0/Math.pow(0.475,4))},
+			outerRadius: {type:'f', value:5.125},
+			outerRadius2: {type:'f', value:26.265625},
+			innerRadius: {type:'f', value:5},
+			innerRadius2: {type:'f', value:25},
+			krESun: {type:'f', value:0.375},
+			kmESun: {type:'f', value:0.15},
+			kr4Pi: {type:'f', value:0.03141592653},
+			km4Pi: {type:'f', value:0.012566370612},
+			scale: {type:'f', value:8},
+			scaleDepth: {type:'f', value:0.25},
+			scaleOverScaleDepth: {type:'f', value:32},
+		};
 		
-		//var planetMaterial = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('images/sedna.jpg')});
+		var groundGeometry = new THREE.SphereGeometry(5.125, 64, 64);
+		var groundMaterial = new THREE.ShaderMaterial({
+			vertexShader: $('#ground_v_shader').text(),
+			fragmentShader: $('#ground_f_shader').text(),
+		});
+		groundMaterial.uniforms = {
+			planetTexture: {type: "t", value: THREE.ImageUtils.loadTexture('images/sedna.jpg')},
+			cameraHeight2: {type:'f', value: 0},
+			lightDir: {type:'v3', value: new THREE.Vector3(1e8, 0, 1e8).normalize()},
+			invWaveLength: {type:'v3', value: new THREE.Vector3(1.0/Math.pow(0.650,4), 1.0/Math.pow(0.570,4), 1.0/Math.pow(0.475,4))},
+			outerRadius: {type:'f', value:5.125},
+			outerRadius2: {type:'f', value:26.265625},
+			innerRadius: {type:'f', value:5},
+			innerRadius2: {type:'f', value:25},
+			krESun: {type:'f', value:0.375},
+			kmESun: {type:'f', value:0.15},
+			kr4Pi: {type:'f', value:0.03141592653},
+			km4Pi: {type:'f', value:0.012566370612},
+			scale: {type:'f', value:8},
+			scaleDepth: {type:'f', value:0.25},
+			scaleOverScaleDepth: {type:'f', value:32},
+		};
 		
 		for (var i = 0; i < SimulationController.numPlanets; i++) {
 			//find free locations for planets using crude monte carlo method(?)
@@ -244,25 +280,9 @@ var SimulationController = {
 			
 			var planetBody = new Body(planetPosition, 0, 0, 0);
 			
-			planetMaterial.uniforms = {
-				planetTexture: {type: "t", value: THREE.ImageUtils.loadTexture('images/sedna.jpg')},
-				cameraHeight2: {type:'f', value: 0},
-				lightDir: {type:'v3', value: new THREE.Vector3(1e8, 0, 1e8).normalize()},//{type:'v3', value: new THREE.Vector3(0, 0, 0).subVectors(planetPosition, SimulationView.planetLight.position).normalize()},
-				invWaveLength: {type:'v3', value: new THREE.Vector3(1.0/Math.pow(0.650,4), 1.0/Math.pow(0.570,4), 1.0/Math.pow(0.475,4))},
-				outerRadius: {type:'f', value:5.125},
-				outerRadius2: {type:'f', value:26.265625},
-				innerRadius: {type:'f', value:5},
-				innerRadius2: {type:'f', value:25},
-				krESun: {type:'f', value:0.375},
-				kmESun: {type:'f', value:0.15},
-				kr4Pi: {type:'f', value:0.03141592653},
-				km4Pi: {type:'f', value:0.012566370612},
-				scale: {type:'f', value:8},
-				scaleDepth: {type:'f', value:0.25},
-				scaleOverScaleDepth: {type:'f', value:32},
-			};
-			
-			var planetView = new View(planetGeometry, planetMaterial, planetPosition);
+			var planetView = new View();
+			planetView.meshes.push(new THREE.Mesh(skyGeometry, skyMaterial));
+			planetView.meshes.push(new THREE.Mesh(groundGeometry, groundMaterial));
 			
 			//generate planet resources
 			var planetEconomy = new Economy();
@@ -305,7 +325,8 @@ var SimulationController = {
 			var traderPosition = vec3.random(vec3.create(), Math.random() * SimulationController.maxPlanetSpread); //TODO implement max trader spread
 			var traderBody = new Body(traderPosition, 1, 0.02, 0.3);
 			
-			var traderView = new View(traderGeometry, traderMaterial, traderPosition);
+			var traderView = new View();
+			traderView.meshes.push(new THREE.Mesh(traderGeometry, traderMaterial));
 			
 			var traderEconomy = new Economy();
 			
@@ -519,19 +540,23 @@ Body.prototype = {
 	}
 }
 
-function View(geometry, material, position) {
-	this.mesh = new THREE.Mesh(geometry, material);
-	this.mesh.position.set(position[0], position[1], position[2]);
+function View() {
+	this.meshes = [];
+	//this.mesh.position.set(position[0], position[1], position[2]);
 	this.needsUpdate = true;
 }
 
 View.prototype = {
 	update:function(position) {
-		this.mesh.position.set(position[0], position[1], position[2]);
+		for (var i = 0; i < this.meshes.length; i++) {
+			this.meshes[i].position.set(position[0], position[1], position[2]);
+		}
 	},
 	
 	setWorldParent:function(worldParent) {
-		this.mesh.worldParent = worldParent;
+		for (var i = 0; i < this.meshes.length; i++) {
+			this.meshes[i].worldParent = worldParent;
+		}
 	}
 }
 
