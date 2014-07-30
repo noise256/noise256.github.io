@@ -225,6 +225,7 @@ var SimulationController = {
 			fragmentShader: $('#atmosphere_f_shader').text(),
 		});
 		skyMaterial.uniforms = {
+			cameraPos: {type:'v3', value: new THREE.Vector3(0.0, 0.0, 0.0)},
 			cameraHeight2: {type:'f', value: 0},
 			lightDir: {type:'v3', value: new THREE.Vector3(1e8, 0, 1e8).normalize()},
 			invWaveLength: {type:'v3', value: new THREE.Vector3(1.0/Math.pow(0.650,4), 1.0/Math.pow(0.570,4), 1.0/Math.pow(0.475,4))},
@@ -250,6 +251,7 @@ var SimulationController = {
 		});
 		groundMaterial.uniforms = {
 			planetTexture: {type: "t", value: THREE.ImageUtils.loadTexture('images/sedna.jpg')},
+			cameraPos: {type:'v3', value: new THREE.Vector3(0.0, 0.0, 0.0)},
 			cameraHeight2: {type:'f', value: 0},
 			lightDir: {type:'v3', value: new THREE.Vector3(1e8, 0, 1e8).normalize()},
 			invWaveLength: {type:'v3', value: new THREE.Vector3(1.0/Math.pow(0.650,4), 1.0/Math.pow(0.570,4), 1.0/Math.pow(0.475,4))},
@@ -350,9 +352,14 @@ var SimulationController = {
 		//update colonies and traders using TraderController and ColonyController
 		for (var i = 0; i < SimulationController.planets.length; i++) {
 			var planetPos = SimulationController.planets[i].body.position;
-			var cameraHeight = new THREE.Vector3().subVectors(SimulationView.camera.position, new THREE.Vector3(planetPos[0], planetPos[1], planetPos[2])).length();
+			var relativeCameraPos = new THREE.Vector3().subVectors(SimulationView.camera.position, new THREE.Vector3(planetPos[0], planetPos[1], planetPos[2]));
+			var cameraHeight = relativeCameraPos.length();
+			var cameraHeight2 = cameraHeight * cameraHeight;
+			//var cameraHeight = new THREE.Vector3().subVectors(SimulationView.camera.position, new THREE.Vector3(planetPos[0], planetPos[1], planetPos[2])).length();
+			
 			for (var j = 0; j < SimulationController.planets[i].view.meshes.length; j++) {
-				SimulationController.planets[i].view.meshes[j].material.uniforms.cameraHeight2.value = cameraHeight * cameraHeight;
+				SimulationController.planets[i].view.meshes[j].material.uniforms.cameraPos.value = relativeCameraPos;
+				SimulationController.planets[i].view.meshes[j].material.uniforms.cameraHeight2.value = cameraHeight2;
 			}
 			
 			if (SimulationController.planets[i].view.needsUpdate) {
