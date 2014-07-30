@@ -258,7 +258,7 @@ var SimulationController = {
 			};
 
 			var groundUniforms = {
-				planetTexture: {type: "t", value: THREE.ImageUtils.loadTexture('images/sedna_low.jpg')},
+				planetTexture: {type: "t", value: THREE.ImageUtils.loadTexture('images/plutomap1k.jpg')},
 				cameraPos: {type:'v3', value: new THREE.Vector3(0.0, 0.0, 0.0)},
 				cameraHeight2: {type:'f', value: 0},
 				lightDir: {type:'v3', value: new THREE.Vector3(1e8, 0, 1e8).normalize()},
