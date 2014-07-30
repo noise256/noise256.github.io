@@ -206,8 +206,8 @@ var GUIController = {
 }
 
 var SimulationController = {
-	numPlanets:25,
-	numColonies:25,
+	numPlanets:6,
+	numColonies:6,
 	numTraders:500,
 	
 	minSystemDistance:30,
