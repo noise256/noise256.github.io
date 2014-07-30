@@ -44,6 +44,7 @@
 			}
 		</script>
 		<script type="x-shader/x-vertex" id="atmosphere_v_shader">
+			uniform vec3 planetPos;
 			uniform vec3 cameraPos;
 			uniform float cameraHeight2;
 			
@@ -78,9 +79,10 @@
 			}
 			
 			void main() {
+				vec3 vertPos = position - planetPos;
 				//1
 				//vec3 pos = position.xyz;
-				vec3 ray = position - cameraPos;
+				vec3 ray = vertPos - cameraPos;
 				
 				float far = length(ray);
 				ray = ray / far;
@@ -120,7 +122,7 @@
 				color = frontColor * (invWaveLength * krESun);
 				secondaryColor = frontColor * kmESun;
 				gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-				direction = cameraPos - position;
+				direction = cameraPos - vertPos;
 			}
 		</script>
 		<script type="x-shader/x-fragment" id="atmosphere_f_shader">
@@ -147,6 +149,7 @@
 			}
 		</script>
 		<script type="x-shader/x-vertex" id="ground_v_shader">
+			uniform vec3 planetPos;
 			uniform vec3 cameraPos;
 			uniform float cameraHeight2;
 			
@@ -182,9 +185,10 @@
 			}
 			
 			void main() {
+				vec3 vertPos = position - planetPos;
 				//1
 				//vec3 pos = position.xyz;
-				vec3 ray = position - cameraPos;
+				vec3 ray = vertPos - cameraPos;
 				
 				float far = length(ray);
 				ray = ray / far;
@@ -199,8 +203,8 @@
 				vec3 start = cameraPos + ray * near;
 				far = far - near;
 				float depth = exp((innerRadius - outerRadius) / scaleDepth);
-				float cameraAngle = dot(-ray, position) / length(position);
-				float lightAngle = dot(lightDir, position) / length(position);
+				float cameraAngle = dot(-ray, vertPos) / length(vertPos);
+				float lightAngle = dot(lightDir, vertPos) / length(vertPos);
 				float lightScale = scaleFunc(lightAngle);
 				float cameraScale = scaleFunc(cameraAngle);
 				float cameraOffset = depth*cameraScale;

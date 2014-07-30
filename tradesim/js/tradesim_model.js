@@ -225,6 +225,7 @@ var SimulationController = {
 			fragmentShader: $('#atmosphere_f_shader').text(),
 		});
 		skyMaterial.uniforms = {
+			planetPos: {type:'v3', value: new THREE.Vector3(0.0, 0.0, 0.0)},
 			cameraPos: {type:'v3', value: new THREE.Vector3(0.0, 0.0, 0.0)},
 			cameraHeight2: {type:'f', value: 0},
 			lightDir: {type:'v3', value: new THREE.Vector3(1e8, 0, 1e8).normalize()},
@@ -251,6 +252,7 @@ var SimulationController = {
 		});
 		groundMaterial.uniforms = {
 			planetTexture: {type: "t", value: THREE.ImageUtils.loadTexture('images/sedna.jpg')},
+			planetPos: {type:'v3', value: new THREE.Vector3(0.0, 0.0, 0.0)},
 			cameraPos: {type:'v3', value: new THREE.Vector3(0.0, 0.0, 0.0)},
 			cameraHeight2: {type:'f', value: 0},
 			lightDir: {type:'v3', value: new THREE.Vector3(1e8, 0, 1e8).normalize()},
@@ -351,14 +353,15 @@ var SimulationController = {
 	update:function() {
 		//update colonies and traders using TraderController and ColonyController
 		for (var i = 0; i < SimulationController.planets.length; i++) {
-			var planetPos = SimulationController.planets[i].body.position;
-			var relativeCameraPos = new THREE.Vector3().subVectors(SimulationView.camera.position, new THREE.Vector3(planetPos[0], planetPos[1], planetPos[2]));
+			var planetPos = new THREE.Vector3(SimulationController.planets[i].body.position[0], SimulationController.planets[i].body.position[1], SimulationController.planets[i].body.position[2]);
+			var relativeCameraPos = new THREE.Vector3().subVectors(SimulationView.camera.position, planetPos);
 			var cameraHeight = relativeCameraPos.length();
 			var cameraHeight2 = cameraHeight * cameraHeight;
 			var lightPos = SimulationView.planetLight.position;
-			var lightDir = lightPos.sub(new THREE.Vector3(planetPos[0], planetPos[1], planetPos[2])).normalize();
+			var lightDir = lightPos.sub(planetPos).normalize();
 			
 			for (var j = 0; j < SimulationController.planets[i].view.meshes.length; j++) {
+				SimulationController.planets[i].view.meshes[j].material.uniforms.planetPos.value = planetPos;
 				SimulationController.planets[i].view.meshes[j].material.uniforms.cameraPos.value = relativeCameraPos;
 				SimulationController.planets[i].view.meshes[j].material.uniforms.cameraHeight2.value = cameraHeight2;
 				SimulationController.planets[i].view.meshes[j].material.uniforms.lightDir.value = lightDir;
