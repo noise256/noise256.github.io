@@ -349,7 +349,8 @@ var SimulationController = {
 	update:function() {
 		//update colonies and traders using TraderController and ColonyController
 		for (var i = 0; i < SimulationController.planets.length; i++) {
-			var cameraHeight = new THREE.Vector3(0.0, 0.0, 0.0).subVectors(SimulationView.camera.position, SimulationController.planets[i].body.position).length();
+			var temp = new THREE.Vector3();
+			var cameraHeight = temp.subVectors(SimulationView.camera.position, SimulationController.planets[i].body.position).length();
 			for (var j = 0; j < SimulationController.planets[i].view.meshes.length; j++) {
 				SimulationController.planets[i].view.meshes[j].material.uniforms.cameraHeight2.value = cameraHeight * cameraHeight;
 			}
