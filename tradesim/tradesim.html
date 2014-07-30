@@ -81,8 +81,8 @@
 				vUv = uv;
 				
 				//1
-				vec3 pos = position.xyz;
-				vec3 ray = pos - cameraPosition;
+				//vec3 pos = position.xyz;
+				vec3 ray = position - cameraPosition;
 				
 				float far = length(ray);
 				ray = ray / far;
@@ -101,7 +101,7 @@
 				float startOffset = startDepth * scaleFunc(startAngle);
 				
 				//4
-				float sampleLength = far * invSamples;
+				float sampleLength = far * 4.0; //4.0 = samples
 				float scaledLength = sampleLength * scale;
 				vec3 sampleRay = ray * sampleLength;
 				vec3 samplePoint = start + sampleRay * 0.5;
@@ -114,15 +114,15 @@
 					float lightAngle = dot(lightDir, samplePoint) / height;
 					float cameraAngle = dot(ray, samplePoint) / height;
 					float scatter = (startOffset + depth * (scaleFunc(lightAngle) - scaleFunc(cameraAngle)));
-					vec3 attenuate = exp(scatter * (invWaveLength * kr4Pi + km4Pi));
+					vec3 attenuate = exp(-scatter * (invWaveLength * kr4Pi + km4Pi));
 					frontColor += attenuate * (depth * scaledLength);
 					samplePoint += sampleRay;
 				}
 				
-				secondaryColor = frontColor * kmESun;
 				color = frontColor * (invWaveLength * krESun);
+				secondaryColor = frontColor * kmESun;
 				gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-				direction = cameraPosition - pos;
+				direction = cameraPosition - position;
 			}
 		</script>
 		<script type="x-shader/x-fragment" id="planet_f_shader">
@@ -144,15 +144,10 @@
 				float cos = dot(lightDir, direction) / length(direction); //TODO this is giving negative parameter to pow function in miephase function
 				float cos2 = cos * cos;
 				
-				float rayleighPhase = 0.75 * (1.0 + cos * cos);
-				//float miePhase = ((1.0 - g2) / (2.0 + g2)) * (1.0 + cos * cos) / pow(1.0 + g2 - 2.0 * g * cos, 1.5);
+				float rayleighPhase = 0.75 + 0.75 * cos2;
+				float miePhase = 1.5 * ((1.0 - g2) / (2.0 + g2)) * (1.0 * cos2) / pow(1.0 + g2 - 2.0 * g * cos, 1.5);
 				
-				//gl_FragColor.rgb = color + secondaryColor * texture2D(planetTexture, vUv).rgb;
-				//gl_FragColor.a = 1.0;
-				//gl_FragColor = texture2D(planetTexture, vUv);
-				//gl_FragColor.rgb = 1.0 - exp(-exposure * (color + texture2D(planetTexture, vUv).rgb * secondaryColor));
-				gl_FragColor.rgb = 1.0 - exp(-exposure * color + secondaryColor);
-				gl_FragColor.a = 1.0;
+				gl_FragColor = vec4(rayleighPhase * color + miePhase * secondaryColor, 1.0);
 			}
 		</script>
 	</head>
