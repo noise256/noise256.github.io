@@ -53,7 +53,7 @@ var SimulationView = {
 		
 		SimulationView.controls = new THREE.TrackballControls(SimulationView.camera);
 		SimulationView.controls.target.y = 10;
-		SimulationView.controls.maxDistance = 2000;
+		SimulationView.controls.maxDistance = 10000;
 		
 		SimulationView.fpsMeter = new FPSMeter(document.body, { decimals: 0, graph: true, theme: 'dark', left: '5px' });
 		
