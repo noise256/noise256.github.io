@@ -316,7 +316,7 @@ var SimulationController = {
 		}
 		
 		//create traders
-		var traderGeometry = new THREE.SphereGeometry(1, 32, 32);
+		var traderGeometry = new THREE.SphereGeometry(10, 32, 32);
 		var traderMaterial = new THREE.ShaderMaterial({
 			vertexShader: $('#unlit_v_shader').text(),
 			fragmentShader: $('#unlit_f_shader').text(),
