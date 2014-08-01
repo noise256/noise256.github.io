@@ -608,7 +608,7 @@ var PlanetSpec = {
 		kr: 0.0025,
 		km: 0.001,
 		scale: 8,
-		scaleDepth: 25
+		scaleDepth: 0.25
 	}
 }
 function Trader(body, view, economy) {
