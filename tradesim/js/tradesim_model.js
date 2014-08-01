@@ -324,7 +324,7 @@ var SimulationController = {
 		
 		for (var i = 0; i < SimulationController.numTraders; i++) {
 			var traderPosition = vec3.random(vec3.create(), Math.random() * SolarSystemSpec.system1.maxPlanetSpread); //TODO implement max trader spread
-			var traderBody = new Body(traderPosition, 1, 0.02, 0.3);
+			var traderBody = new Body(traderPosition, 1, 0.05, 1.0);
 			
 			var traderView = new View();
 			traderView.meshes.push(new THREE.Mesh(traderGeometry, traderMaterial));
