@@ -222,8 +222,6 @@ var SimulationController = {
 					}
 				}
 			}
-			
-			//planetPosition = vec3.fromValues(300 * Math.random(), 300 * Math.random(), 100);
 			var planetBody = new Body(planetPosition, 0, 0, 0)
 			
 			var skyUniforms = {
@@ -245,7 +243,8 @@ var SimulationController = {
 			};
 
 			var groundUniforms = {
-				planetTexture: {type: "t", value: THREE.ImageUtils.loadTexture('images/plutomap1k.jpg')},
+				dayTexture: {type: "t", value: THREE.ImageUtils.loadTexture('images/plutomap1k.jpg')},
+				nightTexture: {type: "t", value: THREE.ImageUtils.loadTexture('images/plutomap1k.jpg')},
 				cameraPos: {type:'v3', value: new THREE.Vector3(0.0, 0.0, 0.0)},
 				cameraHeight2: {type:'f', value: 0},
 				lightDir: {type:'v3', value: new THREE.Vector3(1e8, 0, 1e8).normalize()},
@@ -317,15 +316,14 @@ var SimulationController = {
 		}
 		
 		//create traders
-		var traderGeometry = new THREE.BoxGeometry(1, 1, 1);
+		var traderGeometry = new THREE.SphereGeometry(1, 32, 32);
 		var traderMaterial = new THREE.ShaderMaterial({
 			vertexShader: $('#unlit_v_shader').text(),
 			fragmentShader: $('#unlit_f_shader').text(),
 		});
 		
-		//var traderMaterial = new THREE.MeshBasicMaterial({color: 0x003344});
 		for (var i = 0; i < SimulationController.numTraders; i++) {
-			var traderPosition = vec3.random(vec3.create(), Math.random() * SimulationController.maxPlanetSpread); //TODO implement max trader spread
+			var traderPosition = vec3.random(vec3.create(), Math.random() * SolarSystemSpec.system1.maxPlanetSpread); //TODO implement max trader spread
 			var traderBody = new Body(traderPosition, 1, 0.02, 0.3);
 			
 			var traderView = new View();
