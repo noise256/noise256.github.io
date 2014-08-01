@@ -34,7 +34,7 @@ var SimulationView = {
 		
 		SimulationView.scene = new THREE.Scene();
 		
-		SimulationView.camera = new THREE.PerspectiveCamera(60, SimulationView.canvasWidth / SimulationView.canvasHeight, 1, 20000);
+		SimulationView.camera = new THREE.PerspectiveCamera(60, SimulationView.canvasWidth / SimulationView.canvasHeight, 1, 25000);
 		SimulationView.camera.position.x = 7500;
 		SimulationView.camera.position.y = 2500;
 		SimulationView.camera.position.z = 7500;
@@ -158,10 +158,16 @@ var SkyBox = {
 			}));
 		}
 		
-		SimulationView.scene.add(new THREE.Mesh(
-			new THREE.BoxGeometry(15000, 15000, 15000), 
+		var skyBoxMesh = new THREE.Mesh(
+			new THREE.SphereGeometry(15000, 60, 40), 
 			new THREE.MeshFaceMaterial(materialArray)
-		));
+		);
+		
+		skyBoxMesh.scale.set(-1, 1, 1);
+		skyBoxMesh.eulerOrder = 'XYZ';
+		skyBoxMesh.renderDepth = 1000.0;
+		
+		SimulationView.scene.add(skyBoxMesh);
 	}
 }
 
