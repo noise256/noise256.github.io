@@ -65,6 +65,16 @@ var SimulationView = {
 		SimulationView.projector = new THREE.Projector();
 		SimulationView.mouseVector = new THREE.Vector3();
 		
+		window.addEventListener(
+			"keydown", 
+			function(e) {
+				if (e.keyCode == 70) {
+					THREEx.FullScreen.request(SimulationView.domElement);
+				}
+			}, 
+			false
+		);
+		
 		window.addEventListener('mousemove', SimulationView.onMouseMove, false);
 		window.addEventListener('resize', SimulationView.onWindowResize, false);
 		
@@ -259,9 +269,9 @@ var SimulationController = {
 				kmESun: {type:'f', value:PlanetSpec.world1.km * PlanetSpec.world1.eSun},
 				kr4Pi: {type:'f', value:PlanetSpec.world1.kr * 4 * Math.PI},
 				km4Pi: {type:'f', value:PlanetSpec.world1.km * 4 * Math.PI},
-				scale: {type:'f', value:PlanetSpec.world1.scale},
+				scale: {type:'f', value:1 / (PlanetSpec.world1.outerRadius - PlanetSpec.world1.innerRadius)},
 				scaleDepth: {type:'f', value:PlanetSpec.world1.scaleDepth},
-				scaleOverScaleDepth: {type:'f', value:PlanetSpec.world1.scale / PlanetSpec.world1.scaleDepth},
+				scaleOverScaleDepth: {type:'f', value:1 / (PlanetSpec.world1.outerRadius - PlanetSpec.world1.innerRadius) / PlanetSpec.world1.scaleDepth},
 			};
 
 			var groundUniforms = {
@@ -278,9 +288,9 @@ var SimulationController = {
 				kmESun: {type:'f', value:PlanetSpec.world1.km * PlanetSpec.world1.eSun},
 				kr4Pi: {type:'f', value:PlanetSpec.world1.kr * 4 * Math.PI},
 				km4Pi: {type:'f', value:PlanetSpec.world1.km * 4 * Math.PI},
-				scale: {type:'f', value:PlanetSpec.world1.scale},
+				scale: {type:'f', value:1 / (PlanetSpec.world1.outerRadius - PlanetSpec.world1.innerRadius)},
 				scaleDepth: {type:'f', value:PlanetSpec.world1.scaleDepth},
-				scaleOverScaleDepth: {type:'f', value:PlanetSpec.world1.scale / PlanetSpec.world1.scaleDepth},
+				scaleOverScaleDepth: {type:'f', value:1 / (PlanetSpec.world1.outerRadius - PlanetSpec.world1.innerRadius) / PlanetSpec.world1.scaleDepth},
 			};
 		
 			var skyMaterial = new THREE.ShaderMaterial({
@@ -288,7 +298,8 @@ var SimulationController = {
 				vertexShader: $('#atmosphere_v_shader').text(),
 				fragmentShader: $('#atmosphere_f_shader').text(),
 				side: THREE.BackSide,
-				transparent: true
+				transparent: true,
+				blending: THREE.AdditiveBlending
 			});
 			
 			var groundMaterial = new THREE.ShaderMaterial({
@@ -611,11 +622,10 @@ var PlanetSpec = {
 	world1: {
 		waveLength: [0.65, 0.57, 0.475],
 		outerRadius: 51.25,
-		innerRadius: 45,
-		eSun: 20,
+		innerRadius: 50,
+		eSun: 50,
 		kr: 0.0025,
 		km: 0.001,
-		scale: 8,
 		scaleDepth: 0.25
 	}
 }
