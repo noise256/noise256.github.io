@@ -243,18 +243,18 @@ var SimulationController = {
 				cameraPos: {type:'v3', value: new THREE.Vector3(0.0, 0.0, 0.0)},
 				cameraHeight2: {type:'f', value: 0},
 				lightDir: {type:'v3', value: new THREE.Vector3(1e8, 0, 1e8).normalize()},
-				invWaveLength: {type:'v3', value: new THREE.Vector3(1.0/Math.pow(0.650,4), 1.0/Math.pow(0.570,4), 1.0/Math.pow(0.475,4))},
-				outerRadius: {type:'f', value:5.125},
-				outerRadius2: {type:'f', value:26.265625},
-				innerRadius: {type:'f', value:5},
-				innerRadius2: {type:'f', value:25},
-				krESun: {type:'f', value:0.3},
-				kmESun: {type:'f', value:0.12},
-				kr4Pi: {type:'f', value:0.03141592653},
-				km4Pi: {type:'f', value:0.012566370612},
-				scale: {type:'f', value:8},
-				scaleDepth: {type:'f', value:0.25},
-				scaleOverScaleDepth: {type:'f', value:32},
+				invWaveLength: {type:'v3', value: new THREE.Vector3(1.0/Math.pow(planet.specification.waveLength[0],4), 1.0/Math.pow(planet.specification.waveLength[1],4), 1.0/Math.pow(planet.specification.waveLength[2],4))},
+				outerRadius: {type:'f', value:planet.specification.outerRadius},
+				outerRadius2: {type:'f', value:planet.specification.outerRadius * planet.specification.outerRadius},
+				innerRadius: {type:'f', value:planet.specification.innerRadius},
+				innerRadius2: {type:'f', value:planet.specification.innerRadius * planet.specification.innerRadius},
+				krESun: {type:'f', value:planet.specification.kr * planet.specification.eSun},
+				kmESun: {type:'f', value:planet.specification.km * planet.specification.eSun},
+				kr4Pi: {type:'f', value:planet.specification.kr * 4 * Math.PI},
+				km4Pi: {type:'f', value:planet.specification.km * 4 * Math.PI},
+				scale: {type:'f', value:planet.specification.scale},
+				scaleDepth: {type:'f', value:planet.specification.scaleDepth},
+				scaleOverScaleDepth: {type:'f', value:planet.specification.scale / planet.specification.scaleDepth},
 			};
 
 			var groundUniforms = {
@@ -262,18 +262,18 @@ var SimulationController = {
 				cameraPos: {type:'v3', value: new THREE.Vector3(0.0, 0.0, 0.0)},
 				cameraHeight2: {type:'f', value: 0},
 				lightDir: {type:'v3', value: new THREE.Vector3(1e8, 0, 1e8).normalize()},
-				invWaveLength: {type:'v3', value: new THREE.Vector3(1.0/Math.pow(0.650,4), 1.0/Math.pow(0.570,4), 1.0/Math.pow(0.475,4))},
-				outerRadius: {type:'f', value:5.125},
-				outerRadius2: {type:'f', value:26.265625},
-				innerRadius: {type:'f', value:5},
-				innerRadius2: {type:'f', value:25},
-				krESun: {type:'f', value:0.3},
-				kmESun: {type:'f', value:0.12},
-				kr4Pi: {type:'f', value:0.03141592653},
-				km4Pi: {type:'f', value:0.012566370612},
-				scale: {type:'f', value:8},
-				scaleDepth: {type:'f', value:0.25},
-				scaleOverScaleDepth: {type:'f', value:32},
+				invWaveLength: {type:'v3', value: new THREE.Vector3(1.0/Math.pow(planet.specification.waveLength[0],4), 1.0/Math.pow(planet.specification.waveLength[1],4), 1.0/Math.pow(planet.specification.waveLength[2],4))},
+				outerRadius: {type:'f', value:planet.specification.outerRadius},
+				outerRadius2: {type:'f', value:planet.specification.outerRadius * planet.specification.outerRadius},
+				innerRadius: {type:'f', value:planet.specification.innerRadius},
+				innerRadius2: {type:'f', value:planet.specification.innerRadius * planet.specification.innerRadius},
+				krESun: {type:'f', value:planet.specification.kr * planet.specification.eSun},
+				kmESun: {type:'f', value:planet.specification.km * planet.specification.eSun},
+				kr4Pi: {type:'f', value:planet.specification.kr * 4 * Math.PI},
+				km4Pi: {type:'f', value:planet.specification.km * 4 * Math.PI},
+				scale: {type:'f', value:planet.specification.scale},
+				scaleDepth: {type:'f', value:planet.specification.scaleDepth},
+				scaleOverScaleDepth: {type:'f', value:planet.specification.scale / planet.specification.scaleDepth},
 			};
 		
 			var skyMaterial = new THREE.ShaderMaterial({
@@ -597,6 +597,17 @@ function Planet(body, view, economy) {
 	this.colonies = [];
 	
 	this.view.setWorldParent(this);
+	
+	this.specification = {
+		waveLength: [0.65, 0.57, 0.475],
+		outerRadius: 5.125,
+		innerRadius: 5,
+		eSun: 15,
+		kr: 0.0025,
+		km: 0.001,
+		scale: 8,
+		scaleDepth: 25
+	};
 }
 
 function Trader(body, view, economy) {
