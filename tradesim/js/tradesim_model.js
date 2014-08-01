@@ -219,8 +219,8 @@ var SimulationController = {
 	
 	init:function() {
 		//create planets
-		var skyGeometry = new THREE.SphereGeometry(5.125, 500, 500);
-		var groundGeometry = new THREE.SphereGeometry(5.0, 64, 64);
+		var skyGeometry = new THREE.SphereGeometry(PlanetSpec.world1.outerRadius, 500, 500);
+		var groundGeometry = new THREE.SphereGeometry(PlanetSpec.world1.innerRadius, 64, 64);
 		
 		for (var i = 0; i < SimulationController.numPlanets; i++) {
 			//find free locations for planets using crude monte carlo method(?)
@@ -602,8 +602,8 @@ function Planet(body, view, economy) {
 var PlanetSpec = {
 	world1: {
 		waveLength: [0.65, 0.57, 0.475],
-		outerRadius: 5.125,
-		innerRadius: 5,
+		outerRadius: 51.25,
+		innerRadius: 50,
 		eSun: 15,
 		kr: 0.0025,
 		km: 0.001,
