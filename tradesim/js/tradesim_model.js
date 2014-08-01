@@ -32,12 +32,12 @@ var SimulationView = {
 		SimulationView.camera.position.z = 7500;
 		SimulationView.camera.lookAt(new THREE.Vector3(0, 0, 0));
 		
-		var ambientLight = new THREE.AmbientLight(0x404040);
-		SimulationView.planetLight = new THREE.PointLight();
-		SimulationView.planetLight.position.set(0, 0, 0);
+		//var ambientLight = new THREE.AmbientLight(0x404040);
+		//SimulationView.planetLight = new THREE.PointLight();
+		//SimulationView.planetLight.position.set(0.0, 0.0, 0.0);
 		
-		SimulationView.scene.add(ambientLight);
-		SimulationView.scene.add(SimulationView.planetLight);
+		//SimulationView.scene.add(ambientLight);
+		//SimulationView.scene.add(SimulationView.planetLight);
 		
 		SimulationView.renderer = new THREE.WebGLRenderer();
 		SimulationView.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -207,6 +207,8 @@ var SimulationController = {
 	init:function() {
 		//create star
 		var starSize = 500;
+		
+		var starPosition = new THREE.Vector3(0.0, 0.0, 0.0);
 		var starGeometry = new THREE.SphereGeometry(starSize, 64, 64);
 		var starMaterial = new THREE.MeshBasicMaterial({color: 0xfff5f2});
 		
@@ -236,7 +238,7 @@ var SimulationController = {
 			var skyUniforms = {
 				cameraPos: {type:'v3', value: new THREE.Vector3(0.0, 0.0, 0.0)},
 				cameraHeight2: {type:'f', value: 0},
-				lightDir: {type:'v3', value: new THREE.Vector3(1e8, 0, 1e8).normalize()},
+				lightDir: {type:'v3', value: new THREE.Vector3(starPosition.x - planetPosition[0], starPosition.y - planetPosition[1], starPosition.z - planetPosition[2]).normalize()},
 				invWaveLength: {type:'v3', value: new THREE.Vector3(1.0/Math.pow(PlanetSpec.world1.waveLength[0],4), 1.0/Math.pow(PlanetSpec.world1.waveLength[1],4), 1.0/Math.pow(PlanetSpec.world1.waveLength[2],4))},
 				outerRadius: {type:'f', value:PlanetSpec.world1.outerRadius},
 				outerRadius2: {type:'f', value:PlanetSpec.world1.outerRadius * PlanetSpec.world1.outerRadius},
@@ -256,7 +258,7 @@ var SimulationController = {
 				nightTexture: {type: "t", value: THREE.ImageUtils.loadTexture('images/plutomap1k.jpg')},
 				cameraPos: {type:'v3', value: new THREE.Vector3(0.0, 0.0, 0.0)},
 				cameraHeight2: {type:'f', value: 0},
-				lightDir: {type:'v3', value: new THREE.Vector3(1e8, 0, 1e8).normalize()},
+				lightDir: {type:'v3', value: new THREE.Vector3(starPosition.x - planetPosition[0], starPosition.y - planetPosition[1], starPosition.z - planetPosition[2]).normalize()},
 				invWaveLength: {type:'v3', value: new THREE.Vector3(1.0/Math.pow(PlanetSpec.world1.waveLength[0],4), 1.0/Math.pow(PlanetSpec.world1.waveLength[1],4), 1.0/Math.pow(PlanetSpec.world1.waveLength[2],4))},
 				outerRadius: {type:'f', value:PlanetSpec.world1.outerRadius},
 				outerRadius2: {type:'f', value:PlanetSpec.world1.outerRadius * PlanetSpec.world1.outerRadius},
@@ -353,19 +355,20 @@ var SimulationController = {
 	
 	update:function() {
 		//update colonies and traders using TraderController and ColonyController#
-		var lightPos = SimulationView.planetLight.position;
+		//var lightPos = SimulationView.planetLight.position;
 		for (var i = 0; i < SimulationController.planets.length; i++) {
 			var planetPos = new THREE.Vector3(SimulationController.planets[i].body.position[0], SimulationController.planets[i].body.position[1], SimulationController.planets[i].body.position[2]);;
 			var relativeCameraPos = new THREE.Vector3().subVectors(SimulationView.camera.position, planetPos);
 			var cameraHeight = relativeCameraPos.length();
 			var cameraHeight2 = cameraHeight * cameraHeight;
-			var lightDir = lightPos.sub(planetPos).normalize();
+			//var lightDir = ;
+			//var lightDir = lightPos.sub(planetPos).normalize();
 			
 			for (var j = 0; j < SimulationController.planets[i].view.meshes.length; j++) {
 				//TODO need to deal with situations where mesh doesn't have said unifroms - probably have specific update functionn in view or planet object
 				SimulationController.planets[i].view.meshes[j].material.uniforms.cameraPos.value = relativeCameraPos;
 				SimulationController.planets[i].view.meshes[j].material.uniforms.cameraHeight2.value = cameraHeight2;
-				SimulationController.planets[i].view.meshes[j].material.uniforms.lightDir.value = lightDir;
+				//SimulationController.planets[i].view.meshes[j].material.uniforms.lightDir.value = planetPos.clone();
 			}
 			
 			if (SimulationController.planets[i].view.needsUpdate) {
