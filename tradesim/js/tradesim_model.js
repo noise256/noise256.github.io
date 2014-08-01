@@ -34,7 +34,7 @@ var SimulationView = {
 		
 		SimulationView.scene = new THREE.Scene();
 		
-		SimulationView.camera = new THREE.PerspectiveCamera(60, SimulationView.canvasWidth / SimulationView.canvasHeight, 1, 15000);
+		SimulationView.camera = new THREE.PerspectiveCamera(60, SimulationView.canvasWidth / SimulationView.canvasHeight, 1, 20000);
 		SimulationView.camera.position.x = 7500;
 		SimulationView.camera.position.y = 2500;
 		SimulationView.camera.position.z = 7500;
@@ -218,11 +218,6 @@ var SimulationController = {
 		//create planets
 		var skyGeometry = new THREE.SphereGeometry(PlanetSpec.world1.outerRadius, 500, 500);
 		var groundGeometry = new THREE.SphereGeometry(PlanetSpec.world1.innerRadius, 64, 64);
-		var textureGeometry = new THREE.SphereGeometry(PlanetSpec.world1.innerRadius * 0.975, 64, 64);
-		
-		var textureMaterial = new THREE.MeshBasicMaterial({
-			map: THREE.ImageUtils.loadTexture('images/plutomap1k.jpg')
-		});
 		
 		for (var i = 0; i < SimulationController.numPlanets; i++) {
 			//find free locations for planets using crude monte carlo method(?)
@@ -295,12 +290,10 @@ var SimulationController = {
 			
 			var skyMesh = new THREE.Mesh(skyGeometry, skyMaterial);
 			var groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
-			var textureMesh = new THREE.Mesh(textureGeometry, textureMaterial);
 			
 			var planetView = new View();
 			planetView.meshes.push(skyMesh);
 			planetView.meshes.push(groundMesh);
-			planetView.meshes.push(textureMesh);
 			
 			//generate planet resources
 			var planetEconomy = new Economy();
@@ -372,17 +365,9 @@ var SimulationController = {
 			
 			for (var j = 0; j < SimulationController.planets[i].view.meshes.length; j++) {
 				//TODO need to deal with situations where mesh doesn't have said unifroms - probably have specific update functionn in view or planet object
-				if (SimulationController.planets[i].view.meshes[j].material.uniforms) {
-					if (SimulationController.planets[i].view.meshes[j].material.uniforms.cameraPos) {
-						SimulationController.planets[i].view.meshes[j].material.uniforms.cameraPos.value = relativeCameraPos;
-					}
-					if (SimulationController.planets[i].view.meshes[j].material.uniforms.cameraHeight2) {
-						SimulationController.planets[i].view.meshes[j].material.uniforms.cameraHeight2.value = cameraHeight2;
-					}
-					if (SimulationController.planets[i].view.meshes[j].material.uniforms.lightDir) {
-						SimulationController.planets[i].view.meshes[j].material.uniforms.lightDir.value = lightDir;
-					}
-				}
+				SimulationController.planets[i].view.meshes[j].material.uniforms.cameraPos.value = relativeCameraPos;
+				SimulationController.planets[i].view.meshes[j].material.uniforms.cameraHeight2.value = cameraHeight2;
+				SimulationController.planets[i].view.meshes[j].material.uniforms.lightDir.value = lightDir;
 			}
 			
 			if (SimulationController.planets[i].view.needsUpdate) {
