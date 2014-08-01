@@ -243,18 +243,18 @@ var SimulationController = {
 				cameraPos: {type:'v3', value: new THREE.Vector3(0.0, 0.0, 0.0)},
 				cameraHeight2: {type:'f', value: 0},
 				lightDir: {type:'v3', value: new THREE.Vector3(1e8, 0, 1e8).normalize()},
-				invWaveLength: {type:'v3', value: new THREE.Vector3(1.0/Math.pow(planet.specification.waveLength[0],4), 1.0/Math.pow(planet.specification.waveLength[1],4), 1.0/Math.pow(planet.specification.waveLength[2],4))},
-				outerRadius: {type:'f', value:planet.specification.outerRadius},
-				outerRadius2: {type:'f', value:planet.specification.outerRadius * planet.specification.outerRadius},
-				innerRadius: {type:'f', value:planet.specification.innerRadius},
-				innerRadius2: {type:'f', value:planet.specification.innerRadius * planet.specification.innerRadius},
-				krESun: {type:'f', value:planet.specification.kr * planet.specification.eSun},
-				kmESun: {type:'f', value:planet.specification.km * planet.specification.eSun},
-				kr4Pi: {type:'f', value:planet.specification.kr * 4 * Math.PI},
-				km4Pi: {type:'f', value:planet.specification.km * 4 * Math.PI},
-				scale: {type:'f', value:planet.specification.scale},
-				scaleDepth: {type:'f', value:planet.specification.scaleDepth},
-				scaleOverScaleDepth: {type:'f', value:planet.specification.scale / planet.specification.scaleDepth},
+				invWaveLength: {type:'v3', value: new THREE.Vector3(1.0/Math.pow(PlanetSpec.waveLength[0],4), 1.0/Math.pow(PlanetSpec.waveLength[1],4), 1.0/Math.pow(PlanetSpec.waveLength[2],4))},
+				outerRadius: {type:'f', value:PlanetSpec.outerRadius},
+				outerRadius2: {type:'f', value:PlanetSpec.outerRadius * PlanetSpec.outerRadius},
+				innerRadius: {type:'f', value:PlanetSpec.innerRadius},
+				innerRadius2: {type:'f', value:PlanetSpec.innerRadius * PlanetSpec.innerRadius},
+				krESun: {type:'f', value:PlanetSpec.kr * PlanetSpec.eSun},
+				kmESun: {type:'f', value:PlanetSpec.km * PlanetSpec.eSun},
+				kr4Pi: {type:'f', value:PlanetSpec.kr * 4 * Math.PI},
+				km4Pi: {type:'f', value:PlanetSpec.km * 4 * Math.PI},
+				scale: {type:'f', value:PlanetSpec.scale},
+				scaleDepth: {type:'f', value:PlanetSpec.scaleDepth},
+				scaleOverScaleDepth: {type:'f', value:PlanetSpec.scale / PlanetSpec.scaleDepth},
 			};
 
 			var groundUniforms = {
@@ -262,18 +262,18 @@ var SimulationController = {
 				cameraPos: {type:'v3', value: new THREE.Vector3(0.0, 0.0, 0.0)},
 				cameraHeight2: {type:'f', value: 0},
 				lightDir: {type:'v3', value: new THREE.Vector3(1e8, 0, 1e8).normalize()},
-				invWaveLength: {type:'v3', value: new THREE.Vector3(1.0/Math.pow(planet.specification.waveLength[0],4), 1.0/Math.pow(planet.specification.waveLength[1],4), 1.0/Math.pow(planet.specification.waveLength[2],4))},
-				outerRadius: {type:'f', value:planet.specification.outerRadius},
-				outerRadius2: {type:'f', value:planet.specification.outerRadius * planet.specification.outerRadius},
-				innerRadius: {type:'f', value:planet.specification.innerRadius},
-				innerRadius2: {type:'f', value:planet.specification.innerRadius * planet.specification.innerRadius},
-				krESun: {type:'f', value:planet.specification.kr * planet.specification.eSun},
-				kmESun: {type:'f', value:planet.specification.km * planet.specification.eSun},
-				kr4Pi: {type:'f', value:planet.specification.kr * 4 * Math.PI},
-				km4Pi: {type:'f', value:planet.specification.km * 4 * Math.PI},
-				scale: {type:'f', value:planet.specification.scale},
-				scaleDepth: {type:'f', value:planet.specification.scaleDepth},
-				scaleOverScaleDepth: {type:'f', value:planet.specification.scale / planet.specification.scaleDepth},
+				invWaveLength: {type:'v3', value: new THREE.Vector3(1.0/Math.pow(PlanetSpec.waveLength[0],4), 1.0/Math.pow(PlanetSpec.waveLength[1],4), 1.0/Math.pow(PlanetSpec.waveLength[2],4))},
+				outerRadius: {type:'f', value:PlanetSpec.outerRadius},
+				outerRadius2: {type:'f', value:PlanetSpec.outerRadius * PlanetSpec.outerRadius},
+				innerRadius: {type:'f', value:PlanetSpec.innerRadius},
+				innerRadius2: {type:'f', value:PlanetSpec.innerRadius * PlanetSpec.innerRadius},
+				krESun: {type:'f', value:PlanetSpec.kr * PlanetSpec.eSun},
+				kmESun: {type:'f', value:PlanetSpec.km * PlanetSpec.eSun},
+				kr4Pi: {type:'f', value:PlanetSpec.kr * 4 * Math.PI},
+				km4Pi: {type:'f', value:PlanetSpec.km * 4 * Math.PI},
+				scale: {type:'f', value:PlanetSpec.scale},
+				scaleDepth: {type:'f', value:PlanetSpec.scaleDepth},
+				scaleOverScaleDepth: {type:'f', value:PlanetSpec.scale / PlanetSpec.scaleDepth},
 			};
 		
 			var skyMaterial = new THREE.ShaderMaterial({
@@ -597,8 +597,10 @@ function Planet(body, view, economy) {
 	this.colonies = [];
 	
 	this.view.setWorldParent(this);
-	
-	this.specification = {
+}
+
+var PlanetSpec = {
+	world1: {
 		waveLength: [0.65, 0.57, 0.475],
 		outerRadius: 5.125,
 		innerRadius: 5,
@@ -609,7 +611,6 @@ function Planet(body, view, economy) {
 		scaleDepth: 25
 	};
 }
-
 function Trader(body, view, economy) {
 	this.body = body;
 	this.view = view;
