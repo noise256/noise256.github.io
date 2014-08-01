@@ -26,9 +26,9 @@ var SimulationView = {
 	init: function() {
 		SimulationView.scene = new THREE.Scene();
 		
-		SimulationView.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 25000);
-		SimulationView.camera.position.x = 7500;
-		SimulationView.camera.position.y = 2500;
+		SimulationView.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 100000);
+		SimulationView.camera.position.x = 0;
+		SimulationView.camera.position.y = 0;
 		SimulationView.camera.position.z = 7500;
 		SimulationView.camera.lookAt(new THREE.Vector3(0, 0, 0));
 		
@@ -45,7 +45,7 @@ var SimulationView = {
 		
 		SimulationView.controls = new THREE.TrackballControls(SimulationView.camera);
 		SimulationView.controls.target.y = 10;
-		SimulationView.controls.maxDistance = 10000;
+		SimulationView.controls.maxDistance = 35000;
 		
 		SimulationView.fpsMeter = new FPSMeter(document.body, { decimals: 0, graph: true, theme: 'dark', left: '5px' });
 		
@@ -137,7 +137,7 @@ var SkyBox = {
 			 }));
 		}
 		*/
-		var skyboxGeometry = new THREE.SphereGeometry(9999, 60, 60);
+		var skyboxGeometry = new THREE.SphereGeometry(49999, 60, 60);
 		var skyboxUniforms = {
 			texture1: {type: "t", value: THREE.ImageUtils.loadTexture("images/eso0932a.jpg")}
 		}
@@ -205,6 +205,13 @@ var SimulationController = {
 	traders:[],
 	
 	init:function() {
+		//create star
+		var starSize = 500;
+		var starGeometry = new THREE.SphereGeometry(starSize, 64, 64);
+		var starMaterial = new THREE.MeshBasicMaterial({color: 0xfff5f2});
+		
+		SimulationView.worldObjects.add(new THREE.Mesh(starGeometry, starMaterial));
+		
 		//create planets
 		var skyGeometry = new THREE.SphereGeometry(PlanetSpec.world1.outerRadius, 500, 500);
 		var groundGeometry = new THREE.SphereGeometry(PlanetSpec.world1.innerRadius, 64, 64);
@@ -215,7 +222,9 @@ var SimulationController = {
 			var foundPosition = false;
 			while(!foundPosition) {
 				foundPosition = true;
-				planetPosition = vec3.random(vec3.create(), Math.random() * SolarSystemSpec.system1.maxPlanetSpread);
+				planetPosition = vec3.random(vec3.create(), Math.random() * (SolarSystemSpec.system1.maxPlanetSpread - starSize + 1) + starSize);
+				planetPosition[1] = 0;
+				
 				for (var j = 0; j < SimulationController.planets.length; j++) {
 					if (vec3.distance(planetPosition, SimulationController.planets[j].body.position) < SolarSystemSpec.system1.minPlanetDistance) {
 						foundPosition = false;
@@ -324,6 +333,7 @@ var SimulationController = {
 		
 		for (var i = 0; i < SimulationController.numTraders; i++) {
 			var traderPosition = vec3.random(vec3.create(), Math.random() * SolarSystemSpec.system1.maxPlanetSpread); //TODO implement max trader spread
+			traderPosition[1] = 0;
 			var traderBody = new Body(traderPosition, 1, 0.05, 1.0);
 			
 			var traderView = new View();
@@ -577,6 +587,12 @@ View.prototype = {
 	}
 }
 
+function Star(body, view) {
+	this.body = body;
+	this.view = view;
+	
+	this.view.setWorldParent(this);
+}
 function Planet(body, view, economy) {
 	this.body = body;
 	this.view = view;
@@ -600,8 +616,8 @@ var PlanetSpec = {
 
 var SolarSystemSpec = {
 	system1: {
-		minPlanetDistance:300,
-		maxPlanetSpread:5000
+		minPlanetDistance:1500,
+		maxPlanetSpread:15000
 	}
 }
 
