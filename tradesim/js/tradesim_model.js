@@ -198,7 +198,7 @@ var GUIController = {
 var SimulationController = {
 	numPlanets:6,
 	numColonies:6,
-	numTraders:500,
+	numTraders:100,
 	
 	planets:[],
 	colonies:[],
