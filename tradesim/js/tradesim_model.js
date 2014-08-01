@@ -609,7 +609,7 @@ var PlanetSpec = {
 		km: 0.001,
 		scale: 8,
 		scaleDepth: 25
-	};
+	}
 }
 function Trader(body, view, economy) {
 	this.body = body;
