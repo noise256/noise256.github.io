@@ -218,6 +218,11 @@ var SimulationController = {
 		//create planets
 		var skyGeometry = new THREE.SphereGeometry(PlanetSpec.world1.outerRadius, 500, 500);
 		var groundGeometry = new THREE.SphereGeometry(PlanetSpec.world1.innerRadius, 64, 64);
+		var textureGeometry = new THREE.SphereGeometry(PlanetSpec.world1.innerRadius * 0.975, 64, 64);
+		
+		var textureMaterial = new THREE.MeshBasicMaterial({
+			map: THREE.ImageUtils.loadTexture('images/plutomap1k.jpg')
+		});
 		
 		for (var i = 0; i < SimulationController.numPlanets; i++) {
 			//find free locations for planets using crude monte carlo method(?)
@@ -288,13 +293,9 @@ var SimulationController = {
 				transparent: true
 			});
 			
-			var textureMaterial = new THREE.MeshBasicMaterial({
-				map: THREE.ImageUtils.loadTexture('images/plutomap1k.jpg')
-			});
-			
 			var skyMesh = new THREE.Mesh(skyGeometry, skyMaterial);
 			var groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
-			var textureMesh = new THREE.Mesh(groundGeometry, textureMaterial);
+			var textureMesh = new THREE.Mesh(textureGeometry, textureMaterial);
 			
 			var planetView = new View();
 			planetView.meshes.push(skyMesh);
