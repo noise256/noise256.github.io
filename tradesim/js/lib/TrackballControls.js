@@ -24,7 +24,7 @@ THREE.TrackballControls = function ( object, domElement ) {
 	this.noRotate = false;
 	this.noZoom = false;
 	this.noPan = false;
-	this.noRoll = false;
+	this.noRoll = true;
 
 	this.staticMoving = false;
 	this.dynamicDampingFactor = 0.2;
@@ -187,7 +187,7 @@ THREE.TrackballControls = function ( object, domElement ) {
 			if ( angle ) {
 
 				axis.crossVectors( _rotateStart, _rotateEnd ).normalize();
-
+				
 				angle *= _this.rotateSpeed;
 
 				quaternion.setFromAxisAngle( axis, -angle );
