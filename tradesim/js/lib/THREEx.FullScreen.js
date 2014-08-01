@@ -6,10 +6,7 @@
 //   [webkit nightly](http://peter.sh/2011/01/javascript-full-screen-api-navigation-timing-and-repeating-css-gradients/) and
 //   [chrome stable](http://updates.html5rocks.com/2011/10/Let-Your-Content-Do-the-Talking-Fullscreen-API).
 
-// 
 // # Code
-
-//
 
 /** @namespace */
 var THREEx		= THREEx 		|| {};
@@ -49,7 +46,7 @@ THREEx.FullScreen.request	= function(element)
 {
 	element	= element	|| document.body;
 	if( this._hasWebkitFullScreen ){
-		element.webkitRequestFullScreen();
+		element.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
 	}else if( this._hasMozFullScreen ){
 		element.mozRequestFullScreen();
 	}else{
@@ -74,3 +71,38 @@ THREEx.FullScreen.cancel	= function()
 // internal functions to know which fullscreen API implementation is available
 THREEx.FullScreen._hasWebkitFullScreen	= 'webkitCancelFullScreen' in document	? true : false;	
 THREEx.FullScreen._hasMozFullScreen	= 'mozCancelFullScreen' in document	? true : false;	
+
+/**
+ * Bind a key to renderer screenshot
+ * usage: THREEx.FullScreen.bindKey({ charCode : 'a'.charCodeAt(0) }); 
+*/
+THREEx.FullScreen.bindKey	= function(opts){
+	opts		= opts		|| {};
+	var charCode	= opts.charCode	|| 'f'.charCodeAt(0);
+	var dblclick	= opts.dblclick !== undefined ? opts.dblclick : false;
+	var element	= opts.element
+
+	var toggle	= function(){
+		if( THREEx.FullScreen.activated() ){
+			THREEx.FullScreen.cancel();
+		}else{
+			THREEx.FullScreen.request(element);
+		}		
+	}
+
+	var onKeyPress	= function(event){
+		if( event.which !== charCode )	return;
+		toggle();
+	}.bind(this);
+
+	document.addEventListener('keypress', onKeyPress, false);
+
+	dblclick && document.addEventListener('dblclick', toggle, false);
+
+	return {
+		unbind	: function(){
+			document.removeEventListener('keypress', onKeyPress, false);
+			dblclick && document.removeEventListener('dblclick', toggle, false);
+		}
+	};
+}

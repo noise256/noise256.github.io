@@ -9,9 +9,6 @@ window.onload = function() {
 }
 
 var SimulationView = {
-	canvasWidth: null,
-	canvasHeight: null,
-	
 	scene: null,
 	camera: null, 
 	renderer: null,
@@ -27,14 +24,9 @@ var SimulationView = {
 	worldObjects: null,
 	
 	init: function() {
-		var canvas = document.getElementById("canvas");
-		
-		SimulationView.canvasWidth = canvas.clientWidth;
-		SimulationView.canvasHeight = canvas.clientHeight;
-		
 		SimulationView.scene = new THREE.Scene();
 		
-		SimulationView.camera = new THREE.PerspectiveCamera(60, SimulationView.canvasWidth / SimulationView.canvasHeight, 1, 25000);
+		SimulationView.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 25000);
 		SimulationView.camera.position.x = 7500;
 		SimulationView.camera.position.y = 2500;
 		SimulationView.camera.position.z = 7500;
@@ -48,7 +40,7 @@ var SimulationView = {
 		SimulationView.scene.add(SimulationView.planetLight);
 		
 		SimulationView.renderer = new THREE.WebGLRenderer();
-		SimulationView.renderer.setSize(SimulationView.canvasWidth, SimulationView.canvasHeight);
+		SimulationView.renderer.setSize(window.innerWidth, window.innerHeight);
 		SimulationView.renderer.setClearColor(0x000000, 1);
 		
 		SimulationView.controls = new THREE.TrackballControls(SimulationView.camera);
@@ -59,21 +51,11 @@ var SimulationView = {
 		
 		document.getElementById("canvas").appendChild(SimulationView.renderer.domElement);
 		
-		SimulationView.domElement = SimulationView.renderer.domElement;
-		SimulationView.boundingRect = SimulationView.domElement.getBoundingClientRect();
-		
 		SimulationView.projector = new THREE.Projector();
 		SimulationView.mouseVector = new THREE.Vector3();
 		
-		window.addEventListener(
-			"keydown", 
-			function(e) {
-				if (e.keyCode == 70) {
-					THREEx.FullScreen.request(SimulationView.domElement);
-				}
-			}, 
-			false
-		);
+		THREEx.WindowResize(SimulationView.renderer, SimulationView.camera);
+		THREEx.FullScreen.bindKey({charCode: 'f'.charCodeAt(0)});
 		
 		window.addEventListener('mousemove', SimulationView.onMouseMove, false);
 		window.addEventListener('resize', SimulationView.onWindowResize, false);
@@ -84,11 +66,8 @@ var SimulationView = {
 	
 	//TODO there is a lot of game logic here that should not be in the view logic
 	onMouseMove:function(e) {
-		var x = (event.clientX - SimulationView.boundingRect.left) * (SimulationView.domElement.width / SimulationView.boundingRect.width);
-		var y = (event.clientY - SimulationView.boundingRect.top) * (SimulationView.domElement.height / SimulationView.boundingRect.height);
-		
-		SimulationView.mouseVector.x = (x / SimulationView.canvasWidth) * 2 - 1;
-		SimulationView.mouseVector.y = 1 - (y / SimulationView.canvasHeight) * 2;
+		SimulationView.mouseVector.x = (event.clientX / window.innerWidth) * 2 - 1;
+		SimulationView.mouseVector.y = 1 - (event.clientY / window.innerHeight) * 2;
 		SimulationView.mouseVector.z = 0.5;
 		
 		var raycaster = SimulationView.projector.pickingRay(SimulationView.mouseVector.clone(), SimulationView.camera);
@@ -104,16 +83,6 @@ var SimulationView = {
 				GUIController.resourceGUITarget = worldParent;
 			}
 		}
-	},
-	
-	onWindowResize:function(e) {
-		var canvas = document.getElementById("canvas");
-		SimulationView.canvasWidth = canvas.clientWidth;
-		SimulationView.canvasHeight = canvas.clientHeight;
-		
-		SimulationView.renderer.setSize(SimulationView.canvasWidth, SimulationView.canvasHeight);
-		SimulationView.camera.aspect = SimulationView.canvasWidth / SimulationView.canvasHeight;
-		SimulationView.camera.updateProjectionMatrix();
 	},
 	
 	update: function() {
@@ -168,7 +137,7 @@ var SkyBox = {
 			 }));
 		}
 		*/
-		var skyboxGeometry = new THREE.SphereGeometry(9999, 60, 40);
+		var skyboxGeometry = new THREE.SphereGeometry(9999, 60, 60);
 		var skyboxUniforms = {
 			texture1: {type: "t", value: THREE.ImageUtils.loadTexture("images/eso0932a.jpg")}
 		}
@@ -176,7 +145,8 @@ var SkyBox = {
 			uniforms: skyboxUniforms,
 			vertexShader: $('#unlit_tex_v_shader').text(),
 			fragmentShader: $('#unlit_tex_f_shader').text(),
-			side: THREE.BackSide
+			side: THREE.BackSide,
+			depthWrite: false
 		});
 		
 		var skyboxMesh = new THREE.Mesh(skyboxGeometry, skyboxMaterial);
