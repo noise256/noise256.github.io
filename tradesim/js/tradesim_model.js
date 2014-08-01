@@ -370,9 +370,16 @@ var SimulationController = {
 			var lightDir = lightPos.sub(planetPos).normalize();
 			
 			for (var j = 0; j < SimulationController.planets[i].view.meshes.length; j++) {
-				SimulationController.planets[i].view.meshes[j].material.uniforms.cameraPos.value = relativeCameraPos;
-				SimulationController.planets[i].view.meshes[j].material.uniforms.cameraHeight2.value = cameraHeight2;
-				SimulationController.planets[i].view.meshes[j].material.uniforms.lightDir.value = lightDir;
+				//TODO need to deal with situations where mesh doesn't have said unifroms - probably have specific update functionn in view or planet object
+				if (SimulationController.planets[i].view.meshes[j].material.uniforms.cameraPos) {
+					SimulationController.planets[i].view.meshes[j].material.uniforms.cameraPos.value = relativeCameraPos;
+				}
+				if (SimulationController.planets[i].view.meshes[j].material.uniforms.cameraHeight2) {
+					SimulationController.planets[i].view.meshes[j].material.uniforms.cameraHeight2.value = cameraHeight2;
+				}
+				if (SimulationController.planets[i].view.meshes[j].material.uniforms.lightDir) {
+					SimulationController.planets[i].view.meshes[j].material.uniforms.lightDir.value = lightDir;
+				}
 			}
 			
 			if (SimulationController.planets[i].view.needsUpdate) {
