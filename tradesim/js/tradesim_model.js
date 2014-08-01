@@ -138,12 +138,12 @@ var SimulationView = {
 var SkyBox = {
 	//TODO skybox image order is incorrect for milky way images.
 	init:function() {
-		var imagePrefix = "images/milkyway_skybox1/";
+/* 		var imagePrefix = "images/milkyway_skybox1/";
 		var images = ["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
 		var imageSuffix = ".png";
 		
-		var skyboxVertShader = $('#unlit_tex_v_shader').text();
-		var skyboxFragShader = $('#unlit_tex_f_shader').text();
+		var skyboxVertShader = ;
+		var skyboxFragShader = ;
 		
 		var materialArray = [];
 		for (var i = 0; i < 6; i++) {
@@ -155,19 +155,23 @@ var SkyBox = {
 				vertexShader: skyboxVertShader,
 				fragmentShader: skyboxFragShader,
 				side: THREE.BackSide
-			}));
+			 }));
 		}
+		*/
+		var skyboxGeometry = new THREE.SphereGeometry(9999, 60, 40);
+		var skyboxUniforms = {
+			texture1: {type: "t", value: THREE.ImageUtils.loadTexture("images/eso0932a.jpg")}
+		}
+		var skyboxMaterial = new THREE.ShaderMaterial({
+			uniforms: skyboxUniforms,
+			vertexShader: $('#unlit_tex_v_shader').text(),
+			fragmentShader: $('#unlit_tex_f_shader').text(),
+			side: THREE.BackSide
+		});
 		
-		var skyBoxMesh = new THREE.Mesh(
-			new THREE.SphereGeometry(15000, 60, 40), 
-			new THREE.MeshFaceMaterial(materialArray)
-		);
+		var skyboxMesh = new THREE.Mesh(skyboxGeometry, skyboxMaterial);
 		
-		skyBoxMesh.scale.set(-1, 1, 1);
-		skyBoxMesh.eulerOrder = 'XYZ';
-		skyBoxMesh.renderDepth = 1000.0;
-		
-		SimulationView.scene.add(skyBoxMesh);
+		SimulationView.scene.add(skyboxMesh);
 	}
 }
 
@@ -291,7 +295,6 @@ var SimulationController = {
 				uniforms: groundUniforms,
 				vertexShader: $('#ground_v_shader').text(),
 				fragmentShader: $('#ground_f_shader').text(),
-				transparent: true
 			});
 			
 			var skyMesh = new THREE.Mesh(skyGeometry, skyMaterial);
@@ -608,8 +611,8 @@ var PlanetSpec = {
 	world1: {
 		waveLength: [0.65, 0.57, 0.475],
 		outerRadius: 51.25,
-		innerRadius: 50,
-		eSun: 15,
+		innerRadius: 45,
+		eSun: 20,
 		kr: 0.0025,
 		km: 0.001,
 		scale: 8,
