@@ -139,7 +139,7 @@ var SkyBox = {
 		*/
 		var skyboxGeometry = new THREE.SphereGeometry(49999, 60, 60);
 		var skyboxUniforms = {
-			texture1: {type: "t", value: THREE.ImageUtils.loadTexture("images/eso0932a.jpg")}
+			texture1: {type: "t", value: THREE.ImageUtils.loadTexture("images/milkyway_pan_large.jpg")}
 		}
 		var skyboxMaterial = new THREE.ShaderMaterial({
 			uniforms: skyboxUniforms,
