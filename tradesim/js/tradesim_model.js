@@ -210,9 +210,6 @@ var SimulationController = {
 	numColonies:6,
 	numTraders:500,
 	
-	minSystemDistance:30,
-	maxPlanetSpread:550,
-	
 	planets:[],
 	colonies:[],
 	traders:[],
@@ -228,9 +225,9 @@ var SimulationController = {
 			var foundPosition = false;
 			while(!foundPosition) {
 				foundPosition = true;
-				planetPosition = vec3.random(vec3.create(), Math.random() * SimulationController.maxPlanetSpread);
+				planetPosition = vec3.random(vec3.create(), Math.random() * SolarSystemSpec.system1.maxPlanetSpread);
 				for (var j = 0; j < SimulationController.planets.length; j++) {
-					if (vec3.distance(planetPosition, SimulationController.planets[j].body.position) < SimulationController.minSystemDistance) {
+					if (vec3.distance(planetPosition, SimulationController.planets[j].body.position) < SolarSystemSpec.system1.minPlanetDistance) {
 						foundPosition = false;
 					}
 				}
@@ -611,6 +608,14 @@ var PlanetSpec = {
 		scaleDepth: 0.25
 	}
 }
+
+var SolarSystemSpec = {
+	system1: {
+		minPlanetDistance:300,
+		maxPlanetSpread:5000
+	}
+}
+
 function Trader(body, view, economy) {
 	this.body = body;
 	this.view = view;
