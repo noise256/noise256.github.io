@@ -629,7 +629,7 @@ function Trader(body, view, economy) {
 	this.view = view;
 	this.economy = economy;
 	
-	this.interactionRange = 5;
+	this.interactionRange = 50;
 	
 	this.targetResource = null;
 	this.destination = null;
