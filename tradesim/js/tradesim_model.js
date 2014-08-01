@@ -274,25 +274,32 @@ var SimulationController = {
 			};
 		
 			var skyMaterial = new THREE.ShaderMaterial({
+				uniforms: skyUniforms,
 				vertexShader: $('#atmosphere_v_shader').text(),
 				fragmentShader: $('#atmosphere_f_shader').text(),
-			});
-			skyMaterial.side = THREE.BackSide;
-			skyMaterial.transparent = true;
-			var groundMaterial = new THREE.ShaderMaterial({
-				vertexShader: $('#ground_v_shader').text(),
-				fragmentShader: $('#ground_f_shader').text(),
+				side: THREE.BackSide,
+				transparent: true
 			});
 			
-			skyMaterial.uniforms = skyUniforms;
-			groundMaterial.uniforms = groundUniforms;
+			var groundMaterial = new THREE.ShaderMaterial({
+				uniforms: groundUniforms,
+				vertexShader: $('#ground_v_shader').text(),
+				fragmentShader: $('#ground_f_shader').text(),
+				transparent: true
+			});
+			
+			var textureMaterial = new THREE.MeshBasicMaterial({
+				map: THREE.ImageUtils.loadTexture('images/plutomap1k.jpg')
+			});
 			
 			var skyMesh = new THREE.Mesh(skyGeometry, skyMaterial);
 			var groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
+			var textureMesh = new THREE.Mesh(groundGeometry, textureMaterial);
 			
 			var planetView = new View();
 			planetView.meshes.push(skyMesh);
 			planetView.meshes.push(groundMesh);
+			planetView.meshes.push(textureMesh);
 			
 			//generate planet resources
 			var planetEconomy = new Economy();
