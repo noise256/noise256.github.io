@@ -35,10 +35,10 @@ var SimulationView = {
 		SimulationView.scene = new THREE.Scene();
 		
 		SimulationView.camera = new THREE.PerspectiveCamera(60, SimulationView.canvasWidth / SimulationView.canvasHeight, 1, 15000);
-		SimulationView.camera.position.x = 24;
-		SimulationView.camera.position.y = 10;
-		SimulationView.camera.position.z = 24;
-		SimulationView.camera.lookAt(new THREE.Vector3(0, 10, 0));
+		SimulationView.camera.position.x = 7500;
+		SimulationView.camera.position.y = 2500;
+		SimulationView.camera.position.z = 7500;
+		SimulationView.camera.lookAt(new THREE.Vector3(0, 0, 0));
 		
 		var ambientLight = new THREE.AmbientLight(0x404040);
 		SimulationView.planetLight = new THREE.PointLight();
