@@ -24,8 +24,10 @@
 			}
 		</script>
 		<script type="x-shader/x-fragment" id="unlit_f_shader">
+			uniform vec3 colour;
+			
 			void main() {
-				gl_FragColor = vec4(1.0,1.0,1.0,1.0);
+				gl_FragColor = vec4(colour,1.0);
 			}
 		</script>
 		<script type="x-shader/x-vertex" id="unlit_tex_v_shader">

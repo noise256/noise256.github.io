@@ -328,15 +328,21 @@ var SimulationController = {
 		
 		//create traders
 		var traderGeometry = new THREE.SphereGeometry(10, 32, 32);
-		var traderMaterial = new THREE.ShaderMaterial({
-			vertexShader: $('#unlit_v_shader').text(),
-			fragmentShader: $('#unlit_f_shader').text(),
-		});
 		
 		for (var i = 0; i < SimulationController.numTraders; i++) {
 			var traderPosition = vec3.random(vec3.create(), Math.random() * SolarSystemSpec.system1.maxPlanetSpread); //TODO implement max trader spread
 			traderPosition[1] = 0;
 			var traderBody = new Body(traderPosition, 1, 0.05, 1.0);
+			
+			var traderUniforms = {
+				colour: {type: 'v3', value: new THREE.Vector3(1.0, 0.0, 0.0)}
+			};
+			
+			var traderMaterial = new THREE.ShaderMaterial({
+				uniforms: traderUniforms,
+				vertexShader: $('#unlit_v_shader').text(),
+				fragmentShader: $('#unlit_f_shader').text(),
+			});
 			
 			var traderView = new View();
 			traderView.meshes.push(new THREE.Mesh(traderGeometry, traderMaterial));
@@ -376,8 +382,17 @@ var SimulationController = {
 				SimulationController.planets[i].view.needsUpdate = false;
 			}
 		}
+		//TODO creating new vectors each loop is probably unnessary
 		for (var i = 0; i < SimulationController.traders.length; i++) {
 			TraderController.updateTrader(SimulationController.traders[i]);
+			for (var j = 0; j < SimulationController.traders[i].view.meshes.length; j++) {
+				if (SimulationController.traders[i].economy.hasResources()) {
+					SimulationController.traders[i].view.meshes[j].material.uniforms.colour.value = new THREE.Vector3(0.0, 1.0, 0.0);
+				}
+				else {
+					SimulationController.traders[i].view.meshes[j].material.uniforms.colour.value = new THREE.Vector3(1.0, 0.0, 0.0);
+				}
+			}
 			if (SimulationController.traders[i].view.needsUpdate) {
 				SimulationController.traders[i].view.update(SimulationController.traders[i].body.position);
 				SimulationController.traders[i].view.needsUpdate = false;
