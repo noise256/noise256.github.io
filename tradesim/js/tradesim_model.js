@@ -66,23 +66,11 @@ var SimulationView = {
 	
 	//TODO there is a lot of game logic here that should not be in the view logic
 	onMouseMove:function(e) {
-		SimulationView.mouseVector.x = (event.clientX / window.innerWidth) * 2 - 1;
-		SimulationView.mouseVector.y = 1 - (event.clientY / window.innerHeight) * 2;
-		SimulationView.mouseVector.z = 0.5;
-		
-		var raycaster = SimulationView.projector.pickingRay(SimulationView.mouseVector.clone(), SimulationView.camera);
-		var intersects = raycaster.intersectObjects(SimulationView.worldObjects.children);
-		
-		if (intersects.length > 0) {
-			var worldParent = intersects[0].object.worldParent;
-			
-			if (worldParent instanceof Planet) {
-				GUIController.resourceGUITarget = worldParent.colonies[0];
-			}
-			else {
-				GUIController.resourceGUITarget = worldParent;
-			}
-		}
+		SimulationView.mouseVector = new THREE.Vector3(
+			(event.clientX / window.innerWidth) * 2 - 1, 
+			1 - (event.clientY / window.innerHeight) * 2,
+			0.5
+		);
 	},
 	
 	update: function() {
@@ -149,9 +137,7 @@ var SkyBox = {
 			depthWrite: false
 		});
 		
-		var skyboxMesh = new THREE.Mesh(skyboxGeometry, skyboxMaterial);
-		
-		SimulationView.scene.add(skyboxMesh);
+		SimulationView.scene.add(new THREE.Mesh(skyboxGeometry, skyboxMaterial));
 	}
 }
 
@@ -204,7 +190,22 @@ var SimulationController = {
 	colonies:[],
 	traders:[],
 	
+	selector:null,
+	
 	init:function() {
+		//create selector
+		//var selectorGeometry = new THREE.PlaneGeometry(1000, 1000);
+		var selectorMaterial = new THREE.SpriteMaterial({map: THREE.ImageUtils.loadTexture("images/selection_ring.png")});
+		
+		var selectorSprite = new THREE.Sprite(selectorMaterial);
+		selectorSprite.scale.set( 1024, 1024, 1.0 );
+		selectorSprite.position.set(1000, 0.0, 0.0);
+		var selectorView = new View();
+		selectorView.meshes.push({name: 'selectorMesh', value: selectorSprite});
+		SimulationView.worldObjects.add(selectorSprite);
+		
+		SimulationController.selector = new Selector(selectorView);
+		
 		//create star
 		var starSize = 500;
 		
@@ -217,6 +218,7 @@ var SimulationController = {
 		//create planets
 		var skyGeometry = new THREE.SphereGeometry(PlanetSpec.world1.outerRadius, 500, 500);
 		var groundGeometry = new THREE.SphereGeometry(PlanetSpec.world1.innerRadius, 64, 64);
+		var groundTexture = THREE.ImageUtils.loadTexture('images/plutomap1k.jpg');
 		
 		for (var i = 0; i < SimulationController.numPlanets; i++) {
 			//find free locations for planets using crude monte carlo method(?)
@@ -224,11 +226,11 @@ var SimulationController = {
 			var foundPosition = false;
 			while(!foundPosition) {
 				foundPosition = true;
-				planetPosition = vec3.random(vec3.create(), Math.random() * (SolarSystemSpec.system1.maxPlanetSpread - starSize + 1) + starSize);
-				planetPosition[1] = 0;
+				var randVector = vec3.random(vec3.create(), Math.random() * (SolarSystemSpec.system1.maxPlanetSpread - starSize + 1) + starSize);
+				planetPosition = new THREE.Vector3(randVector[0], randVector[1] * 0.05, randVector[2]);
 				
 				for (var j = 0; j < SimulationController.planets.length; j++) {
-					if (vec3.distance(planetPosition, SimulationController.planets[j].body.position) < SolarSystemSpec.system1.minPlanetDistance) {
+					if (planetPosition.distanceTo(SimulationController.planets[j].body.position) < SolarSystemSpec.system1.minPlanetDistance) {
 						foundPosition = false;
 					}
 				}
@@ -238,7 +240,7 @@ var SimulationController = {
 			var skyUniforms = {
 				cameraPos: {type:'v3', value: new THREE.Vector3(0.0, 0.0, 0.0)},
 				cameraHeight2: {type:'f', value: 0},
-				lightDir: {type:'v3', value: new THREE.Vector3(starPosition.x - planetPosition[0], starPosition.y - planetPosition[1], starPosition.z - planetPosition[2]).normalize()},
+				lightDir: {type:'v3', value: new THREE.Vector3(starPosition.x - planetPosition.x, starPosition.y - planetPosition.y, starPosition.z - planetPosition.z).normalize()},
 				invWaveLength: {type:'v3', value: new THREE.Vector3(1.0/Math.pow(PlanetSpec.world1.waveLength[0],4), 1.0/Math.pow(PlanetSpec.world1.waveLength[1],4), 1.0/Math.pow(PlanetSpec.world1.waveLength[2],4))},
 				outerRadius: {type:'f', value:PlanetSpec.world1.outerRadius},
 				outerRadius2: {type:'f', value:PlanetSpec.world1.outerRadius * PlanetSpec.world1.outerRadius},
@@ -254,11 +256,11 @@ var SimulationController = {
 			};
 
 			var groundUniforms = {
-				dayTexture: {type: "t", value: THREE.ImageUtils.loadTexture('images/plutomap1k.jpg')},
-				nightTexture: {type: "t", value: THREE.ImageUtils.loadTexture('images/plutomap1k.jpg')},
+				dayTexture: {type: "t", value: groundTexture},
+				nightTexture: {type: "t", value: groundTexture},
 				cameraPos: {type:'v3', value: new THREE.Vector3(0.0, 0.0, 0.0)},
 				cameraHeight2: {type:'f', value: 0},
-				lightDir: {type:'v3', value: new THREE.Vector3(starPosition.x - planetPosition[0], starPosition.y - planetPosition[1], starPosition.z - planetPosition[2]).normalize()},
+				lightDir: {type:'v3', value: new THREE.Vector3(starPosition.x - planetPosition.x, starPosition.y - planetPosition.y, starPosition.z - planetPosition.z).normalize()},
 				invWaveLength: {type:'v3', value: new THREE.Vector3(1.0/Math.pow(PlanetSpec.world1.waveLength[0],4), 1.0/Math.pow(PlanetSpec.world1.waveLength[1],4), 1.0/Math.pow(PlanetSpec.world1.waveLength[2],4))},
 				outerRadius: {type:'f', value:PlanetSpec.world1.outerRadius},
 				outerRadius2: {type:'f', value:PlanetSpec.world1.outerRadius * PlanetSpec.world1.outerRadius},
@@ -292,8 +294,8 @@ var SimulationController = {
 			var groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
 			
 			var planetView = new View();
-			planetView.meshes.push(skyMesh);
-			planetView.meshes.push(groundMesh);
+			planetView.meshes.push({name: 'skyMesh', value: skyMesh});
+			planetView.meshes.push({name: 'groundMesh', value: groundMesh});
 			
 			//generate planet resources
 			var planetEconomy = new Economy();
@@ -314,7 +316,7 @@ var SimulationController = {
 			
 			if (SimulationView.worldObjects) {
 				for (var j = 0; j < planetView.meshes.length; j++) {
-					SimulationView.worldObjects.add(planetView.meshes[j]);
+					SimulationView.worldObjects.add(planetView.meshes[j].value);
 				}
 			}
 		}
@@ -330,22 +332,20 @@ var SimulationController = {
 		var traderGeometry = new THREE.SphereGeometry(10, 32, 32);
 		
 		for (var i = 0; i < SimulationController.numTraders; i++) {
-			var traderPosition = vec3.random(vec3.create(), Math.random() * SolarSystemSpec.system1.maxPlanetSpread); //TODO implement max trader spread
-			traderPosition[1] = 0;
+			var randVector = vec3.random(vec3.create(), Math.random() * SolarSystemSpec.system1.maxPlanetSpread); //TODO implement max trader spread
+			var traderPosition = new THREE.Vector3(randVector[0], 0.0, randVector[2]);
 			var traderBody = new Body(traderPosition, 1, 0.5, 10.0);
 			
-			var traderUniforms = {
-				colour: {type: 'v3', value: new THREE.Vector3(1.0, 0.0, 0.0)}
-			};
-			
 			var traderMaterial = new THREE.ShaderMaterial({
-				uniforms: traderUniforms,
+				uniforms: {
+					colour: {type: 'v3', value: new THREE.Vector3(1.0, 0.0, 0.0)}
+				},
 				vertexShader: $('#unlit_v_shader').text(),
 				fragmentShader: $('#unlit_f_shader').text(),
 			});
 			
 			var traderView = new View();
-			traderView.meshes.push(new THREE.Mesh(traderGeometry, traderMaterial));
+			traderView.meshes.push({name: 'traderMesh', value: new THREE.Mesh(traderGeometry, traderMaterial)});
 			
 			var traderEconomy = new Economy();
 			
@@ -353,50 +353,45 @@ var SimulationController = {
 			
 			if (SimulationView.worldObjects) {
 				for (var j = 0; j < traderView.meshes.length; j++) {
-					SimulationView.worldObjects.add(traderView.meshes[j]);
+					SimulationView.worldObjects.add(traderView.meshes[j].value);
 				}
 			}
 		}
 	},
 	
 	update:function() {
-		//update colonies and traders using TraderController and ColonyController#
-		//var lightPos = SimulationView.planetLight.position;
-		for (var i = 0; i < SimulationController.planets.length; i++) {
-			var planetPos = new THREE.Vector3(SimulationController.planets[i].body.position[0], SimulationController.planets[i].body.position[1], SimulationController.planets[i].body.position[2]);;
-			var relativeCameraPos = new THREE.Vector3().subVectors(SimulationView.camera.position, planetPos);
-			var cameraHeight = relativeCameraPos.length();
-			var cameraHeight2 = cameraHeight * cameraHeight;
-			//var lightDir = ;
-			//var lightDir = lightPos.sub(planetPos).normalize();
+		if (SimulationView.mouseVector) {
+			var raycaster = SimulationView.projector.pickingRay(SimulationView.mouseVector.clone(), SimulationView.camera);
+		
+			//TODO don't bother doing intersects if object is too far away
+			var intersects = raycaster.intersectObjects(SimulationView.worldObjects.children);
+		
+			if (intersects.length > 0) {
+				var worldParent = intersects[0].object.worldParent;
 			
-			for (var j = 0; j < SimulationController.planets[i].view.meshes.length; j++) {
-				//TODO need to deal with situations where mesh doesn't have said unifroms - probably have specific update functionn in view or planet object
-				SimulationController.planets[i].view.meshes[j].material.uniforms.cameraPos.value = relativeCameraPos;
-				SimulationController.planets[i].view.meshes[j].material.uniforms.cameraHeight2.value = cameraHeight2;
-				//SimulationController.planets[i].view.meshes[j].material.uniforms.lightDir.value = planetPos.clone();
-			}
-			
-			if (SimulationController.planets[i].view.needsUpdate) {
-				SimulationController.planets[i].view.update(SimulationController.planets[i].body.position);
-				SimulationController.planets[i].view.needsUpdate = false;
-			}
-		}
-		//TODO creating new vectors each loop is probably unnessary
-		for (var i = 0; i < SimulationController.traders.length; i++) {
-			TraderController.updateTrader(SimulationController.traders[i]);
-			for (var j = 0; j < SimulationController.traders[i].view.meshes.length; j++) {
-				if (SimulationController.traders[i].economy.hasResources()) {
-					SimulationController.traders[i].view.meshes[j].material.uniforms.colour.value = new THREE.Vector3(0.0, 1.0, 0.0);
+				if (worldParent instanceof Planet) {
+					GUIController.resourceGUITarget = worldParent.colonies[0];
 				}
 				else {
-					SimulationController.traders[i].view.meshes[j].material.uniforms.colour.value = new THREE.Vector3(1.0, 0.0, 0.0);
+					GUIController.resourceGUITarget = worldParent;
 				}
+				
+				SimulationController.selector.target = worldParent;
 			}
-			if (SimulationController.traders[i].view.needsUpdate) {
-				SimulationController.traders[i].view.update(SimulationController.traders[i].body.position);
-				SimulationController.traders[i].view.needsUpdate = false;
-			}
+			
+			SimulationView.mouseVector = null;
+		}
+			
+		if (SimulationController.selector) {
+			SimulationController.selector.update();
+		}
+				
+		for (var i = 0; i < SimulationController.planets.length; i++) {
+			SimulationController.planets[i].update();
+		}
+		for (var i = 0; i < SimulationController.traders.length; i++) {
+			TraderController.updateTrader(SimulationController.traders[i]);
+			SimulationController.traders[i].update();
 		}
 		for (var i = 0; i < SimulationController.colonies.length; i++) {
 			ColonyController.updateColony(SimulationController.colonies[i]);
@@ -411,9 +406,9 @@ var TraderController = {
 		}
 		
 		if (trader.destination != null) {
-			var destinationVec = vec3.subtract(vec3.create(), trader.destination.planet.body.position, trader.body.position);
+			var destinationVec = new THREE.Vector3().subVectors(trader.destination.planet.body.position, trader.body.position);
 			
-			if (vec3.length(destinationVec) <= trader.interactionRange) {
+			if (destinationVec.length() <= trader.interactionRange) {
 				if (trader.economy.hasResources()) {
 					TraderController.sellResources(trader, trader.destination);
 				}
@@ -421,16 +416,10 @@ var TraderController = {
 					TraderController.buyResources(trader, trader.destination);
 				}
 				trader.destination = null;
-				//return; TODO why do we need to return here?
 			}
 			
-			var direction = vec3.normalize(vec3.create(), destinationVec);
-			
-			trader.body.move(direction);
+			trader.body.move(destinationVec.normalize());
 		}
-		
-		trader.view.needsUpdate = true;
-		//trader.view.update(trader.body.position);
 	},
 	
 	getNewDestination:function(trader) {
@@ -443,7 +432,7 @@ var TraderController = {
 		var lowPrice = Number.MAX_VALUE;
 		
 		for (var i = 0; i < SimulationController.colonies.length; i++) {
-			var distance = vec3.distance(SimulationController.colonies[i].planet.body.position, trader.body.position);
+			var distance = SimulationController.colonies[i].planet.body.position.distanceTo(trader.body.position);
 			
 			for (var j = 0; j < SimulationController.colonies[i].economy.resources.length; j++) { //TODO dividing and multiplying by distance is probably an inaccurate method of ensuring that the best price/distance ratio is found
 				if (SimulationController.colonies[i].economy.resources[j].quantity > 0 && SimulationController.colonies[i].economy.resources[j].price * distance <= lowPrice) { //TODO what if multiple traders purchase resource and there is not enough present
@@ -569,38 +558,57 @@ function Body(position, mass, force, maxVelocity) {
 	this.mass = mass;
 	this.force = force;
 	this.maxVelocity = maxVelocity;
-	this.velocity = vec3.create();
+	this.velocity = new THREE.Vector3();
 }
 
 Body.prototype = {
-	move:function(direction, acceleration) {
-		vec3.scaleAndAdd(this.velocity, this.velocity, direction, this.force / this.mass);
+	move:function(direction) {
+		this.velocity.add(direction.multiplyScalar(this.force / this.mass));
 		
-		if (vec3.length(this.velocity) > this.maxVelocity) {
-			vec3.normalize(this.velocity, this.velocity);
-			vec3.scale(this.velocity, this.velocity, this.maxVelocity);
+		if (this.velocity.length() > this.maxVelocity) {
+			this.velocity.normalize();
+			this.velocity.multiplyScalar(this.maxVelocity);
 		}
 		
-		vec3.add(this.position, this.position, this.velocity); 
+		this.position.add(this.velocity);
 	}
 }
 
 function View() {
 	this.meshes = [];
-	//this.mesh.position.set(position[0], position[1], position[2]);
-	this.needsUpdate = true;
 }
 
 View.prototype = {
 	update:function(position) {
 		for (var i = 0; i < this.meshes.length; i++) {
-			this.meshes[i].position.set(position[0], position[1], position[2]);
+			this.meshes[i].value.position.set(position.x, position.y, position.z);
 		}
 	},
 	
 	setWorldParent:function(worldParent) {
 		for (var i = 0; i < this.meshes.length; i++) {
-			this.meshes[i].worldParent = worldParent;
+			this.meshes[i].value.worldParent = worldParent;
+		}
+	},
+	
+	getMeshByName:function(name) {
+		for (var i = 0; i < this.meshes.length; i++) {
+			if (this.meshes[i].name == name) {
+				return this.meshes[i];
+			}
+		}
+	}
+}
+
+function Selector(view) {
+	this.view = view;
+	this.target = null;
+}
+
+Selector.prototype = {
+	update:function() {
+		if (this.target) {
+			this.view.update(this.target.body.position);
 		}
 	}
 }
@@ -611,6 +619,7 @@ function Star(body, view) {
 	
 	this.view.setWorldParent(this);
 }
+
 function Planet(body, view, economy) {
 	this.body = body;
 	this.view = view;
@@ -618,6 +627,25 @@ function Planet(body, view, economy) {
 	this.colonies = [];
 	
 	this.view.setWorldParent(this);
+}
+
+Planet.prototype = {
+	update:function() {
+		this.view.update(this.body.position);
+		
+		this.updateUniforms();
+	},
+	
+	updateUniforms:function() {
+		var relativeCameraPos = new THREE.Vector3().subVectors(SimulationView.camera.position, this.body.position);
+		var cameraHeight2 = relativeCameraPos.length() * relativeCameraPos.length();
+		
+		this.view.getMeshByName('skyMesh').value.material.uniforms.cameraPos.value = relativeCameraPos;
+		this.view.getMeshByName('skyMesh').value.material.uniforms.cameraHeight2.value = cameraHeight2;
+		
+		this.view.getMeshByName('groundMesh').value.material.uniforms.cameraPos.value = relativeCameraPos;
+		this.view.getMeshByName('groundMesh').value.material.uniforms.cameraHeight2.value = cameraHeight2;
+	}
 }
 
 var PlanetSpec = {
@@ -650,6 +678,24 @@ function Trader(body, view, economy) {
 	this.destination = null;
 	
 	this.view.setWorldParent(this)
+}
+
+Trader.prototype = {
+		update:function() {
+		this.view.update(this.body.position);
+		
+		this.updateUniforms();
+	},
+	
+	//TODO creating new vectors each loop is unnecessary
+	updateUniforms:function() {
+		if (this.economy.hasResources()) {
+			this.view.getMeshByName('traderMesh').value.material.uniforms.colour.value = new THREE.Vector3(0.0, 1.0, 0.0);
+		}
+		else {
+			this.view.getMeshByName('traderMesh').value.material.uniforms.colour.value = new THREE.Vector3(1.0, 0.0, 0.0);
+		}
+	}
 }
 
 function Colony(planet, economy) {
