@@ -31,8 +31,8 @@ var SimulationView = {
 		SimulationView.camera.position.z = 7500;
 		SimulationView.camera.lookAt(new THREE.Vector3(0, 0, 0));
 		
-		//SimulationView.renderer = new THREE.WebGLRenderer({antialias: true});
-		SimulationView.renderer = new THREE.WebGLRenderer();
+		SimulationView.renderer = new THREE.WebGLRenderer({antialias: true});
+		//SimulationView.renderer = new THREE.WebGLRenderer();
 		SimulationView.renderer.setSize(window.innerWidth, window.innerHeight);
 		SimulationView.renderer.setClearColor(0x000000, 1);
 		
