@@ -90,7 +90,7 @@ var SimulationView = {
 var SimulationController = {
 	numPlanets:5,
 	numColonies:5,
-	numTraders:100,
+	numTraders:1000,
 	
 	stars:[],
 	planets:[],
@@ -684,20 +684,25 @@ function Planet(body, view, economy) {
 
 Planet.prototype = {
 	update:function() {
+		this.body.position.applyAxisAngle(new THREE.Vector3(0.0, 1.0, 0.0), 0.0001);
+
 		this.view.update(this.body.position);
 		
 		this.updateUniforms();
 	},
 	
 	updateUniforms:function() {
+		var lightDir = new THREE.Vector3(0.0 - this.body.position.x, 0.0 - this.body.position.y, 0.0 - this.body.position.z).normalize();
 		var relativeCameraPos = new THREE.Vector3().subVectors(SimulationView.camera.position, this.body.position);
 		var cameraHeight2 = relativeCameraPos.length() * relativeCameraPos.length();
 		
 		this.view.getMeshByName('skyMesh').value.material.uniforms.cameraPos.value = relativeCameraPos;
 		this.view.getMeshByName('skyMesh').value.material.uniforms.cameraHeight2.value = cameraHeight2;
+		this.view.getMeshByName('skyMesh').value.material.uniforms.lightDir.value = lightDir;
 		
 		this.view.getMeshByName('groundMesh').value.material.uniforms.cameraPos.value = relativeCameraPos;
 		this.view.getMeshByName('groundMesh').value.material.uniforms.cameraHeight2.value = cameraHeight2;
+		this.view.getMeshByName('groundMesh').value.material.uniforms.lightDir.value = lightDir;
 	}
 }
 
