@@ -54,6 +54,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 	
 	// Set to true to disable this control
 	this.noPan = false;
+	this.panSpeed = 1.0;
 	this.keyPanSpeed = 7.0;	// pixels moved per arrow key push
 
 	// Set to true to automatically rotate around the target
@@ -409,7 +410,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 			panEnd.set( event.clientX, event.clientY );
 			panDelta.subVectors( panEnd, panStart );
 
-			scope.pan( panDelta.x, panDelta.y );
+			scope.pan( panDelta.x * scope.panSpeed, panDelta.y * scope.panSpeed);
 
 			panStart.copy( panEnd );
 

@@ -13,9 +13,7 @@
 		<script src="js/lib/three.min.js" type="text/javascript"></script>
 		<script src="js/lib/THREEx.FullScreen.js" type="text/javascript"></script>
 		<script src="js/lib/THREEx.WindowResize.js" type="text/javascript"></script>
-		<script src="js/lib/TrackballControls.js" type="text/javascript"></script>
 		<script src="js/lib/OrbitControls.js" type="text/javascript"></script>
-		<script src="js/lib/FlyControls.js" type="text/javascript"></script>
 		<script src="js/lib/dat.gui.min.js" type="text/javascript"></script>
 		<script src="js/lib/fpsmeter.js" type="text/javascript"></script>
 		
@@ -266,6 +264,24 @@
 				vec3 night = 0.15 * texture2D(nightTexture, vUv).xyz * (1.0 - color);
 
 				gl_FragColor = vec4(secondaryColor, 1.0) + vec4(day + night, 1.0);
+			}
+		</script>
+		<script type="x-shader/x-vertex" id="star_v_shader">
+			uniform vec3 cameraDir;
+			
+			varying float vCameraDirDotNorm;
+			
+			void main() {
+				vCameraDirDotNorm = abs(dot(normalize(cameraDir), normal));
+				vCameraDirDotNorm = min(1.0, pow(vCameraDirDotNorm, 100.0));
+				gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+			}
+		</script>
+		<script type="x-shader/x-fragment" id="star_f_shader">
+			uniform vec3 colour;
+			varying float vCameraDirDotNorm;
+			void main() {
+				gl_FragColor = vec4(vCameraDirDotNorm * colour, 1.0);
 			}
 		</script>
 	</head>

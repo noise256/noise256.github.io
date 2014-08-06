@@ -37,11 +37,10 @@ var SimulationView = {
 		SimulationView.renderer.setClearColor(0x000000, 1);
 		
 		SimulationView.controls = new THREE.OrbitControls(SimulationView.camera);
-		//SimulationView.controls.zoomSpeed = 0.5;
-		//SimulationView.controls.maxDistance = 35000;
+		SimulationView.controls.maxDistance = 35000;
 		SimulationView.controls.xRotateSpeed = 1.0;
-		SimulationView.controls.yRotateSpeed = 0.01;
-		//SimulationView.controls.keyPanSpeed = 1.0;
+		SimulationView.controls.yRotateSpeed = 0.025;
+		SimulationView.controls.panSpeed = 0.05;
 		
 		SimulationView.fpsMeter = new FPSMeter(document.body, { decimals: 0, graph: true, theme: 'dark', left: '5px' });
 		
@@ -86,21 +85,6 @@ var SimulationView = {
 		SimulationView.mouseVector.y = 1 - (event.clientY / window.innerHeight) * 2;
 		SimulationView.mouseVector.z = 0.5;
 	},
-	
-	//TODO move to seperate class with pickingDataIndex as private variable
-/* 	getPickingDataIndex:function() {
-		SimulationView.pickingDataIndex += 1;
-		return SimulationView.pickingDataIndex;
-	}, */
-	
-/* 	applyVertexColors:function(g, c) {
-		g.faces.forEach( function( f ) {
-			var n = ( f instanceof THREE.Face3 ) ? 3 : 4;
-			for( var j = 0; j < n; j ++ ) {
-				f.vertexColors[ j ] = c;
-			}
-		});
-	} */
 }
 
 var SimulationController = {
@@ -108,6 +92,7 @@ var SimulationController = {
 	numColonies:5,
 	numTraders:100,
 	
+	stars:[],
 	planets:[],
 	colonies:[],
 	traders:[],
@@ -133,13 +118,30 @@ var SimulationController = {
 		SimulationView.scene.add(SimulationController.dynamicPickingObjects);
 		
 		//create star
-		var starSize = 500;
-		
+		var starSize = StarSpec.star1.innerRadius;
 		var starPosition = new THREE.Vector3(0.0, 0.0, 0.0);
-		var starGeometry = new THREE.SphereGeometry(starSize, 64, 64);
-		var starMaterial = new THREE.MeshBasicMaterial({color: 0xfff5f2});
 		
-		SimulationController.addObject(new THREE.Mesh(starGeometry, starMaterial), false, false);
+		var starGeometry = new THREE.SphereGeometry(starSize*5, 500, 500);
+		
+		var starUniforms = {
+			cameraDir:{type:'v3', value:new THREE.Vector3()},
+			colour:{type:'v3', value:new THREE.Vector3(StarSpec.star1.waveLength[0], StarSpec.star1.waveLength[1], StarSpec.star1.waveLength[2])},
+		};
+		
+		var starMaterial = new THREE.ShaderMaterial({
+			uniforms: starUniforms,
+			vertexShader: $('#star_v_shader').text(),
+			fragmentShader: $('#star_f_shader').text(),
+			transparent: true,
+			blending: THREE.AdditiveBlending
+		});
+		
+		var starSurfaceMesh = new THREE.Mesh(starGeometry, starMaterial)
+		var starView = new View();
+		starView.meshes.push({name: 'surfaceMesh', value: starSurfaceMesh});
+		
+		SimulationController.stars.push(new Star(new Body(new THREE.Vector3(0.0, 0.0, 0.0), 0, 0, 0), starView));
+		SimulationController.addObject(starSurfaceMesh, false, false);
 		
 		//create planets
 		var skyGeometry = new THREE.SphereGeometry(PlanetSpec.world1.outerRadius, 64, 64);
@@ -165,7 +167,7 @@ var SimulationController = {
 			}
 			var planetBody = new Body(planetPosition, 0, 0, 0)
 			
- 			var skyUniforms = {
+/*  			var skyUniforms = {
 				cameraPos: {type:'v3', value: new THREE.Vector3(0.0, 0.0, 0.0)},
 				cameraHeight2: {type:'f', value: 0},
 				lightDir: {type:'v3', value: new THREE.Vector3(starPosition.x - planetPosition.x, starPosition.y - planetPosition.y, starPosition.z - planetPosition.z).normalize()},
@@ -181,7 +183,7 @@ var SimulationController = {
 				scale: {type:'f', value:1 / (PlanetSpec.world1.outerRadius - PlanetSpec.world1.innerRadius)},
 				scaleDepth: {type:'f', value:PlanetSpec.world1.scaleDepth},
 				scaleOverScaleDepth: {type:'f', value:1 / (PlanetSpec.world1.outerRadius - PlanetSpec.world1.innerRadius) / PlanetSpec.world1.scaleDepth},
-			};
+			}; */
 			
 			var groundUniforms = {
 				dayTexture: {type: "t", value: groundTexture},
@@ -204,7 +206,7 @@ var SimulationController = {
 			};
 			
 			var skyMaterial = new THREE.ShaderMaterial({
-				uniforms: skyUniforms,
+				uniforms: groundUniforms,
 				vertexShader: $('#atmosphere_v_shader').text(),
 				fragmentShader: $('#atmosphere_f_shader').text(),
 				side: THREE.BackSide,
@@ -297,6 +299,9 @@ var SimulationController = {
 	update:function() {
 		SimulationController.handleMouseMove();
 		
+		for (var i = 0; i < SimulationController.stars.length; i++) {
+			SimulationController.stars[i].update();
+		}
 		for (var i = 0; i < SimulationController.planets.length; i++) {
 			SimulationController.planets[i].update();
 		}
@@ -644,6 +649,30 @@ function Star(body, view) {
 	this.view.setWorldParent(this);
 }
 
+Star.prototype = {
+	update:function() {
+		this.view.update(this.body.position);
+		
+		this.updateUniforms();
+	},
+	
+	updateUniforms:function() {
+		this.view.getMeshByName('surfaceMesh').value.material.uniforms.cameraDir.value = new THREE.Vector3().subVectors(SimulationView.camera.position, this.body.position);
+	}
+}
+
+var StarSpec = {
+	star1: {
+		waveLength: [1, 0.961, 0.949],
+		outerRadius: 307.5,
+		innerRadius: 300,
+		eSun: 20,
+		kr: 0.0025,
+		km: 0.001,
+		scaleDepth: 0.25
+	}
+}
+
 function Planet(body, view, economy) {
 	this.body = body;
 	this.view = view;
@@ -677,7 +706,7 @@ var PlanetSpec = {
 		waveLength: [0.65, 0.57, 0.475],
 		outerRadius: 51.25,
 		innerRadius: 50,
-		eSun: 50,
+		eSun: 100,
 		kr: 0.0025,
 		km: 0.001,
 		scaleDepth: 0.25
