@@ -90,7 +90,7 @@ var SimulationView = {
 var SimulationController = {
 	numPlanets:5,
 	numColonies:5,
-	numTraders:1000,
+	numTraders:300,
 	
 	stars:[],
 	planets:[],
