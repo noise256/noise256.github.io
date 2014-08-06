@@ -664,8 +664,8 @@ Star.prototype = {
 var StarSpec = {
 	star1: {
 		waveLength: [1, 0.961, 0.949],
-		outerRadius: 307.5,
-		innerRadius: 300,
+		outerRadius: 615,
+		innerRadius: 600,
 		eSun: 20,
 		kr: 0.0025,
 		km: 0.001,
@@ -709,8 +709,8 @@ Planet.prototype = {
 var PlanetSpec = {
 	world1: {
 		waveLength: [0.65, 0.57, 0.475],
-		outerRadius: 51.25,
-		innerRadius: 50,
+		outerRadius: 102.5,
+		innerRadius: 100,
 		eSun: 100,
 		kr: 0.0025,
 		km: 0.001,
@@ -720,8 +720,8 @@ var PlanetSpec = {
 
 var SolarSystemSpec = {
 	system1: {
-		minPlanetDistance:1500,
-		maxPlanetSpread:15000
+		minPlanetDistance:3000,
+		maxPlanetSpread:20000
 	}
 }
 
