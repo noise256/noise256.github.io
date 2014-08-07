@@ -25,7 +25,7 @@ var SimulationView = {
 	init: function() {
 		SimulationView.scene = new THREE.Scene();
 		
-		SimulationView.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 100000);
+		SimulationView.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 400000);
 		SimulationView.camera.position.x = 0;
 		SimulationView.camera.position.y = 0;
 		SimulationView.camera.position.z = 7500;
@@ -37,7 +37,7 @@ var SimulationView = {
 		SimulationView.renderer.setClearColor(0x000000, 1);
 		
 		SimulationView.controls = new THREE.OrbitControls(SimulationView.camera);
-		SimulationView.controls.maxDistance = 35000;
+		SimulationView.controls.maxDistance = 100000;
 		SimulationView.controls.xRotateSpeed = 1.0;
 		SimulationView.controls.yRotateSpeed = 0.025;
 		SimulationView.controls.panSpeed = 0.05;
@@ -125,22 +125,10 @@ var SimulationController = {
 		SimulationController.addObject(star.view.getMeshByName('surfaceMesh').value, false, false);
 		
 		//create planets
+		var distanceToSun = SolarSystemSpec.system1.maxStarSize + Math.random() * (SolarSystemSpec.system1.maxPlanetDistance - SolarSystemSpec.system1.minPlanetDistance) + SolarSystemSpec.system1.minPlanetDistance;
 		for (var i = 0; i < SimulationController.numPlanets; i++) {
-			//find free locations for planets using crude monte carlo method(?)
-			var planetPosition = null;
-			var foundPosition = false;
-			while(!foundPosition) {
-				foundPosition = true;
-				var randVector = vec3.random(vec3.create(), Math.random() * (SolarSystemSpec.system1.maxPlanetSpread - SolarSystemSpec.system1.maxStarSize + 1) + SolarSystemSpec.system1.maxStarSize);
-				planetPosition = new THREE.Vector3(randVector[0], randVector[1] * 0.05, randVector[2]);
-				
-				for (var j = 0; j < SimulationController.planets.length; j++) {
-					if (planetPosition.distanceTo(SimulationController.planets[j].body.position) < SolarSystemSpec.system1.minPlanetDistance) {
-						foundPosition = false;
-					}
-				}
-			}
-			
+			var randVector = vec3.random(vec3.create(), distanceToSun);
+			var planetPosition = new THREE.Vector3(randVector[0], 0.0, randVector[2]);
 			var planet = PlanetFactory.generatePlanet(starPosition, planetPosition);
 			
 			SimulationController.planets.push(planet);
@@ -148,6 +136,8 @@ var SimulationController = {
 			SimulationController.addObject(planet.view.getMeshByName('skyMesh').value, false, true);
 			SimulationController.addObject(planet.view.getMeshByName('groundMesh').value, false, false);
 			SimulationController.addObject(planet.view.getMeshByName('pickingMesh').value, false, false);
+			
+			distanceToSun += Math.random() * (SolarSystemSpec.system1.maxPlanetDistance - SolarSystemSpec.system1.minPlanetDistance) + SolarSystemSpec.system1.minPlanetDistance;
 		}
 		
 		//create colonies
@@ -158,7 +148,7 @@ var SimulationController = {
 		}
 		
 		//create traders
-		var traderGeometry = new THREE.SphereGeometry(10, 32, 32);
+		var traderGeometry = new THREE.SphereGeometry(30, 32, 32);
 		
 		for (var i = 0; i < SimulationController.numTraders; i++) {
 			var randVector = vec3.random(vec3.create(), Math.random() * SolarSystemSpec.system1.maxPlanetSpread); //TODO implement max trader spread
@@ -394,7 +384,7 @@ var ColonyController = {
 **/
 var SkyBox = {
 	init:function() {
-		var skyboxGeometry = new THREE.SphereGeometry(49999, 60, 60);
+		var skyboxGeometry = new THREE.SphereGeometry(300000, 60, 60);
 		var skyboxUniforms = {
 			texture1: {type: "t", value: THREE.ImageUtils.loadTexture("images/milkyway_pan_large.jpg")}
 		}
@@ -552,7 +542,7 @@ Star.prototype = {
 
 var StarFactory = {
 	generateStar:function(starPosition) {
-		var innerRadius = Math.random() * (SolarSystemSpec.system1.maxStarSize - 600) + 600;
+		var innerRadius = Math.random() * (SolarSystemSpec.system1.maxStarSize - 3000) + 3000;
 		var colour = [Math.random() * (1.0 - 0.8) + 0.8, Math.random() * (1.0 - 0.8) + 0.8, Math.random() * (1.0 - 0.8) + 0.8];
 		
 		var starGeometry = new THREE.SphereGeometry(innerRadius, 500, 500);
@@ -627,15 +617,15 @@ var PlanetFactory = {
 	
 	generatePlanet:function(starPosition, planetPosition) {
 		//create definition
-		var innerRadius = Math.random() * (150 - 50) + 50;
+		var innerRadius = Math.random() * (SolarSystemSpec.system1.maxPlanetSize - SolarSystemSpec.system1.minPlanetSize) + SolarSystemSpec.system1.minPlanetSize;
 		var planetSpec = {
 			waveLength: [Math.random() * (1.0 - 0.5) + 0.5, Math.random() * (1.0 - 0.5) + 0.5, Math.random() * (1.0 - 0.5) + 0.5],
 			innerRadius: innerRadius,
 			outerRadius: innerRadius * 1.025,
-			eSun: Math.random() * (10 + 100) - 10,
+			eSun: Math.random() * (50 + 100) - 10,
 			kr: 0.0025,
-			km: 0.001,
-			scaleDepth: 0.25
+			km: 0.0010,
+			scaleDepth: Math.random() * (2.5 - 0.25) + 0.25
 		};
 		
 		//create body
@@ -718,9 +708,12 @@ var PlanetFactory = {
 
 var SolarSystemSpec = {
 	system1: {
-		minPlanetDistance:3000,
-		maxPlanetSpread:20000,
-		maxStarSize:1000
+		minPlanetDistance:10000,
+		maxPlanetDistance:15000,
+		maxStarSize:7000,
+		minStarSize:5500, //~109 * earth size (sol)
+		maxPlanetSize:550, //11 * earth size (jupiter)
+		minPlanetSize:100 //earth size
 	}
 }
 
