@@ -766,12 +766,6 @@ var ColonyFactory = {
 	generateColony:function(planet) {
 		var colonyEconomy = new Economy();
 		
-		for (var i = 0; i < planet.economy.resources.length; i++) {
-			if (planet.economy.resources[i].quantity > 0) {
-				colonyEconomy.setResourcePrice(planet.economy.resources[i].name, 0);
-			}
-		}
-		
 		return new Colony(planet, colonyEconomy);
 	}
 }
