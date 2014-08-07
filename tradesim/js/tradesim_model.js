@@ -88,8 +88,8 @@ var SimulationView = {
 }
 
 var SimulationController = {
-	numPlanets:5,
-	numColonies:5,
+	numPlanets:7,
+	numColonies:7,
 	numTraders:300,
 	
 	stars:[],
@@ -153,7 +153,7 @@ var SimulationController = {
 		for (var i = 0; i < SimulationController.numTraders; i++) {
 			var randVector = vec3.random(vec3.create(), Math.random() * (SolarSystemSpec.system1.maxPlanetDistance + SolarSystemSpec.system1.minPlanetDistance) / 2 * SimulationController.numPlanets); //TODO implement max trader spread
 			var traderPosition = new THREE.Vector3(randVector[0], 0.0, randVector[2]);
-			var traderBody = new Body(traderPosition, 100, 0.5, 50.0);
+			var traderBody = new Body(traderPosition, 1, 1, 25.0);
 			
 			var traderMaterial = new THREE.ShaderMaterial({
 				uniforms: {
