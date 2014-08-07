@@ -118,45 +118,20 @@ var SimulationController = {
 		SimulationView.scene.add(SimulationController.dynamicPickingObjects);
 		
 		//create star
-		var starSize = StarSpec.star1.innerRadius;
 		var starPosition = new THREE.Vector3(0.0, 0.0, 0.0);
+		var star = StarFactory.generateStar(starPosition);
 		
-		var starGeometry = new THREE.SphereGeometry(starSize*5, 500, 500);
-		
-		var starUniforms = {
-			cameraDir:{type:'v3', value:new THREE.Vector3()},
-			colour:{type:'v3', value:new THREE.Vector3(StarSpec.star1.waveLength[0], StarSpec.star1.waveLength[1], StarSpec.star1.waveLength[2])},
-		};
-		
-		var starMaterial = new THREE.ShaderMaterial({
-			uniforms: starUniforms,
-			vertexShader: $('#star_v_shader').text(),
-			fragmentShader: $('#star_f_shader').text(),
-			transparent: true,
-			blending: THREE.AdditiveBlending
-		});
-		
-		var starSurfaceMesh = new THREE.Mesh(starGeometry, starMaterial)
-		var starView = new View();
-		starView.meshes.push({name: 'surfaceMesh', value: starSurfaceMesh});
-		
-		SimulationController.stars.push(new Star(new Body(new THREE.Vector3(0.0, 0.0, 0.0), 0, 0, 0), starView));
-		SimulationController.addObject(starSurfaceMesh, false, false);
+		SimulationController.stars.push(star);
+		SimulationController.addObject(star.view.getMeshByName('surfaceMesh').value, false, false);
 		
 		//create planets
-		var skyGeometry = new THREE.SphereGeometry(PlanetSpec.world1.outerRadius, 64, 64);
-		var groundGeometry = new THREE.SphereGeometry(PlanetSpec.world1.innerRadius, 64, 64);
-		var planetPickingGeometry = new THREE.SphereGeometry(PlanetSpec.world1.outerRadius + 1, 64, 64);
-		var groundTexture = THREE.ImageUtils.loadTexture('images/plutomap1k.jpg');
-		
-		var color = new THREE.Color();
 		for (var i = 0; i < SimulationController.numPlanets; i++) {
 			//find free locations for planets using crude monte carlo method(?)
 			var planetPosition = null;
 			var foundPosition = false;
 			while(!foundPosition) {
 				foundPosition = true;
-				var randVector = vec3.random(vec3.create(), Math.random() * (SolarSystemSpec.system1.maxPlanetSpread - starSize + 1) + starSize);
+				var randVector = vec3.random(vec3.create(), Math.random() * (SolarSystemSpec.system1.maxPlanetSpread - SolarSystemSpec.system1.maxStarSize + 1) + SolarSystemSpec.system1.maxStarSize);
 				planetPosition = new THREE.Vector3(randVector[0], randVector[1] * 0.05, randVector[2]);
 				
 				for (var j = 0; j < SimulationController.planets.length; j++) {
@@ -165,100 +140,14 @@ var SimulationController = {
 					}
 				}
 			}
-			var planetBody = new Body(planetPosition, 0, 0, 0)
 			
-/*  			var skyUniforms = {
-				cameraPos: {type:'v3', value: new THREE.Vector3(0.0, 0.0, 0.0)},
-				cameraHeight2: {type:'f', value: 0},
-				lightDir: {type:'v3', value: new THREE.Vector3(starPosition.x - planetPosition.x, starPosition.y - planetPosition.y, starPosition.z - planetPosition.z).normalize()},
-				invWaveLength: {type:'v3', value: new THREE.Vector3(1.0/Math.pow(PlanetSpec.world1.waveLength[0],4), 1.0/Math.pow(PlanetSpec.world1.waveLength[1],4), 1.0/Math.pow(PlanetSpec.world1.waveLength[2],4))},
-				outerRadius: {type:'f', value:PlanetSpec.world1.outerRadius},
-				outerRadius2: {type:'f', value:PlanetSpec.world1.outerRadius * PlanetSpec.world1.outerRadius},
-				innerRadius: {type:'f', value:PlanetSpec.world1.innerRadius},
-				innerRadius2: {type:'f', value:PlanetSpec.world1.innerRadius * PlanetSpec.world1.innerRadius},
-				krESun: {type:'f', value:PlanetSpec.world1.kr * PlanetSpec.world1.eSun},
-				kmESun: {type:'f', value:PlanetSpec.world1.km * PlanetSpec.world1.eSun},
-				kr4Pi: {type:'f', value:PlanetSpec.world1.kr * 4 * Math.PI},
-				km4Pi: {type:'f', value:PlanetSpec.world1.km * 4 * Math.PI},
-				scale: {type:'f', value:1 / (PlanetSpec.world1.outerRadius - PlanetSpec.world1.innerRadius)},
-				scaleDepth: {type:'f', value:PlanetSpec.world1.scaleDepth},
-				scaleOverScaleDepth: {type:'f', value:1 / (PlanetSpec.world1.outerRadius - PlanetSpec.world1.innerRadius) / PlanetSpec.world1.scaleDepth},
-			}; */
-			
-			var groundUniforms = {
-				dayTexture: {type: "t", value: groundTexture},
-				nightTexture: {type: "t", value: groundTexture},
-				cameraPos: {type:'v3', value: new THREE.Vector3(0.0, 0.0, 0.0)},
-				cameraHeight2: {type:'f', value: 0},
-				lightDir: {type:'v3', value: new THREE.Vector3(starPosition.x - planetPosition.x, starPosition.y - planetPosition.y, starPosition.z - planetPosition.z).normalize()},
-				invWaveLength: {type:'v3', value: new THREE.Vector3(1.0/Math.pow(PlanetSpec.world1.waveLength[0],4), 1.0/Math.pow(PlanetSpec.world1.waveLength[1],4), 1.0/Math.pow(PlanetSpec.world1.waveLength[2],4))},
-				outerRadius: {type:'f', value:PlanetSpec.world1.outerRadius},
-				outerRadius2: {type:'f', value:PlanetSpec.world1.outerRadius * PlanetSpec.world1.outerRadius},
-				innerRadius: {type:'f', value:PlanetSpec.world1.innerRadius},
-				innerRadius2: {type:'f', value:PlanetSpec.world1.innerRadius * PlanetSpec.world1.innerRadius},
-				krESun: {type:'f', value:PlanetSpec.world1.kr * PlanetSpec.world1.eSun},
-				kmESun: {type:'f', value:PlanetSpec.world1.km * PlanetSpec.world1.eSun},
-				kr4Pi: {type:'f', value:PlanetSpec.world1.kr * 4 * Math.PI},
-				km4Pi: {type:'f', value:PlanetSpec.world1.km * 4 * Math.PI},
-				scale: {type:'f', value:1 / (PlanetSpec.world1.outerRadius - PlanetSpec.world1.innerRadius)},
-				scaleDepth: {type:'f', value:PlanetSpec.world1.scaleDepth},
-				scaleOverScaleDepth: {type:'f', value:1 / (PlanetSpec.world1.outerRadius - PlanetSpec.world1.innerRadius) / PlanetSpec.world1.scaleDepth},
-			};
-			
-			var skyMaterial = new THREE.ShaderMaterial({
-				uniforms: groundUniforms,
-				vertexShader: $('#atmosphere_v_shader').text(),
-				fragmentShader: $('#atmosphere_f_shader').text(),
-				side: THREE.BackSide,
-				transparent: true,
-				blending: THREE.AdditiveBlending
-			});
-			
-			var groundMaterial = new THREE.ShaderMaterial({
-				uniforms: groundUniforms,
-				vertexShader: $('#ground_v_shader').text(),
-				fragmentShader: $('#ground_f_shader').text(),
-			});
-			
-			var planetPickingMaterial = new THREE.MeshBasicMaterial({
-				color: 0xffffff,
-				transparent: true,
-				opacity: 0.2
-			});
-			
-			var skyMesh = new THREE.Mesh(skyGeometry, skyMaterial);
-			var groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
-			
-			var planetPickingMesh = new THREE.Mesh(planetPickingGeometry, planetPickingMaterial);
-			planetPickingMesh.visible = false;
-			
-			var planetView = new View();
-			planetView.meshes.push({name: 'skyMesh', value: skyMesh});
-			planetView.meshes.push({name: 'groundMesh', value: groundMesh});
-			planetView.meshes.push({name: 'pickingMesh', value: planetPickingMesh});
-			
-			//generate planet resources
-			var planetEconomy = new Economy();
-			if (Math.random() > 0.5) {
-				planetEconomy.setResourceQuantity('food', 1);
-			}
-			if (Math.random() > 0.5) {
-				planetEconomy.setResourceQuantity('water', 1);
-			}
-			if (Math.random() > 0.5) {
-				planetEconomy.setResourceQuantity('fuel', 1);
-			}
-			if (Math.random() > 0.5) {
-				planetEconomy.setResourceQuantity('metal', 1);
-			}
-			
-			var planet = new Planet(planetBody, planetView, planetEconomy);
+			var planet = PlanetFactory.generatePlanet(starPosition, planetPosition);
 			
 			SimulationController.planets.push(planet);
 			
-			SimulationController.addObject(skyMesh, false, true);
-			SimulationController.addObject(groundMesh, false, false);
-			SimulationController.addObject(planetPickingMesh, false, false);
+			SimulationController.addObject(planet.view.getMeshByName('skyMesh').value, false, true);
+			SimulationController.addObject(planet.view.getMeshByName('groundMesh').value, false, false);
+			SimulationController.addObject(planet.view.getMeshByName('pickingMesh').value, false, false);
 		}
 		
 		//create colonies
@@ -661,15 +550,34 @@ Star.prototype = {
 	}
 }
 
-var StarSpec = {
-	star1: {
-		waveLength: [1, 0.961, 0.949],
-		outerRadius: 615,
-		innerRadius: 600,
-		eSun: 20,
-		kr: 0.0025,
-		km: 0.001,
-		scaleDepth: 0.25
+var StarFactory = {
+	generateStar:function(starPosition) {
+		var innerRadius = Math.random() * (SolarSystemSpec.system1.maxStarSize - 600) + 600;
+		var colour = [Math.random() * (1.0 - 0.8) + 0.8, Math.random() * (1.0 - 0.8) + 0.8, Math.random() * (1.0 - 0.8) + 0.8];
+		
+		var starGeometry = new THREE.SphereGeometry(innerRadius, 500, 500);
+		
+		var starUniforms = {
+			cameraDir:{type:'v3', value:new THREE.Vector3()},
+			colour:{type:'v3', value:new THREE.Vector3(colour[0], colour[1], colour[2])},
+		};
+		
+		var starMaterial = new THREE.ShaderMaterial({
+			uniforms: starUniforms,
+			vertexShader: $('#star_v_shader').text(),
+			fragmentShader: $('#star_f_shader').text(),
+			transparent: true,
+			blending: THREE.AdditiveBlending
+		});
+		
+		var starSurfaceMesh = new THREE.Mesh(starGeometry, starMaterial)
+		
+		var starView = new View();
+		starView.meshes.push({name: 'surfaceMesh', value: starSurfaceMesh});
+		
+		var starBody = new Body(starPosition, 0, 0, 0);
+		
+		return new Star(starBody, starView);
 	}
 }
 
@@ -706,22 +614,113 @@ Planet.prototype = {
 	}
 }
 
-var PlanetSpec = {
-	world1: {
-		waveLength: [0.65, 0.57, 0.475],
-		outerRadius: 102.5,
-		innerRadius: 100,
-		eSun: 100,
-		kr: 0.0025,
-		km: 0.001,
-		scaleDepth: 0.25
+var PlanetFactory = {
+	planetTextures: [
+		THREE.ImageUtils.loadTexture('images/mercurymap.jpg'),
+		THREE.ImageUtils.loadTexture('images/venusmap.jpg'),
+		THREE.ImageUtils.loadTexture('images/marsmap.jpg'),
+		THREE.ImageUtils.loadTexture('images/neptunemap.jpg'),
+		THREE.ImageUtils.loadTexture('images/uranusmap.jpg'),
+		THREE.ImageUtils.loadTexture('images/plutomap.jpg'),
+		THREE.ImageUtils.loadTexture('images/sednamap.jpg')
+	],
+	
+	generatePlanet:function(starPosition, planetPosition) {
+		//create definition
+		var innerRadius = Math.random() * (150 - 50) + 50;
+		var planetSpec = {
+			waveLength: [Math.random(), Math.random(), Math.random()],
+			innerRadius: innerRadius,
+			outerRadius: innerRadius * 1.025,
+			eSun: Math.random() * (10 + 100) - 10,
+			kr: 0.0025,
+			km: 0.001,
+			scaleDepth: 0.25
+		};
+		
+		//create body
+		var planetBody = new Body(planetPosition, 0, 0, 0.0001);
+		
+		//create view
+		var planetPickingGeometry = new THREE.SphereGeometry(planetSpec.outerRadius + 1, 64, 64);
+		var skyGeometry = new THREE.SphereGeometry(planetSpec.outerRadius, 64, 64);
+		var groundGeometry = new THREE.SphereGeometry(planetSpec.innerRadius, 64, 64);
+		
+		var planetTexture = PlanetFactory.planetTextures[Math.floor(Math.random() * 7.0)];
+		var atmosphereUniforms = {
+			dayTexture: {type: "t", value: planetTexture},
+			nightTexture: {type: "t", value: planetTexture},
+			cameraPos: {type:'v3', value: new THREE.Vector3()},
+			cameraHeight2: {type:'f', value: 0},
+			lightDir: {type:'v3', value: new THREE.Vector3(starPosition.x - planetPosition.x, starPosition.y - planetPosition.y, starPosition.z - planetPosition.z).normalize()},
+			invWaveLength: {type:'v3', value: new THREE.Vector3(1.0/Math.pow(planetSpec.waveLength[0],4), 1.0/Math.pow(planetSpec.waveLength[1],4), 1.0/Math.pow(planetSpec.waveLength[2],4))},
+			outerRadius: {type:'f', value:planetSpec.outerRadius},
+			outerRadius2: {type:'f', value:planetSpec.outerRadius * planetSpec.outerRadius},
+			innerRadius: {type:'f', value:planetSpec.innerRadius},
+			innerRadius2: {type:'f', value:planetSpec.innerRadius * planetSpec.innerRadius},
+			krESun: {type:'f', value:planetSpec.kr * planetSpec.eSun},
+			kmESun: {type:'f', value:planetSpec.km * planetSpec.eSun},
+			kr4Pi: {type:'f', value:planetSpec.kr * 4 * Math.PI},
+			km4Pi: {type:'f', value:planetSpec.km * 4 * Math.PI},
+			scale: {type:'f', value:1 / (planetSpec.outerRadius - planetSpec.innerRadius)},
+			scaleDepth: {type:'f', value:planetSpec.scaleDepth},
+			scaleOverScaleDepth: {type:'f', value:1 / (planetSpec.outerRadius - planetSpec.innerRadius) / planetSpec.scaleDepth},
+		};
+			
+		var skyMaterial = new THREE.ShaderMaterial({
+			uniforms: atmosphereUniforms,
+			vertexShader: $('#atmosphere_v_shader').text(),
+			fragmentShader: $('#atmosphere_f_shader').text(),
+			side: THREE.BackSide,
+			transparent: true,
+			blending: THREE.AdditiveBlending
+		});
+			
+		var groundMaterial = new THREE.ShaderMaterial({
+			uniforms: atmosphereUniforms,
+			vertexShader: $('#ground_v_shader').text(),
+			fragmentShader: $('#ground_f_shader').text(),
+		});
+			
+		var planetPickingMaterial = new THREE.MeshBasicMaterial({
+			color: 0xffffff,
+			transparent: true,
+			opacity: 0.2
+		});
+			
+		var skyMesh = new THREE.Mesh(skyGeometry, skyMaterial);
+		var groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
+		var planetPickingMesh = new THREE.Mesh(planetPickingGeometry, planetPickingMaterial);
+		planetPickingMesh.visible = false;
+			
+		var planetView = new View();
+		planetView.meshes.push({name: 'skyMesh', value: skyMesh});
+		planetView.meshes.push({name: 'groundMesh', value: groundMesh});
+		planetView.meshes.push({name: 'pickingMesh', value: planetPickingMesh});
+		
+		//create economy
+		var planetEconomy = new Economy();
+		if (Math.random() > 0.5) {
+			planetEconomy.setResourceQuantity('food', 1);
+		}
+		if (Math.random() > 0.5) {
+			planetEconomy.setResourceQuantity('water', 1);
+		}
+		if (Math.random() > 0.5) {
+			planetEconomy.setResourceQuantity('fuel', 1);
+		}
+		if (Math.random() > 0.5) {
+			planetEconomy.setResourceQuantity('metal', 1);
+		}
+		return new Planet(planetBody, planetView, planetEconomy);
 	}
 }
 
 var SolarSystemSpec = {
 	system1: {
 		minPlanetDistance:3000,
-		maxPlanetSpread:20000
+		maxPlanetSpread:20000,
+		maxStarSize:1000
 	}
 }
 
