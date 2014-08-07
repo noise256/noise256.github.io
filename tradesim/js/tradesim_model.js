@@ -502,6 +502,14 @@ Economy.prototype = {
 		}
 	},
 	
+	setResourcePrice:function(name, price) {
+		for (var i = 0; i < this.resources.length; i++) {
+			if (this.resources[i].name == name) {
+				this.resources[i].price = price;
+			}
+		}
+	},
+	
 	changeResourcePrice:function(name, change) {
 		for (var i = 0; i < this.resources.length; i++) {
 			if (this.resources[i].name == name) {
@@ -689,6 +697,7 @@ var PlanetFactory = {
 		
 		//create economy
 		var planetEconomy = new Economy();
+		
 		if (Math.random() > 0.5) {
 			planetEconomy.setResourceQuantity('food', 1);
 		}
@@ -701,6 +710,7 @@ var PlanetFactory = {
 		if (Math.random() > 0.5) {
 			planetEconomy.setResourceQuantity('metal', 1);
 		}
+		
 		return new Planet(planetBody, planetView, planetEconomy);
 	}
 }
