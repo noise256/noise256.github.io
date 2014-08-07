@@ -25,7 +25,7 @@ var SimulationView = {
 	init: function() {
 		SimulationView.scene = new THREE.Scene();
 		
-		SimulationView.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 400000);
+		SimulationView.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 450000);
 		SimulationView.camera.position.x = 0;
 		SimulationView.camera.position.y = 0;
 		SimulationView.camera.position.z = 7500;
