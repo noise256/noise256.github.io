@@ -610,7 +610,6 @@ var PlanetFactory = {
 		THREE.ImageUtils.loadTexture('images/venusmap.jpg'),
 		THREE.ImageUtils.loadTexture('images/marsmap.jpg'),
 		THREE.ImageUtils.loadTexture('images/neptunemap.jpg'),
-		THREE.ImageUtils.loadTexture('images/uranusmap.jpg'),
 		THREE.ImageUtils.loadTexture('images/plutomap.jpg'),
 		THREE.ImageUtils.loadTexture('images/sednamap.jpg')
 	],
@@ -636,7 +635,7 @@ var PlanetFactory = {
 		var skyGeometry = new THREE.SphereGeometry(planetSpec.outerRadius, 64, 64);
 		var groundGeometry = new THREE.SphereGeometry(planetSpec.innerRadius, 64, 64);
 		
-		var planetTexture = PlanetFactory.planetTextures[Math.floor(Math.random() * 7.0)];
+		var planetTexture = PlanetFactory.planetTextures[Math.floor(Math.random() * PlanetFactory.planetTexture.length)];
 		var atmosphereUniforms = {
 			dayTexture: {type: "t", value: planetTexture},
 			nightTexture: {type: "t", value: planetTexture},
