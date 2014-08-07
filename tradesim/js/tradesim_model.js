@@ -28,7 +28,7 @@ var SimulationView = {
 		SimulationView.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 450000);
 		SimulationView.camera.position.x = 0;
 		SimulationView.camera.position.y = 0;
-		SimulationView.camera.position.z = 7500;
+		SimulationView.camera.position.z = 15000;
 		SimulationView.camera.lookAt(new THREE.Vector3(0, 0, 0));
 		
 		SimulationView.renderer = new THREE.WebGLRenderer({antialias: true});
@@ -142,7 +142,7 @@ var SimulationController = {
 		
 		//create colonies
 		for (var i = 0; i < SimulationController.numColonies; i++) {
-			var colony = new Colony(SimulationController.planets[i % SimulationController.planets.length], new Economy());
+			var colony = ColonyFactory.generateColony(SimulationController.planets[i % SimulationController.planets.length], new Economy());
 			SimulationController.planets[i % SimulationController.planets.length].colonies.push(colony);
 			SimulationController.colonies.push(colony);
 		}
@@ -760,4 +760,18 @@ Trader.prototype = {
 function Colony(planet, economy) {
 	this.planet = planet;
 	this.economy = economy;
+}
+
+var ColonyFactory = {
+	generateColony:function(planet) {
+		var colonyEconomy = new Economy();
+		
+		for (var i = 0; i < planet.economy.resources.length; i++) {
+			if (planet.economy.resources[i].quantity > 0) {
+				colonyEconomy.setResourcePrice(planet.economy.resources[i].name, 0);
+			}
+		}
+		
+		return new Colony(planet, colonyEconomy);
+	}
 }
