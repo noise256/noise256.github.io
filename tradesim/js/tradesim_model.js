@@ -635,7 +635,7 @@ var PlanetFactory = {
 		var skyGeometry = new THREE.SphereGeometry(planetSpec.outerRadius, 64, 64);
 		var groundGeometry = new THREE.SphereGeometry(planetSpec.innerRadius, 64, 64);
 		
-		var planetTexture = PlanetFactory.planetTextures[Math.floor(Math.random() * PlanetFactory.planetTexture.length)];
+		var planetTexture = PlanetFactory.planetTextures[Math.floor(Math.random() * PlanetFactory.planetTextures.length)];
 		var atmosphereUniforms = {
 			dayTexture: {type: "t", value: planetTexture},
 			nightTexture: {type: "t", value: planetTexture},
