@@ -629,7 +629,7 @@ var PlanetFactory = {
 		//create definition
 		var innerRadius = Math.random() * (150 - 50) + 50;
 		var planetSpec = {
-			waveLength: [Math.random(), Math.random(), Math.random()],
+			waveLength: [Math.random() * (1.0 - 0.5) + 0.5, Math.random() * (1.0 - 0.5) + 0.5, Math.random() * (1.0 - 0.5) + 0.5],
 			innerRadius: innerRadius,
 			outerRadius: innerRadius * 1.025,
 			eSun: Math.random() * (10 + 100) - 10,
