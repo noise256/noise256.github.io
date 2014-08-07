@@ -719,8 +719,8 @@ var SolarSystemSpec = {
 	system1: {
 		minPlanetDistance:10000,
 		maxPlanetDistance:15000,
-		maxStarSize:7000,
-		minStarSize:5500, //~109 * earth size (sol)
+		maxStarSize:15000, //should be ~7500
+		minStarSize:10000, //should be 5500 but transparency of current star is an issue ~109 * earth size (sol)
 		maxPlanetSize:550, //11 * earth size (jupiter)
 		minPlanetSize:100 //earth size
 	}
