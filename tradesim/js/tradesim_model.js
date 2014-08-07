@@ -151,9 +151,9 @@ var SimulationController = {
 		var traderGeometry = new THREE.SphereGeometry(30, 32, 32);
 		
 		for (var i = 0; i < SimulationController.numTraders; i++) {
-			var randVector = vec3.random(vec3.create(), Math.random() * SolarSystemSpec.system1.maxPlanetSpread); //TODO implement max trader spread
+			var randVector = vec3.random(vec3.create(), Math.random() * (SolarSystemSpec.system1.maxPlanetDistance + SolarSystemSpec.system1.minPlanetDistance) / 2 * SimulationController.numPlanets); //TODO implement max trader spread
 			var traderPosition = new THREE.Vector3(randVector[0], 0.0, randVector[2]);
-			var traderBody = new Body(traderPosition, 1, 0.5, 10.0);
+			var traderBody = new Body(traderPosition, 100, 0.5, 50.0);
 			
 			var traderMaterial = new THREE.ShaderMaterial({
 				uniforms: {
