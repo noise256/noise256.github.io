@@ -1,5 +1,4 @@
 //TODO merge geometries, namely planets and other static objects
-
 window.onload = function() {
 	SimulationView.init();
 	SkyBox.init();
@@ -32,7 +31,6 @@ var SimulationView = {
 		SimulationView.camera.lookAt(new THREE.Vector3(0, 0, 0));
 		
 		SimulationView.renderer = new THREE.WebGLRenderer({antialias: true});
-		//SimulationView.renderer = new THREE.WebGLRenderer();
 		SimulationView.renderer.setSize(window.innerWidth, window.innerHeight);
 		SimulationView.renderer.setClearColor(0x000000, 1);
 		
@@ -49,15 +47,12 @@ var SimulationView = {
 		THREEx.WindowResize(SimulationView.renderer, SimulationView.camera);
 		THREEx.FullScreen.bindKey({charCode: 'f'.charCodeAt(0)});
 		
+		window.addEventListener('dblclick', SimulationView.onDoubleClick, false);
 		window.addEventListener('mousemove', SimulationView.onMouseMove, false);
 		window.addEventListener('resize', SimulationView.onWindowResize, false);
 		
 		SimulationView.projector = new THREE.Projector();
 		SimulationView.mouseVector = new THREE.Vector3();
-	},
-	
-	update: function() {
-		
 	},
 	
 	render: function() {
@@ -85,6 +80,13 @@ var SimulationView = {
 		SimulationView.mouseVector.y = 1 - (event.clientY / window.innerHeight) * 2;
 		SimulationView.mouseVector.z = 0.5;
 	},
+	
+	onDoubleClick:function(e) {
+		SimulationView.camera.position.x += 1000;
+	}
+}
+
+var cameraController = {
 }
 
 var SimulationController = {
@@ -284,21 +286,28 @@ var GUIController = {
 
 var TraderController = {
 	updateTrader:function(trader) {
-		if (trader.destination == null) {
+		if (trader.buyDestination == null && trader.sellDestination == null) {
 			TraderController.getNewDestination(trader);
 		}
 		
-		if (trader.destination != null) {
-			var destinationVec = new THREE.Vector3().subVectors(trader.destination.planet.body.position, trader.body.position);
+		if (trader.buyDestination != null && trader.sellDestination != null) {
+			var destinationVec = null;
+			if (trader.economy.hasResources()) {
+				destinationVec = new THREE.Vector3().subVectors(trader.sellDestination.planet.body.position, trader.body.position);
+			}
+			else {
+				destinationVec = new THREE.Vector3().subVectors(trader.buyDestination.planet.body.position, trader.body.position);
+			}
 			
 			if (destinationVec.length() <= trader.interactionRange) {
 				if (trader.economy.hasResources()) {
-					TraderController.sellResources(trader, trader.destination);
+					TraderController.sellResources(trader, trader.sellDestination);
+					trader.buyDestination = null;
+					trader.sellDestination = null;
 				}
 				else {
-					TraderController.buyResources(trader, trader.destination);
+					TraderController.buyResources(trader, trader.buyDestination);
 				}
-				trader.destination = null;
 			}
 			
 			trader.body.move(destinationVec.normalize());
@@ -306,40 +315,45 @@ var TraderController = {
 	},
 	
 	getNewDestination:function(trader) {
-		var highColony;
+		//var highColony;
 		
-		var lowColony;
-		var lowResource;
+		//var lowColony;
+		//var lowResource;
 		
-		var highPrice = 0;
-		var lowPrice = Number.MAX_VALUE;
+		//var highPrice = 0;
+		//var lowPrice = Number.MAX_VALUE;
 		
+		var buyColony;
+		var sellColony;
+		var targetResource;
+		
+		var netProfit = 0;
 		for (var i = 0; i < SimulationController.colonies.length; i++) {
-			var distance = SimulationController.colonies[i].planet.body.position.distanceTo(trader.body.position);
+			var distanceToStart = SimulationController.colonies[i].planet.body.position.distanceTo(trader.body.position);
 			
-			for (var j = 0; j < SimulationController.colonies[i].economy.resources.length; j++) { //TODO dividing and multiplying by distance is probably an inaccurate method of ensuring that the best price/distance ratio is found
-				if (SimulationController.colonies[i].economy.resources[j].quantity > 0 && SimulationController.colonies[i].economy.resources[j].price * distance <= lowPrice) { //TODO what if multiple traders purchase resource and there is not enough present
-					lowColony = SimulationController.colonies[i];
-					lowResource = SimulationController.colonies[i].economy.resources[j].name;
-					lowPrice = SimulationController.colonies[i].economy.resources[j].price * distance;
+			for (var j = 0; j < SimulationController.colonies.length; j++) {
+				if (i == j) {
+					continue;
 				}
-			}
-			
-			for (var j = 0; j < trader.economy.resources.length; j++) {
-				if (trader.economy.resources[j].quantity > 0 && SimulationController.colonies[i].economy.getResourceByName(trader.economy.resources[j].name).price / distance >= highPrice) {
-					highColony = SimulationController.colonies[i];
-					highPrice = SimulationController.colonies[i].economy.getResourceByName(trader.economy.resources[j].name).price / distance;
+				
+				var distanceToEnd = SimulationController.colonies[i].planet.body.position.distanceTo(SimulationController.colonies[j].planet.body.position);
+				var totalDistance = distanceToStart + distanceToEnd;
+				
+				for (var k = 0; k < SimulationController.colonies[i].economy.resources.length; k++) {
+					var cNetProfit = (SimulationController.colonies[j].economy.resources[k].price - SimulationController.colonies[i].economy.resources[k].price) / totalDistance;
+					if (cNetProfit > netProfit) {
+						buyColony = SimulationController.colonies[i];
+						sellColony = SimulationController.colonies[j];
+						targetResource = SimulationController.colonies[i].economy.resources[k].name;
+						netProfit = cNetProfit;
+					}
 				}
 			}
 		}
 		
-		if (trader.economy.hasResources() && highColony) {
-			trader.destination = highColony; //TODO does not check whether or not the high price was for the correct resource
-		}
-		else if (lowColony) {
-			trader.destination = lowColony;
-			trader.targetResource = lowResource;
-		}
+		trader.buyDestination = buyColony;
+		trader.sellDestination = sellColony;
+		trader.targetResource = targetResource;
 	},
 	
 	sellResources:function(trader, colony) {
@@ -734,13 +748,16 @@ function Trader(body, view, economy) {
 	this.interactionRange = 600;
 	
 	this.targetResource = null;
-	this.destination = null;
+	this.buyDestination = null;
+	this.sellDestination = null;
+	//this.targetResource = null;
+	//this.destination = null;
 	
 	this.view.setWorldParent(this)
 }
 
 Trader.prototype = {
-		update:function() {
+	update:function() {
 		this.view.update(this.body.position);
 		
 		this.updateUniforms();
