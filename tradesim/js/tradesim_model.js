@@ -18,7 +18,8 @@ var SimulationView = {
 	
 	planetLight: null,
 	
-	mouseVector: null,
+	mouseMove: new THREE.Vector3(),
+	mouseDblClick: null,
 	projector: null,
 	
 	init: function() {
@@ -26,8 +27,8 @@ var SimulationView = {
 		
 		SimulationView.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 450000);
 		SimulationView.camera.position.x = 0;
-		SimulationView.camera.position.y = 0;
-		SimulationView.camera.position.z = 15000;
+		SimulationView.camera.position.y = 3000;
+		SimulationView.camera.position.z = 25000;
 		SimulationView.camera.lookAt(new THREE.Vector3(0, 0, 0));
 		
 		SimulationView.renderer = new THREE.WebGLRenderer({antialias: true});
@@ -50,9 +51,9 @@ var SimulationView = {
 		window.addEventListener('dblclick', SimulationView.onDoubleClick, false);
 		window.addEventListener('mousemove', SimulationView.onMouseMove, false);
 		window.addEventListener('resize', SimulationView.onWindowResize, false);
+		window.addEventListener('keydown', SimulationView.onKeyDown, false);
 		
 		SimulationView.projector = new THREE.Projector();
-		SimulationView.mouseVector = new THREE.Vector3();
 	},
 	
 	render: function() {
@@ -66,6 +67,8 @@ var SimulationView = {
 		
 		SimulationView.fpsMeter.tickStart();
 		
+		CameraController.updateCamera();
+		
 		SimulationView.controls.update();
 		SimulationController.update();
 		
@@ -76,17 +79,47 @@ var SimulationView = {
 	},
 	
 	onMouseMove:function(e) {
-		SimulationView.mouseVector.x = (event.clientX / window.innerWidth) * 2 - 1;
-		SimulationView.mouseVector.y = 1 - (event.clientY / window.innerHeight) * 2;
-		SimulationView.mouseVector.z = 0.5;
+		SimulationView.mouseMove.x = (event.clientX / window.innerWidth) * 2 - 1;
+		SimulationView.mouseMove.y = 1 - (event.clientY / window.innerHeight) * 2;
+		SimulationView.mouseMove.z = 0.5;
 	},
 	
 	onDoubleClick:function(e) {
-		SimulationView.camera.position.x += 1000;
+		SimulationView.mouseDblClick = new THREE.Vector3(
+			(event.clientX / window.innerWidth) * 2 - 1,
+			1 - (event.clientY / window.innerHeight) * 2,
+			0.5
+		);
+	},
+	
+	onKeyDown:function(e) {
+		if (e.keyCode == 81) {
+			CameraController.originalPosition = new THREE.Vector3().copy(SimulationView.camera.position);
+			CameraController.destination = new THREE.Vector3(0.0, 3000.0, 25000.0);
+			CameraController.progress = 0.0;
+		}
 	}
 }
 
-var cameraController = {
+var CameraController = {
+	offset: 25000.0,
+	
+	originalPosition: null,
+	destination: null,
+	progress: null,
+	
+	updateCamera:function() {
+		if (CameraController.destination && CameraController.progress <= 1.0) {
+			var cameraStep = CameraController.originalPosition.clone().lerp(CameraController.destination, CameraController.progress);
+			
+			SimulationView.camera.position.set(cameraStep.x, cameraStep.y, cameraStep.z);
+			SimulationView.controls.savePosition();
+			SimulationView.controls.saveTarget();
+			SimulationView.controls.reset();
+			
+			CameraController.progress += 0.1;
+		}
+	}
 }
 
 var SimulationController = {
@@ -104,8 +137,8 @@ var SimulationController = {
 	dynamicObjects: null,
 	dynamicPickingObjects: null,
 	
-	selector:null,
-	lastMouseVector:new THREE.Vector3(),
+	selector: null,
+	lastMouseMove:new THREE.Vector3(),
 	
 	init:function() {
 		//create scene container objects
@@ -179,6 +212,7 @@ var SimulationController = {
 	
 	update:function() {
 		SimulationController.handleMouseMove();
+		SimulationController.handleMouseDoubleClick();
 		
 		for (var i = 0; i < SimulationController.stars.length; i++) {
 			SimulationController.stars[i].update();
@@ -211,13 +245,13 @@ var SimulationController = {
 	},
 	
 	handleMouseMove:function() {
-		if (SimulationView.mouseVector.distanceTo(SimulationController.lastMouseVector) > 0.0) {
+		if (SimulationView.mouseMove.distanceTo(SimulationController.lastMouseMove) > 0.0) {
 			//reset picking object visibility TODO kind of a convoluted way of accessing the picking mesh
 			for (var i = 0; i < SimulationController.staticPickingObjects.children.length; i++) {
 				SimulationController.staticPickingObjects.children[i].worldParent.view.getMeshByName('pickingMesh').value.visible = false;
 			}
 			
- 			var raycaster = SimulationView.projector.pickingRay(SimulationView.mouseVector.clone(), SimulationView.camera);
+ 			var raycaster = SimulationView.projector.pickingRay(SimulationView.mouseMove.clone(), SimulationView.camera);
 		
 			//TODO don't bother doing intersects if object is too far away
 			var intersects = raycaster.intersectObjects(SimulationController.staticPickingObjects.children);
@@ -239,7 +273,31 @@ var SimulationController = {
 				//SimulationController.selector.target = null;
 			}
 			
-			SimulationController.lastMouseVector = SimulationView.mouseVector.clone();
+			SimulationController.lastMouseVector = SimulationView.mouseMove.clone();
+		}
+	},
+	
+	handleMouseDoubleClick:function() {
+		if (SimulationView.mouseDblClick != null) {
+			var raycaster = SimulationView.projector.pickingRay(SimulationView.mouseDblClick.clone(), SimulationView.camera);
+		
+			//TODO don't bother doing intersects if object is too far away
+			var intersects = raycaster.intersectObjects(SimulationController.staticPickingObjects.children);
+			
+			if (intersects.length > 0) {
+				var worldParent = intersects[0].object.worldParent;
+				
+				var destinationVec = new THREE.Vector3().subVectors(SimulationView.camera.position, worldParent.body.position).normalize();
+				
+				CameraController.originalPosition = SimulationView.camera.position.clone();
+				CameraController.destination = new THREE.Vector3().addVectors(worldParent.body.position, destinationVec.multiplyScalar(CameraController.offset));
+				CameraController.progress = 0.0;
+				
+				SimulationView.controls.target = worldParent.body.position.clone();
+				SimulationView.camera.lookAt(worldParent.body.position.clone());
+			}
+			
+			SimulationView.mouseDblClick = null;
 		}
 	}
 }

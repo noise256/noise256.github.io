@@ -315,6 +315,18 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 	};
 
+	/**
+		Custom method to set reset position of OrbitControls to the current position.
+	*/
+	this.savePosition = function() {
+		
+		this.position0.copy(this.object.position);
+	}
+	
+	this.saveTarget = function() {
+		this.target0.copy(this.target);
+	}
+	
 	function getAutoRotationAngle() {
 
 		return 2 * Math.PI / 60 / 60 * scope.autoRotateSpeed;
