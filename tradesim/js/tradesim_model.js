@@ -163,8 +163,8 @@ var SimulationController = {
 		var distanceToStar = SolarSystemSpec.system1.maxStarSize + Math.random() * (SolarSystemSpec.system1.maxPlanetDistance - SolarSystemSpec.system1.minPlanetDistance) + SolarSystemSpec.system1.minPlanetDistance;
 		for (var i = 0; i < SimulationController.numPlanets; i++) {
 			var randVector = vec3.random(vec3.create(), distanceToStar);
-			var planetPosition = new THREE.Vector3(randVector[0], 0.0, randVector[2]);
-			var planet = PlanetFactory.generatePlanet(starPosition, planetPosition, planetPosition.length());
+			var planetOffset = new THREE.Vector3(randVector[0], 0.0, randVector[2]);
+			var planet = PlanetFactory.generatePlanet(star, new THREE.Vector3().addVectors(starPosition, planetOffset), planetOffset.length());
 			
 			SimulationController.planets.push(planet);
 			
@@ -647,10 +647,12 @@ var StarFactory = {
 	}
 }
 
-function Planet(body, view, economy) {
+function Planet(body, view, economy, star) {
 	this.body = body;
 	this.view = view;
 	this.economy = economy;
+	this.star = star;
+	
 	this.colonies = [];
 	
 	this.view.setWorldParent(this);
@@ -667,7 +669,7 @@ Planet.prototype = {
 		this.view.getMeshByName('groundMesh').value.position.set(this.body.position.x, this.body.position.y, this.body.position.z);
 		this.view.getMeshByName('pickingMesh').value.position.set(this.body.position.x, this.body.position.y, this.body.position.z);
 		
-		var lightDir = new THREE.Vector3(0.0 - this.body.position.x, 0.0 - this.body.position.y, 0.0 - this.body.position.z).normalize();
+		var lightDir = new THREE.Vector3(this.star.body.position.x - this.body.position.x, this.star.body.position.y - this.body.position.y, this.star.body.position.z - this.body.position.z).normalize();
 		var relativeCameraPos = new THREE.Vector3().subVectors(SimulationView.camera.position, this.body.position);
 		var cameraHeight2 = relativeCameraPos.length() * relativeCameraPos.length();
 		
@@ -679,10 +681,6 @@ Planet.prototype = {
 		this.view.getMeshByName('groundMesh').value.material.uniforms.cameraHeight2.value = cameraHeight2;
 		this.view.getMeshByName('groundMesh').value.material.uniforms.lightDir.value = lightDir;
 	},
-	
-	updateUniforms:function() {
-
-	}
 }
 
 var PlanetFactory = {
@@ -695,7 +693,7 @@ var PlanetFactory = {
 		THREE.ImageUtils.loadTexture('images/sednamap.jpg')
 	],
 	
-	generatePlanet:function(starPosition, planetPosition, distanceToStar) {
+	generatePlanet:function(star, planetPosition, distanceToStar) {
 		//create definition
 		var innerRadius = Math.random() * (SolarSystemSpec.system1.maxPlanetSize - SolarSystemSpec.system1.minPlanetSize) + SolarSystemSpec.system1.minPlanetSize;
 		var planetSpec = {
@@ -718,7 +716,7 @@ var PlanetFactory = {
 			nightTexture: {type: "t", value: planetTexture},
 			cameraPos: {type:'v3', value: new THREE.Vector3()},
 			cameraHeight2: {type:'f', value: 0},
-			lightDir: {type:'v3', value: new THREE.Vector3(starPosition.x - planetPosition.x, starPosition.y - planetPosition.y, starPosition.z - planetPosition.z).normalize()},
+			lightDir: {type:'v3', value: new THREE.Vector3(star.body.position.x - planetPosition.x, star.body.position.y - planetPosition.y, star.body.position.z - planetPosition.z).normalize()},
 			invWaveLength: {type:'v3', value: new THREE.Vector3(1.0/Math.pow(planetSpec.waveLength[0],4), 1.0/Math.pow(planetSpec.waveLength[1],4), 1.0/Math.pow(planetSpec.waveLength[2],4))},
 			outerRadius: {type:'f', value:planetSpec.outerRadius},
 			outerRadius2: {type:'f', value:planetSpec.outerRadius * planetSpec.outerRadius},
@@ -764,6 +762,7 @@ var PlanetFactory = {
 		var orbitRingGeometry = new THREE.TorusGeometry(distanceToStar, 25, 8, 128);
 		var orbitRingMaterial = new THREE.MeshBasicMaterial({color: 0x97EBC2});
 		var orbitRingMesh = new THREE.Mesh(orbitRingGeometry, orbitRingMaterial);
+		orbitRingMesh.position.set(star.body.position.x, star.body.position.y, star.body.position.z);
 		orbitRingMesh.rotation.x = Math.PI/2;
 		var planetView = new View();
 		
@@ -793,7 +792,7 @@ var PlanetFactory = {
 			planetEconomy.setResourceQuantity('metal', 1);
 		}
 		
-		return new Planet(planetBody, planetView, planetEconomy);
+		return new Planet(planetBody, planetView, planetEconomy, star);
 	}
 }
 
