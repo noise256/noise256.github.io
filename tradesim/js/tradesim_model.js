@@ -126,7 +126,7 @@ var SimulationController = {
 	numStars:1,
 	numPlanets:7,
 	numColonies:7,
-	numTraders:500,
+	numTraders:200,
 	
 	stars:[],
 	planets:[],
