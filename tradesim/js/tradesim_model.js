@@ -124,9 +124,9 @@ var CameraController = {
 
 var SimulationController = {
 	numStars:1,
-	numPlanets:0,
-	numColonies:0,
-	numTraders:0,
+	numPlanets:7,
+	numColonies:7,
+	numTraders:500,
 	
 	stars:[],
 	planets:[],
