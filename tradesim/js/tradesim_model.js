@@ -157,7 +157,6 @@ var SimulationController = {
 		var star = StarFactory.generateStar(starPosition);
 		
 		SimulationController.stars.push(star);
-		SimulationController.addObject(star.view.getMeshByName('surfaceMesh').value, false, false);
 		
 		//create planets
 		var distanceToStar = SolarSystemSpec.system1.maxStarSize + Math.random() * (SolarSystemSpec.system1.maxPlanetDistance - SolarSystemSpec.system1.minPlanetDistance) + SolarSystemSpec.system1.minPlanetDistance;
@@ -254,19 +253,11 @@ var SimulationController = {
 			
 			if (intersects.length > 0) {
 				var worldParent = intersects[0].object.worldParent;
-			
+				
 				if (worldParent instanceof Planet) {
 					GUIController.resourceGUITarget = worldParent.colonies[0];
 					worldParent.view.getMeshByName('pickingMesh').value.visible = true;
 				}
-				else {
-					GUIController.resourceGUITarget = worldParent;
-				}
-				
-				//SimulationController.selector.target = worldParent;
-			}
-			else {
-				//SimulationController.selector.target = null;
 			}
 			
 			SimulationController.lastMouseVector = SimulationView.mouseMove.clone();
@@ -620,26 +611,37 @@ var StarFactory = {
 	generateStar:function(starPosition) {
 		var innerRadius = Math.random() * (SolarSystemSpec.system1.maxStarSize - 3000) + 3000;
 		var colour = [Math.random() * (1.0 - 0.8) + 0.8, Math.random() * (1.0 - 0.8) + 0.8, Math.random() * (1.0 - 0.8) + 0.8];
-		
-		var starGeometry = new THREE.SphereGeometry(innerRadius, 500, 500);
-		
-		var starUniforms = {
+
+		var surfaceUniforms = {
 			cameraDir:{type:'v3', value:new THREE.Vector3()},
 			colour:{type:'v3', value:new THREE.Vector3(colour[0], colour[1], colour[2])},
 		};
-		
-		var starMaterial = new THREE.ShaderMaterial({
-			uniforms: starUniforms,
+		var surfaceGeometry = new THREE.SphereGeometry(innerRadius, 500, 500);		
+		var surfaceMaterial = new THREE.ShaderMaterial({
+			uniforms: surfaceUniforms,
 			vertexShader: $('#star_v_shader').text(),
 			fragmentShader: $('#star_f_shader').text(),
 			transparent: true,
 			blending: THREE.AdditiveBlending
 		});
+		var surfaceMesh = new THREE.Mesh(surfaceGeometry, surfaceMaterial)
 		
-		var starSurfaceMesh = new THREE.Mesh(starGeometry, starMaterial)
+		var pickingGeometry = new THREE.SphereGeometry(innerRadius + 1, 64, 64);
+		var pickingMaterial = new THREE.MeshBasicMaterial({
+			color: 0xffffff,
+			transparent: true,
+			opacity: 0.2
+		});
+		var pickingMesh = new THREE.Mesh(pickingGeometry, pickingMaterial);
+		pickingMesh.visible = false;
 		
 		var starView = new View();
-		starView.meshes.push({name: 'surfaceMesh', value: starSurfaceMesh});
+		
+		starView.meshes.push({name: 'surfaceMesh', value: surfaceMesh});
+		starView.meshes.push({name: 'pickingMesh', value: pickingMesh});
+		
+		SimulationController.addObject(surfaceMesh, false, false);
+		SimulationController.addObject(pickingMesh, false, true);
 		
 		var starBody = new Body(starPosition, 0, 0, 0);
 		
@@ -698,13 +700,13 @@ var PlanetFactory = {
 		var innerRadius = Math.random() * (SolarSystemSpec.system1.maxPlanetSize - SolarSystemSpec.system1.minPlanetSize) + SolarSystemSpec.system1.minPlanetSize;
 		
 		var planetSpec = {
-			waveLength: [Math.random() * (1.0 - 0.8) + 0.8, Math.random() * (1.0 - 0.8) + 0.8, Math.random() * (1.0 - 0.8) + 0.8],
+			waveLength: [Math.random() * (1.0 - 0.5) + 0.5, Math.random() * (1.0 - 0.5) + 0.5, Math.random() * (1.0 - 0.5) + 0.5],
 			innerRadius: innerRadius,
 			outerRadius: innerRadius * 1.025,
-			eSun: Math.random() * (100 - 20) + 20,
+			eSun: Math.random() * (100 - 40) + 40,
 			kr: 0.0025,
 			km: 0.0010,
-			scaleDepth: Math.random() * (2.5 - 0.25) + 0.25
+			scaleDepth: 0.25//Math.random() * (2.5 - 0.25) + 0.25
 		};
 		
 		//create body
@@ -772,9 +774,9 @@ var PlanetFactory = {
 		planetView.meshes.push({name: 'pickingMesh', value: planetPickingMesh});
 		planetView.meshes.push({name: 'orbitRingMesh', value: orbitRingMesh});
 		
-		SimulationController.addObject(skyMesh, false, true);
+		SimulationController.addObject(skyMesh, false, false);
 		SimulationController.addObject(groundMesh, false, false);
-		SimulationController.addObject(planetPickingMesh, false, false);
+		SimulationController.addObject(planetPickingMesh, false, true);
 		SimulationController.addObject(orbitRingMesh, false, false);
 			
 		//create economy
