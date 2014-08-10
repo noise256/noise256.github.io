@@ -776,10 +776,10 @@ var PlanetFactory = {
 		planetView.meshes.push({name: 'pickingMesh', value: planetPickingMesh});
 		planetView.meshes.push({name: 'orbitRingMesh', value: orbitRingMesh});
 		
-		//SimulationController.addObject(skyMesh, false, false);
-		//SimulationController.addObject(groundMesh, false, false);
-		//SimulationController.addObject(planetPickingMesh, false, true);
-		//SimulationController.addObject(orbitRingMesh, false, false);
+		SimulationController.addObject(skyMesh, false, false);
+		SimulationController.addObject(groundMesh, false, false);
+		SimulationController.addObject(planetPickingMesh, false, true);
+		SimulationController.addObject(orbitRingMesh, false, false);
 			
 		//create economy
 		var planetEconomy = new Economy();
