@@ -123,9 +123,10 @@ var CameraController = {
 }
 
 var SimulationController = {
-	numPlanets:7,
-	numColonies:7,
-	numTraders:300,
+	numStars:1,
+	numPlanets:0,
+	numColonies:0,
+	numTraders:0,
 	
 	stars:[],
 	planets:[],
@@ -152,32 +153,33 @@ var SimulationController = {
 		SimulationView.scene.add(SimulationController.dynamicObjects);
 		SimulationView.scene.add(SimulationController.dynamicPickingObjects);
 		
-		//create star
-		var starPosition = new THREE.Vector3(0.0, 0.0, 0.0);
-		var star = StarFactory.generateStar(starPosition);
-		
-		SimulationController.stars.push(star);
+		//create stars
+		for (var i = 0; i < SimulationController.numStars; i++) {
+			SimulationController.stars.push(StarFactory.generateStar(new THREE.Vector3(i * 10000.0, 0.0, 0.0)));
+		}
 		
 		//create planets
-		var distanceToStar = SolarSystemSpec.system1.maxStarSize + Math.random() * (SolarSystemSpec.system1.maxPlanetDistance - SolarSystemSpec.system1.minPlanetDistance) + SolarSystemSpec.system1.minPlanetDistance;
-		for (var i = 0; i < SimulationController.numPlanets; i++) {
-			var randVector = vec3.random(vec3.create(), distanceToStar);
-			var planetOffset = new THREE.Vector3(randVector[0], 0.0, randVector[2]);
-			var planet = PlanetFactory.generatePlanet(star, new THREE.Vector3().addVectors(starPosition, planetOffset), planetOffset.length());
-			
-			SimulationController.planets.push(planet);
-			
-			distanceToStar += Math.random() * (SolarSystemSpec.system1.maxPlanetDistance - SolarSystemSpec.system1.minPlanetDistance) + SolarSystemSpec.system1.minPlanetDistance;
+		for (var i = 0; i < SimulationController.numStars; i++) {
+			var distanceToStar = SolarSystemSpec.system1.maxStarSize + Math.random() * (SolarSystemSpec.system1.maxPlanetDistance - SolarSystemSpec.system1.minPlanetDistance) + SolarSystemSpec.system1.minPlanetDistance;
+			for (var j = 0; j < SimulationController.numPlanets; j++) {
+				var randVector = vec3.random(vec3.create(), distanceToStar);
+				var planetOffset = new THREE.Vector3(randVector[0], 0.0, randVector[2]);
+				SimulationController.planets.push(PlanetFactory.generatePlanet(SimulationController.stars[i], new THREE.Vector3().addVectors(SimulationController.stars[i].body.position, planetOffset), planetOffset.length()));
+				
+				distanceToStar += Math.random() * (SolarSystemSpec.system1.maxPlanetDistance - SolarSystemSpec.system1.minPlanetDistance) + SolarSystemSpec.system1.minPlanetDistance;
+			}
 		}
+			//create planets
+
+			
+/* 			//create colonies
+			for (var j = 0; j < SimulationController.numColonies; j++) {
+				var colony = ColonyFactory.generateColony(SimulationController.planets[j % SimulationController.planets.length], new Economy());
+				SimulationController.planets[j % SimulationController.planets.length].colonies.push(colony);
+				SimulationController.colonies.push(colony);
+			} */
 		
-		//create colonies
-		for (var i = 0; i < SimulationController.numColonies; i++) {
-			var colony = ColonyFactory.generateColony(SimulationController.planets[i % SimulationController.planets.length], new Economy());
-			SimulationController.planets[i % SimulationController.planets.length].colonies.push(colony);
-			SimulationController.colonies.push(colony);
-		}
-		
-		//create traders
+/* 		//create traders
 		var traderGeometry = new THREE.SphereGeometry(30, 32, 32);
 		
 		for (var i = 0; i < SimulationController.numTraders; i++) {
@@ -202,7 +204,7 @@ var SimulationController = {
 			var traderEconomy = new Economy();
 			
 			SimulationController.traders.push(new Trader(traderBody, traderView, traderEconomy));
-		}
+		} */
 	},
 	
 	update:function() {
@@ -713,10 +715,10 @@ var PlanetFactory = {
 		var planetBody = new Body(planetPosition, 0, 0, 5.0 / distanceToStar);
 		
 		//create view
-		var planetTexture = PlanetFactory.planetTextures[Math.floor(Math.random() * PlanetFactory.planetTextures.length)];
+		var planetTexture = Math.floor(Math.random() * PlanetFactory.planetTextures.length);
 		var atmosphereUniforms = {
-			dayTexture: {type: "t", value: planetTexture},
-			nightTexture: {type: "t", value: planetTexture},
+			dayTexture: {type: "t", value: PlanetFactory.planetTextures[planetTexture]},
+			nightTexture: {type: "t", value: PlanetFactory.planetTextures[planetTexture]},
 			cameraPos: {type:'v3', value: new THREE.Vector3()},
 			cameraHeight2: {type:'f', value: 0},
 			lightDir: {type:'v3', value: new THREE.Vector3(star.body.position.x - planetPosition.x, star.body.position.y - planetPosition.y, star.body.position.z - planetPosition.z).normalize()},
@@ -762,7 +764,7 @@ var PlanetFactory = {
 		var planetPickingMesh = new THREE.Mesh(planetPickingGeometry, planetPickingMaterial);
 		planetPickingMesh.visible = false;
 		
-		var orbitRingGeometry = new THREE.TorusGeometry(distanceToStar, 25, 8, 128);
+		var orbitRingGeometry = new THREE.TorusGeometry(distanceToStar, 25, 8, 64);
 		var orbitRingMaterial = new THREE.MeshBasicMaterial({color: 0x97EBC2});
 		var orbitRingMesh = new THREE.Mesh(orbitRingGeometry, orbitRingMaterial);
 		orbitRingMesh.position.set(star.body.position.x, star.body.position.y, star.body.position.z);
@@ -774,10 +776,10 @@ var PlanetFactory = {
 		planetView.meshes.push({name: 'pickingMesh', value: planetPickingMesh});
 		planetView.meshes.push({name: 'orbitRingMesh', value: orbitRingMesh});
 		
-		SimulationController.addObject(skyMesh, false, false);
-		SimulationController.addObject(groundMesh, false, false);
-		SimulationController.addObject(planetPickingMesh, false, true);
-		SimulationController.addObject(orbitRingMesh, false, false);
+		//SimulationController.addObject(skyMesh, false, false);
+		//SimulationController.addObject(groundMesh, false, false);
+		//SimulationController.addObject(planetPickingMesh, false, true);
+		//SimulationController.addObject(orbitRingMesh, false, false);
 			
 		//create economy
 		var planetEconomy = new Economy();
