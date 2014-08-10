@@ -696,11 +696,12 @@ var PlanetFactory = {
 	generatePlanet:function(star, planetPosition, distanceToStar) {
 		//create definition
 		var innerRadius = Math.random() * (SolarSystemSpec.system1.maxPlanetSize - SolarSystemSpec.system1.minPlanetSize) + SolarSystemSpec.system1.minPlanetSize;
+		
 		var planetSpec = {
-			waveLength: [Math.random() * (1.0 - 0.5) + 0.5, Math.random() * (1.0 - 0.5) + 0.5, Math.random() * (1.0 - 0.5) + 0.5],
+			waveLength: [Math.random() * (1.0 - 0.8) + 0.8, Math.random() * (1.0 - 0.8) + 0.8, Math.random() * (1.0 - 0.8) + 0.8],
 			innerRadius: innerRadius,
 			outerRadius: innerRadius * 1.025,
-			eSun: Math.random() * (50 + 100) - 10,
+			eSun: Math.random() * (100 - 20) + 20,
 			kr: 0.0025,
 			km: 0.0010,
 			scaleDepth: Math.random() * (2.5 - 0.25) + 0.25
