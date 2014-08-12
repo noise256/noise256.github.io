@@ -27,14 +27,14 @@ function tradeSimulation() {
 }
 
 function generate() {
-	var numStars = 2;
+	var numStars = 1;
 	var numPlanets = Math.random() * (SolarSystemSpec.system1.maxPlanets - SolarSystemSpec.system1.minPlanets) + SolarSystemSpec.system1.minPlanets;
 	var numColonies = numPlanets;
-	var numTraders = 20;
+	var numTraders = 200;
 	
 	//create stars
 	var solarStepMin = 100000.0;
-	var solarStepMax = 1000000.0;
+	var solarStepMax = 500000.0;
 	var distanceToCentre = 0.0;
 	for (var i = 0; i < numStars; i++) {
 		var randVector = vec3.random(vec3.create(), distanceToCentre);
@@ -476,7 +476,7 @@ Star.prototype = {
 			fragmentShader: $('#star_f_shader').text(),
 			transparent: true,
 			blending: THREE.AdditiveBlending
-		});
+		}); 
 		
 		var pickingMaterial = new THREE.MeshBasicMaterial({
 			color: 0xffffff,
@@ -643,7 +643,8 @@ Planet.prototype = {
 			scaleOverScaleDepth: {type:'f', value:1 / (planetSpec.outerRadius - planetSpec.innerRadius) / planetSpec.scaleDepth},
 		};
 		
-		var skyGeometry = new THREE.SphereGeometry(planetSpec.outerRadius, 32, 32);
+		//var skyGeometry = new THREE.SphereGeometry(planetSpec.outerRadius, 32, 32);
+		var skyGeometry = this.testGeometry;
 		var skyMaterial = Planet.prototype.getMaterialByName('skyMaterial').clone();
 		skyMaterial.uniforms = atmosphereUniforms;
 		
