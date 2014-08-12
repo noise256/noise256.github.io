@@ -563,7 +563,6 @@ Planet.prototype = {
 		Planet.prototype.storedTextures.push(THREE.ImageUtils.loadTexture('images/mercurymap.jpg'));
 		Planet.prototype.storedTextures.push(THREE.ImageUtils.loadTexture('images/venusmap.jpg'));
 		Planet.prototype.storedTextures.push(THREE.ImageUtils.loadTexture('images/marsmap.jpg'));
-		Planet.prototype.storedTextures.push(THREE.ImageUtils.loadTexture('images/neptunemap.jpg'));
 		Planet.prototype.storedTextures.push(THREE.ImageUtils.loadTexture('images/plutomap.jpg'));
 		Planet.prototype.storedTextures.push(THREE.ImageUtils.loadTexture('images/sednamap.jpg'));
 		
