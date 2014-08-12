@@ -27,7 +27,7 @@ function tradeSimulation() {
 }
 
 function generate() {
-	var numStars = 1;
+	var numStars = 2;
 	var numPlanets = Math.random() * (SolarSystemSpec.system1.maxPlanets - SolarSystemSpec.system1.minPlanets) + SolarSystemSpec.system1.minPlanets;
 	var numColonies = numPlanets;
 	var numTraders = 20;
@@ -98,7 +98,7 @@ function generate() {
 	Milky Way skybox source: https://code.google.com/p/osghimmel/downloads/detail?name=resources_milkyway_equatorial_1024.zip&can=1&q= 29.07.2014
 **/
 function skybox() {
-	var skyboxGeometry = new THREE.SphereGeometry(300000, 60, 60);
+	var skyboxGeometry = new THREE.SphereGeometry(3000000, 60, 60);
 	var skyboxUniforms = {
 		texture1: {type: "t", value: THREE.ImageUtils.loadTexture("images/milkyway_pan_large.jpg")}
 	}
@@ -242,7 +242,7 @@ ObjectManager.prototype = {
 			this.traders[i].update();
 		}
 		for (var i = 0; i < this.colonies.length; i++) {
-			ColonyController.updateColony(this.colonies[i]);
+			this.colonies[i].update();
 		}
 	},
 	
@@ -346,28 +346,6 @@ GUIController.prototype = {
 			this.resourceGUIParams.waterPrice = this.resourceGUITarget.economy.getResourceByName('water').price
 			this.resourceGUIParams.fuelPrice = this.resourceGUITarget.economy.getResourceByName('fuel').price
 			this.resourceGUIParams.metalPrice = this.resourceGUITarget.economy.getResourceByName('metal').price
-		}
-	}
-}
-
-var ColonyController = {
-	updateColony:function(colony) {
-		//harvest resources
-		for (var i = 0; i < colony.planet.economy.resources.length; i++) {
-			if (colony.planet.economy.resources[i].quantity > 0) {
-				colony.economy.changeResourceQuantity(colony.planet.economy.resources[i].name, 1);
-				//colony.planet.economy.changeResourceQuantity(colony.planet.economy.resources[i].name, -1);
-			}
-		}
-		
-		//set prices
-		for (var i = 0; i < colony.economy.resources.length; i++) {
-			if (colony.economy.resources[i].quantity <= 0) {
-				colony.economy.changeResourcePrice(colony.economy.resources[i].name, 1);
-			}
-			else if (colony.economy.resources[i].quantity > 0) {
-				colony.economy.changeResourcePrice(colony.economy.resources[i].name, -1);
-			}
 		}
 	}
 }
@@ -872,5 +850,25 @@ Colony.prototype = {
 		var colonyEconomy = new Economy();
 		
 		return new Colony(planet, colonyEconomy);
+	},
+	
+	update:function() {
+		//harvest resources
+		for (var i = 0; i < this.planet.economy.resources.length; i++) {
+			if (this.planet.economy.resources[i].quantity > 0) {
+				this.economy.changeResourceQuantity(this.planet.economy.resources[i].name, 1);
+				//colony.planet.economy.changeResourceQuantity(colony.planet.economy.resources[i].name, -1);
+			}
+		}
+		
+		//set prices
+		for (var i = 0; i < this.economy.resources.length; i++) {
+			if (this.economy.resources[i].quantity <= 0) {
+				this.economy.changeResourcePrice(this.economy.resources[i].name, 1);
+			}
+			else if (this.economy.resources[i].quantity > 0) {
+				this.economy.changeResourcePrice(this.economy.resources[i].name, -1);
+			}
+		}
 	}
 }
