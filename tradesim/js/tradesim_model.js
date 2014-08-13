@@ -17,7 +17,11 @@ var GalaxySpecification = {
 		maxPlanets:7,
 		minPlanetDistance:10000,
 		maxPlanetDistance:15000,
-		maxStarSize:15000, //should be ~7500
+
+	},
+	
+	star: {
+		maxStarSize:12500, //should be ~7500
 		minStarSize:10000, //should be 5500 (~109 * earth size, i.e. sol) but transparency of current star is an issue 
 	},
 	
@@ -73,7 +77,7 @@ function generate() {
 	//create planets
 	var colonyCount = 0;
 	for (var i = 0; i < numStars; i++) {
-		var distanceToStar = GalaxySpecification.solarSystem.maxStarSize + Math.random() * (GalaxySpecification.solarSystem.maxPlanetDistance - GalaxySpecification.solarSystem.minPlanetDistance) + GalaxySpecification.solarSystem.minPlanetDistance;
+		var distanceToStar = GalaxySpecification.star.maxStarSize + Math.random() * (GalaxySpecification.solarSystem.maxPlanetDistance - GalaxySpecification.solarSystem.minPlanetDistance) + GalaxySpecification.solarSystem.minPlanetDistance;
 		for (var j = 0; j < numPlanets; j++) {
 			var randVector = vec3.random(vec3.create(), distanceToStar);
 			var planetOffset = new THREE.Vector3(randVector[0], 0.0, randVector[2]);
@@ -284,9 +288,9 @@ ObjectManager.prototype = {
 	handleMouseMove:function() { //TODO combine the raycasting of both this and dbl click methods then perform logic based on input state
 		if (gblSimulation.objectManager.mouseMove.distanceTo(gblSimulation.objectManager.lastMouseMove) > 0.0) {
 			//reset picking object visibility TODO kind of a convoluted way of accessing the picking mesh
-			for (var i = 0; i < this.pickingObjects.children.length; i++) {
+ 			for (var i = 0; i < this.pickingObjects.children.length; i++) {
 				this.pickingObjects.children[i].worldParent.view.getMeshByName('pickingMesh').value.visible = false;
-			}
+			} 
 			
 			var projector = new THREE.Projector();
  			var raycaster = projector.pickingRay(gblSimulation.objectManager.mouseMove.clone(), gblSimulation.simulationView.camera);
@@ -505,18 +509,16 @@ Star.prototype = {
 			blending: THREE.AdditiveBlending
 		}); 
 		
-		var pickingMaterial = new THREE.MeshBasicMaterial({
-			color: 0xffffff,
-			transparent: true,
-			opacity: 0.2
-		});
+		var pickingMaterial = new THREE.MeshBasicMaterial();
 		
 		this.storedMaterials.push({name: 'surfaceMaterial', value: surfaceMaterial});
 		this.storedMaterials.push({name: 'pickingMaterial', value: pickingMaterial});
 		
-		var surfaceGeometry = new THREE.SphereGeometry(12500, 128, 128);
+		var surfaceGeometry = new THREE.SphereGeometry(GalaxySpecification.star.maxStarSize, 128, 128);
+		var pickingGeometry = new THREE.SphereGeometry(GalaxySpecification.star.maxStarSize * 0.33, 8, 8);
 		
 		this.storedGeometries.push({name: 'surfaceGeometry', value: surfaceGeometry});
+		this.storedGeometries.push({name: 'pickingGeometry', value: pickingGeometry});
 	},
 	
 	getMaterialByName:function(name) {
@@ -536,7 +538,6 @@ Star.prototype = {
 	},
 	
 	create:function(starPosition) {
-		//var innerRadius = Math.random() * (SolarSystemSpec.system1.maxStarSize - 3000) + 3000;
 		var colour = [Math.random() * (1.0 - 0.8) + 0.8, Math.random() * (1.0 - 0.8) + 0.8, Math.random() * (1.0 - 0.8) + 0.8];
 
 		var surfaceUniforms = {
@@ -547,14 +548,11 @@ Star.prototype = {
 		var surfaceGeometry = this.getGeometryByName('surfaceGeometry');
 		var surfaceMaterial = this.getMaterialByName('surfaceMaterial').clone();
 		surfaceMaterial.uniforms = surfaceUniforms;
-		var surfaceMesh = new THREE.Mesh(surfaceGeometry, surfaceMaterial)
 		
-		var pickingGeometry = new THREE.SphereGeometry(12500 + 50, 8, 8);
-		var pickingMaterial = new THREE.MeshBasicMaterial({
-			color: 0xffffff,
-			transparent: true,
-			opacity: 0.2
-		});
+		var pickingGeometry = this.getGeometryByName('pickingGeometry');
+		var pickingMaterial = this.getMaterialByName('pickingMaterial').clone();
+		
+		var surfaceMesh = new THREE.Mesh(surfaceGeometry, surfaceMaterial)
 		var pickingMesh = new THREE.Mesh(pickingGeometry, pickingMaterial);
 		pickingMesh.visible = false;
 		
