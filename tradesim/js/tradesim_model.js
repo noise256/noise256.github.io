@@ -4,6 +4,35 @@ window.onload = function() {
 
 var gblSimulation = {};
 
+var GalaxySpecification = {
+	galaxy: {
+		minStars: 20,
+		maxStars: 20,
+		minStarDistance: 300000.0,
+		maxStarDistance: 400000.0
+	},
+	
+	solarSystem: {
+		minPlanets:2,
+		maxPlanets:7,
+		minPlanetDistance:10000,
+		maxPlanetDistance:15000,
+		maxStarSize:15000, //should be ~7500
+		minStarSize:10000, //should be 5500 (~109 * earth size, i.e. sol) but transparency of current star is an issue 
+	},
+	
+	planet: {
+		maxPlanetSize:550, //11 * earth size (jupiter)
+		minPlanetSize:100 //earth size
+	},
+	
+	trader: {
+		tradersPerSystem: 200,
+		maxTraderDistance: 15000 * 7,
+		minTraderDistance: 10000
+	}
+}
+
 function tradeSimulation() {
 	gblSimulation.simulationView = new SimulationView();
 	gblSimulation.simulationView.init();
@@ -27,26 +56,24 @@ function tradeSimulation() {
 }
 
 function generate() {
-	var numStars = 10;
-	var numPlanets = Math.random() * (SolarSystemSpec.system1.maxPlanets - SolarSystemSpec.system1.minPlanets) + SolarSystemSpec.system1.minPlanets;
-	var numColonies = SolarSystemSpec.system1.maxPlanets * numStars;
-	var numTraders = 2000;
+	var numStars = Math.random() * (GalaxySpecification.galaxy.maxStars - GalaxySpecification.galaxy.minStars) + GalaxySpecification.galaxy.minStars;
+	var numPlanets = Math.random() * (GalaxySpecification.solarSystem.maxPlanets - GalaxySpecification.solarSystem.minPlanets) + GalaxySpecification.solarSystem.minPlanets;
+	var numColonies = GalaxySpecification.solarSystem.maxPlanets * numStars;
+	var numTraders = 2000;//GalaxySpecification.trader.tradersPerSystem;
 	
 	//create stars
-	var solarStepMin = 300000.0;
-	var solarStepMax = 500000.0;
 	var distanceToCentre = 0.0;
 	for (var i = 0; i < numStars; i++) {
 		var randVector = vec3.random(vec3.create(), distanceToCentre);
 		var starPosition = new THREE.Vector3(randVector[0], 0.0, randVector[2]);
 		gblSimulation.objectManager.stars.push(Star.prototype.create(starPosition));
-		distanceToCentre += Math.random() * (solarStepMax - solarStepMin) + solarStepMin;
+		distanceToCentre += Math.random() * (GalaxySpecification.galaxy.maxStarDistance - GalaxySpecification.galaxy.minStarDistance) + GalaxySpecification.galaxy.minStarDistance;
 	}
 	
 	//create planets
 	var colonyCount = 0;
 	for (var i = 0; i < numStars; i++) {
-		var distanceToStar = SolarSystemSpec.system1.maxStarSize + Math.random() * (SolarSystemSpec.system1.maxPlanetDistance - SolarSystemSpec.system1.minPlanetDistance) + SolarSystemSpec.system1.minPlanetDistance;
+		var distanceToStar = GalaxySpecification.solarSystem.maxStarSize + Math.random() * (GalaxySpecification.solarSystem.maxPlanetDistance - GalaxySpecification.solarSystem.minPlanetDistance) + GalaxySpecification.solarSystem.minPlanetDistance;
 		for (var j = 0; j < numPlanets; j++) {
 			var randVector = vec3.random(vec3.create(), distanceToStar);
 			var planetOffset = new THREE.Vector3(randVector[0], 0.0, randVector[2]);
@@ -62,13 +89,13 @@ function generate() {
 				colonyCount++;
 			}
 			
-			distanceToStar += Math.random() * (SolarSystemSpec.system1.maxPlanetDistance - SolarSystemSpec.system1.minPlanetDistance) + SolarSystemSpec.system1.minPlanetDistance;
+			distanceToStar += Math.random() * (GalaxySpecification.solarSystem.maxPlanetDistance - GalaxySpecification.solarSystem.minPlanetDistance) + GalaxySpecification.solarSystem.minPlanetDistance;
 		}
 	}
 	
 	//create traders
-	var traderGeometry = new THREE.SphereGeometry(30, 32, 32);
-	
+	//TODO move this along with trader creation to Trader class
+	var traderGeometry = new THREE.SphereGeometry(25, 32, 32);
 	var traderMaterial = new THREE.ShaderMaterial({
 		uniforms: {
 			colour: {type: 'v3', value: new THREE.Vector3(1.0, 0.0, 0.0)}
@@ -76,9 +103,8 @@ function generate() {
 		vertexShader: $('#unlit_v_shader').text(),
 		fragmentShader: $('#unlit_f_shader').text(),
 	});
-		
 	for (var i = 0; i < numTraders; i++) {
-		var randVector = vec3.random(vec3.create(), Math.random() * (SolarSystemSpec.system1.maxPlanetDistance + SolarSystemSpec.system1.minPlanetDistance) / 2 * numPlanets); //TODO implement max trader spread
+		var randVector = vec3.random(vec3.create(), Math.random() * (GalaxySpecification.trader.maxTraderDistance - GalaxySpecification.trader.minTraderDistance) + GalaxySpecification.trader.minTraderDistance);
 		var traderPosition = new THREE.Vector3(randVector[0], 0.0, randVector[2]);
 		var traderBody = new Body(traderPosition, 1, 1, 25.0);
 		
@@ -198,8 +224,8 @@ function ObjectManager() {
 	this.staticObjects = null;
 	this.pickingObjects = null;
 	
-	this.mouseMove = null;
-	this.lastMouseMove = new THREE.Vector3(0.0, 0.0, 0.0);
+	this.mouseMove = new THREE.Vector3();
+	this.lastMouseMove = new THREE.Vector3();
 	this.mouseDblClick = null;
 	
 	this.onMouseMove = function(e) {
@@ -616,7 +642,7 @@ Planet.prototype = {
 	
 	create:function(star, planetPosition, distanceToStar) {
 		//create definition
-		var innerRadius = Math.random() * (SolarSystemSpec.system1.maxPlanetSize - SolarSystemSpec.system1.minPlanetSize) + SolarSystemSpec.system1.minPlanetSize;
+		var innerRadius = Math.random() * (GalaxySpecification.planet.maxPlanetSize - GalaxySpecification.planet.minPlanetSize) + GalaxySpecification.planet.minPlanetSize;
 		
 		var planetSpec = {
 			waveLength: [Math.random() * (1.0 - 0.1) + 0.1, Math.random() * (1.0 - 0.1) + 0.1, Math.random() * (1.0 - 0.1) + 0.1],
@@ -664,7 +690,7 @@ Planet.prototype = {
 		var pickingGeometry = new THREE.SphereGeometry(planetSpec.outerRadius + 50, 24, 24);
 		var pickingMaterial = Planet.prototype.getMaterialByName('pickingMaterial');
 		
-		var orbitRingGeometry = new THREE.TorusGeometry(distanceToStar, 25, 8, 64);
+		var orbitRingGeometry = new THREE.TorusGeometry(distanceToStar, 40, 8, 64);
 		var orbitRingMaterial = Planet.prototype.getMaterialByName('orbitRingMaterial');
 		
 		var skyMesh = new THREE.Mesh(skyGeometry, skyMaterial);
@@ -726,19 +752,6 @@ Planet.prototype = {
 		this.view.getMeshByName('groundMesh').value.material.uniforms.cameraHeight2.value = cameraHeight2;
 		this.view.getMeshByName('groundMesh').value.material.uniforms.lightDir.value = lightDir;
 	},
-}
-
-var SolarSystemSpec = {
-	system1: {
-		minPlanets:2,
-		maxPlanets:7,
-		minPlanetDistance:10000,
-		maxPlanetDistance:15000,
-		maxStarSize:15000, //should be ~7500
-		minStarSize:10000, //should be 5500 but transparency of current star is an issue ~109 * earth size (sol)
-		maxPlanetSize:550, //11 * earth size (jupiter)
-		minPlanetSize:100 //earth size
-	}
 }
 
 function Trader(body, view, economy) {
