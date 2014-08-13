@@ -27,13 +27,13 @@ function tradeSimulation() {
 }
 
 function generate() {
-	var numStars = 1;
+	var numStars = 10;
 	var numPlanets = Math.random() * (SolarSystemSpec.system1.maxPlanets - SolarSystemSpec.system1.minPlanets) + SolarSystemSpec.system1.minPlanets;
 	var numColonies = numPlanets;
-	var numTraders = 200;
+	var numTraders = 2000;
 	
 	//create stars
-	var solarStepMin = 100000.0;
+	var solarStepMin = 300000.0;
 	var solarStepMax = 500000.0;
 	var distanceToCentre = 0.0;
 	for (var i = 0; i < numStars; i++) {
@@ -467,6 +467,7 @@ function Star(body, view) {
 }
 
 Star.prototype = {
+	storedGeometries: [],
 	storedMaterials: [],
 	
 	init:function() {
@@ -486,6 +487,10 @@ Star.prototype = {
 		
 		this.storedMaterials.push({name: 'surfaceMaterial', value: surfaceMaterial});
 		this.storedMaterials.push({name: 'pickingMaterial', value: pickingMaterial});
+		
+		var surfaceGeometry = new THREE.SphereGeometry(12500, 128, 128);
+		
+		this.storedGeometries.push({name: 'surfaceGeometry', value: surfaceGeometry});
 	},
 	
 	getMaterialByName:function(name) {
@@ -496,8 +501,16 @@ Star.prototype = {
 		}
 	},
 	
+	getGeometryByName:function(name) {
+		for (var i = 0; i < this.storedGeometries.length; i++) {
+			if (this.storedGeometries[i].name == name) {
+				return this.storedGeometries[i].value;
+			}
+		}
+	},
+	
 	create:function(starPosition) {
-		var innerRadius = Math.random() * (SolarSystemSpec.system1.maxStarSize - 3000) + 3000;
+		//var innerRadius = Math.random() * (SolarSystemSpec.system1.maxStarSize - 3000) + 3000;
 		var colour = [Math.random() * (1.0 - 0.8) + 0.8, Math.random() * (1.0 - 0.8) + 0.8, Math.random() * (1.0 - 0.8) + 0.8];
 
 		var surfaceUniforms = {
@@ -505,13 +518,12 @@ Star.prototype = {
 			colour:{type:'v3', value:new THREE.Vector3(colour[0], colour[1], colour[2])},
 		};
 		
-		var surfaceGeometry = new THREE.SphereGeometry(innerRadius, 500, 500);		
+		var surfaceGeometry = this.getGeometryByName('surfaceGeometry');
 		var surfaceMaterial = this.getMaterialByName('surfaceMaterial').clone();
 		surfaceMaterial.uniforms = surfaceUniforms;
-		
 		var surfaceMesh = new THREE.Mesh(surfaceGeometry, surfaceMaterial)
 		
-		var pickingGeometry = new THREE.SphereGeometry(innerRadius + 1, 64, 64);
+		var pickingGeometry = new THREE.SphereGeometry(12500 + 50, 8, 8);
 		var pickingMaterial = new THREE.MeshBasicMaterial({
 			color: 0xffffff,
 			transparent: true,
@@ -566,20 +578,19 @@ Planet.prototype = {
 		Planet.prototype.storedTextures.push(THREE.ImageUtils.loadTexture('images/plutomap.jpg'));
 		Planet.prototype.storedTextures.push(THREE.ImageUtils.loadTexture('images/sednamap.jpg'));
 		
-		var skyMaterial = new THREE.ShaderMaterial({
+ 		var skyMaterial = new THREE.ShaderMaterial({
 			uniforms: null,
 			vertexShader: $('#atmosphere_v_shader').text(),
 			fragmentShader: $('#atmosphere_f_shader').text(),
 			side: THREE.BackSide,
 			transparent: true,
 			blending: THREE.AdditiveBlending
-		});
-		
-		var groundMaterial = new THREE.ShaderMaterial({
+		}); 
+ 		var groundMaterial = new THREE.ShaderMaterial({
 			uniforms: null,
 			vertexShader: $('#ground_v_shader').text(),
 			fragmentShader: $('#ground_f_shader').text(),
-		});
+		}); 
 		
 		var pickingMaterial = new THREE.MeshBasicMaterial({
 			color: 0xffffff,
@@ -642,16 +653,15 @@ Planet.prototype = {
 			scaleOverScaleDepth: {type:'f', value:1 / (planetSpec.outerRadius - planetSpec.innerRadius) / planetSpec.scaleDepth},
 		};
 		
-		//var skyGeometry = new THREE.SphereGeometry(planetSpec.outerRadius, 32, 32);
-		var skyGeometry = this.testGeometry;
+		var skyGeometry = new THREE.SphereGeometry(planetSpec.outerRadius, 24, 24);
 		var skyMaterial = Planet.prototype.getMaterialByName('skyMaterial').clone();
 		skyMaterial.uniforms = atmosphereUniforms;
 		
-		var groundGeometry = new THREE.SphereGeometry(planetSpec.innerRadius, 32, 32);
+		var groundGeometry = new THREE.SphereGeometry(planetSpec.innerRadius, 24, 24);
 		var groundMaterial = Planet.prototype.getMaterialByName('groundMaterial').clone();
 		groundMaterial.uniforms = atmosphereUniforms;
 		
-		var pickingGeometry = new THREE.SphereGeometry(planetSpec.outerRadius + 50, 32, 32);
+		var pickingGeometry = new THREE.SphereGeometry(planetSpec.outerRadius + 50, 24, 24);
 		var pickingMaterial = Planet.prototype.getMaterialByName('pickingMaterial');
 		
 		var orbitRingGeometry = new THREE.TorusGeometry(distanceToStar, 25, 8, 64);
