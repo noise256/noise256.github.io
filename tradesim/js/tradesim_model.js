@@ -29,7 +29,7 @@ function tradeSimulation() {
 function generate() {
 	var numStars = 10;
 	var numPlanets = Math.random() * (SolarSystemSpec.system1.maxPlanets - SolarSystemSpec.system1.minPlanets) + SolarSystemSpec.system1.minPlanets;
-	var numColonies = numPlanets;
+	var numColonies = SolarSystemSpec.system1.maxPlanets * numStars;
 	var numTraders = 2000;
 	
 	//create stars
