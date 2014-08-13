@@ -679,11 +679,11 @@ Planet.prototype = {
 			scaleOverScaleDepth: {type:'f', value:1 / (planetSpec.outerRadius - planetSpec.innerRadius) / planetSpec.scaleDepth},
 		};
 		
-		var skyGeometry = new THREE.SphereGeometry(planetSpec.outerRadius, 24, 24);
+		var skyGeometry = new THREE.SphereGeometry(planetSpec.outerRadius, 32, 32);
 		var skyMaterial = Planet.prototype.getMaterialByName('skyMaterial').clone();
 		skyMaterial.uniforms = atmosphereUniforms;
 		
-		var groundGeometry = new THREE.SphereGeometry(planetSpec.innerRadius, 24, 24);
+		var groundGeometry = new THREE.SphereGeometry(planetSpec.innerRadius, 32, 32);
 		var groundMaterial = Planet.prototype.getMaterialByName('groundMaterial').clone();
 		groundMaterial.uniforms = atmosphereUniforms;
 		
