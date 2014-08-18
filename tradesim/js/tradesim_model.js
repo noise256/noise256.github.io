@@ -738,6 +738,9 @@ Planet.prototype = {
 		this.view.getMeshByName('groundMesh').value.position.set(this.body.position.x, this.body.position.y, this.body.position.z);
 		this.view.getMeshByName('pickingMesh').value.position.set(this.body.position.x, this.body.position.y, this.body.position.z);
 		
+		this.view.getMeshByName('skyMesh').value.rotation.setX(this.view.getMeshByName('skyMesh').value.rotation.x + 0.01);
+		this.view.getMeshByName('groundMesh').value.rotation.setX(this.view.getMeshByName('groundMesh').value.rotation.x + 0.01);
+		
 		var lightDir = new THREE.Vector3(this.star.body.position.x - this.body.position.x, this.star.body.position.y - this.body.position.y, this.star.body.position.z - this.body.position.z).normalize();
 		var relativeCameraPos = new THREE.Vector3().subVectors(gblSimulation.simulationView.camera.position, this.body.position);
 		var cameraHeight2 = relativeCameraPos.length() * relativeCameraPos.length();
