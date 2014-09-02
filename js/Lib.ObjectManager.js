@@ -11,7 +11,7 @@ function ObjectManager() {
 	
 	this.mouseDragFlag = null;
 	
-	this.lastMouseMoveCoords = new THREE.Vector3();
+	this.lastScreenCoords = new THREE.Vector3();
 	
 	this.onMouseMove = function(e) {
 		this.mouseMoveEvent = e;
@@ -67,33 +67,30 @@ ObjectManager.prototype = {
 	
 	handleInput:function() {
 		if (this.mouseMoveEvent != null) {
-			var screenCoords = new THREE.Vector3(
+			this.lastScreenCoords = new THREE.Vector3(
 				(this.mouseMoveEvent.clientX - gblSimulation.simulationView.offsetLeft - gblSimulation.simulationView.screenWidth / 2.0) / gblSimulation.simulationView.screenWidth * 2.0,
 				- (this.mouseMoveEvent.clientY - gblSimulation.simulationView.offsetTop - gblSimulation.simulationView.screenHeight / 2.0) / gblSimulation.simulationView.screenHeight * 2.0,
 				0.5
 			);
 			
-			if (screenCoords.distanceTo(this.lastMouseMoveCoords) > 0.0) {
-				for (var i = 0; i < this.pickingObjects.children.length; i++) {
-					this.pickingObjects.children[i].worldParent.view.getMeshByName('pickingMesh').value.visible = false;
-				} 
-				
-				var projector = new THREE.Projector();
-				var raycaster = projector.pickingRay(screenCoords.clone(), gblSimulation.simulationView.camera);
-			
-				var intersects = raycaster.intersectObjects(this.pickingObjects.children);
-				
-				if (intersects.length > 0) {
-					var worldParent = intersects[0].object.worldParent;
-					
-					if (worldParent.highlight) {
-						worldParent.view.getMeshByName('pickingMesh').value.visible = true;
-					}
-				}
-			}
-			
-			this.lastMouseCoords = screenCoords.clone();
 			this.mouseMoveEvent = null;
+		}
+		
+		for (var i = 0; i < this.pickingObjects.children.length; i++) {
+			this.pickingObjects.children[i].worldParent.view.getMeshByName('pickingMesh').value.visible = false;
+		} 
+		
+		var projector = new THREE.Projector();
+		var raycaster = projector.pickingRay(this.lastScreenCoords.clone(), gblSimulation.simulationView.camera);
+	
+		var intersects = raycaster.intersectObjects(this.pickingObjects.children);
+		
+		if (intersects.length > 0) {
+			var worldParent = intersects[0].object.worldParent;
+			
+			if (worldParent.highlight) {
+				worldParent.view.getMeshByName('pickingMesh').value.visible = true;
+			}
 		}
 		
 		if (this.mouseUpEvent != null) {
