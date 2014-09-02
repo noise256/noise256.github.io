@@ -125,7 +125,7 @@ Controllable.prototype = {
 	init:function() {
 		Controllable.prototype.storedTextures.push(THREE.ImageUtils.loadTexture('images/controllable.png'));
 		
-		var controllableGeometry = new THREE.SphereGeometry(250, 32, 32);
+		var controllableGeometry = new THREE.PlaneGeometry(250, 250);
 		var controllableMaterial = new THREE.ShaderMaterial({
 			uniforms: null,
 			vertexShader: $('#unlit_tex_v_shader').text(),
