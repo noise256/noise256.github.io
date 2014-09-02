@@ -5,17 +5,20 @@
 		<title>SPP Simulation</title>
 		
 		<meta charset="UTF-8"> 
-		<LINK href="webgl.css" rel="stylesheet" type="text/css">
+		<LINK href="../webgl.css" rel="stylesheet" type="text/css">
 		
-		<script src="js/lib/jquery-2.1.1.min.js" type="text/javascript"></script>
-		<script src="js/lib/common.js" type="text/javascript"></script>
-		<script src="js/lib/vec3.js" type="text/javascript"></script>
-		<script src="js/lib/three.min.js" type="text/javascript"></script>
-		<script src="js/lib/THREEx.FullScreen.js" type="text/javascript"></script>
-		<script src="js/lib/THREEx.WindowResize.js" type="text/javascript"></script>
-		<script src="js/lib/OrbitControls.js" type="text/javascript"></script>
-		<script src="js/lib/dat.gui.min.js" type="text/javascript"></script>
-		<script src="js/lib/fpsmeter.js" type="text/javascript"></script>
+		<script src="../js/lib/jquery-2.1.1.min.js" type="text/javascript"></script>
+		<script src="../js/lib/common.js" type="text/javascript"></script>
+		<script src="../js/lib/vec3.js" type="text/javascript"></script>
+		<script src="../js/lib/three.min.js" type="text/javascript"></script>
+		<script src="../js/lib/THREEx.FullScreen.js" type="text/javascript"></script>
+		<script src="../js/lib/THREEx.WindowResize.js" type="text/javascript"></script>
+		<script src="../js/lib/OrbitControls.js" type="text/javascript"></script>
+		<script src="../js/lib/dat.gui.min.js" type="text/javascript"></script>
+		<script src="../js/lib/fpsmeter.js" type="text/javascript"></script>
+		
+		<script src="../js/Lib.Renderer.js" type="text/javascript"></script>
+		<script src="../js/Lib.ObjectManager.js" type="text/javascript"></script>
 		
 		<script type="x-shader/x-vertex" id="unlit_v_shader">
 			void main() {
@@ -288,11 +291,13 @@
 	</head>
 	
 	<body>
-		<div id="canvas" class="webgl">
-			<script src="js/tradesim_model.js" type="text/javascript"></script>
+		<div class="centerColumn">
+			<div id="canvas" class="webgl">
+				<script src="js/tradesim_model.js" type="text/javascript"></script>
+			</div>
+			<p>
+				Press 'f' for full screen. LMB: Rotate, MMB: Zoom, RMB: Pan. Performance is substantially better in Chrome than in Firefox or IE. Optimisation will hopefully be looked at soon but for now I suggest using Chrome if you are having any performance issues.
+			</p>
 		</div>
-		<p>
-			Press 'f' for full screen. LMB: Rotate, MMB: Zoom, RMB: Pan. Performance is substantially better in Chrome than in Firefox or IE. Optimisation will hopefully be looked at soon but for now I suggest using Chrome if you are having any performance issues.
-		</p>
 	</body>
 </html>

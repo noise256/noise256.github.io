@@ -49,10 +49,12 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 	// Set to true to disable this control
 	this.noRotate = false;
-	this.rotateSpeed = 1.0;
-
+	this.xRotateSpeed = 1.0;
+	this.yRotateSpeed = 1.0;
+	
 	// Set to true to disable this control
 	this.noPan = false;
+	this.panSpeed = 1.0;
 	this.keyPanSpeed = 7.0;	// pixels moved per arrow key push
 
 	// Set to true to automatically rotate around the target
@@ -313,6 +315,18 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 	};
 
+	/**
+		Custom method to set reset position of OrbitControls to the current position.
+	*/
+	this.savePosition = function() {
+		
+		this.position0.copy(this.object.position);
+	}
+	
+	this.saveTarget = function() {
+		this.target0.copy(this.target);
+	}
+	
 	function getAutoRotationAngle() {
 
 		return 2 * Math.PI / 60 / 60 * scope.autoRotateSpeed;
@@ -366,7 +380,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 		event.preventDefault();
 
 		var element = scope.domElement === document ? scope.domElement.body : scope.domElement;
-
+		
 		if ( state === STATE.ROTATE ) {
 
 			if ( scope.noRotate === true ) return;
@@ -375,10 +389,10 @@ THREE.OrbitControls = function ( object, domElement ) {
 			rotateDelta.subVectors( rotateEnd, rotateStart );
 
 			// rotating across whole screen goes 360 degrees around
-			scope.rotateLeft( 2 * Math.PI * rotateDelta.x / element.clientWidth * scope.rotateSpeed );
+			scope.rotateLeft( 2 * Math.PI * rotateDelta.x / element.clientWidth * scope.xRotateSpeed );
 
 			// rotating up and down along whole screen attempts to go 360, but limited to 180
-			scope.rotateUp( 2 * Math.PI * rotateDelta.y / element.clientHeight * scope.rotateSpeed );
+			scope.rotateUp( 2 * Math.PI * rotateDelta.y / element.clientHeight * scope.yRotateSpeed );
 
 			rotateStart.copy( rotateEnd );
 
@@ -408,7 +422,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 			panEnd.set( event.clientX, event.clientY );
 			panDelta.subVectors( panEnd, panStart );
 
-			scope.pan( panDelta.x, panDelta.y );
+			scope.pan( panDelta.x * scope.panSpeed, panDelta.y * scope.panSpeed);
 
 			panStart.copy( panEnd );
 
@@ -560,9 +574,9 @@ THREE.OrbitControls = function ( object, domElement ) {
 				rotateDelta.subVectors( rotateEnd, rotateStart );
 
 				// rotating across whole screen goes 360 degrees around
-				scope.rotateLeft( 2 * Math.PI * rotateDelta.x / element.clientWidth * scope.rotateSpeed );
+				scope.rotateLeft( 2 * Math.PI * rotateDelta.x / element.clientWidth * scope.xRotateSpeed );
 				// rotating up and down along whole screen attempts to go 360, but limited to 180
-				scope.rotateUp( 2 * Math.PI * rotateDelta.y / element.clientHeight * scope.rotateSpeed );
+				scope.rotateUp( 2 * Math.PI * rotateDelta.y / element.clientHeight * scope.yRotateSpeed );
 
 				rotateStart.copy( rotateEnd );
 

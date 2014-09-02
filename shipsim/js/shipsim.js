@@ -1,11 +1,11 @@
 window.onload = function() {
-	shipSimulation();
+	ShipSimulation();
 }
 
 var gblSimulation = {};
 
-function shipSimulation() {
-	gblSimulation.simulationView = new SimulationView();
+function ShipSimulation() {
+	gblSimulation.simulationView = new Renderer(document.getElementById("canvas"));
 	gblSimulation.simulationView.init();
 	
 	gblSimulation.objectManager = new ObjectManager();
@@ -16,18 +16,28 @@ function shipSimulation() {
 	generate();
 	skybox();
 	
-	gblSimulation.simulationView.frame();
+	this.frame = function() {
+		requestAnimationFrame(this.frame.bind(this));
+		
+		gblSimulation.objectManager.update();
+		gblSimulation.simulationView.update();
+	}
+	
+	this.frame();
 }
 
 function generate() {
-	var numControllables = 1;
+	var numControllables = 5;
 	
+	var controllableList = [];
 	for (var i = 0; i < numControllables; i++) {
 		var randVector = vec3.random(vec3.create(), Math.random() * (1000 - 0) + 0);
-		var controllablePosition = new THREE.Vector3(0.0, 0.0, 0.0);//new THREE.Vector3(randVector[0], 0.0, randVector[2]);
+		var controllablePosition = new THREE.Vector3(randVector[0], 0.0, randVector[2]);
 		
-		gblSimulation.objectManager.controllables.push(Controllable.prototype.create(controllablePosition));
+		controllableList.push(Controllable.prototype.create(controllablePosition));
 	}
+	
+	gblSimulation.objectManager.objectList.controllables = controllableList;
 }
 
 function skybox() {
@@ -44,183 +54,6 @@ function skybox() {
 	});
 	
 	gblSimulation.simulationView.scene.add(new THREE.Mesh(skyboxGeometry, skyboxMaterial));
-}
-
-function SimulationView() {
-	this.scene = null;
-	this.camera = null;
-	this.renderer = null;
-	this.controls = null;
-	this.fpsMeter = null;
-	
-	this.orgCameraPosition = null;
-	this.cameraDestination = null;
-	this.cameraProgress = null;
-	
-	this.cameraOffset = 25000.0;
-	
-	this.frame = function() {
-		requestAnimationFrame(this.frame.bind(this));
-		
-		this.fpsMeter.tickStart();
-		
-		this.updateCamera();
-		
-		this.controls.update();
-		gblSimulation.objectManager.update();
-		
-		this.render();
-		
-		this.fpsMeter.tick();
-	}
-}
-
-SimulationView.prototype = {
-	init: function() {
-		this.scene = new THREE.Scene();
-		
-		this.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 10, 10000000);
-		this.camera.position.x = 0;
-		this.camera.position.y = 3000;
-		this.camera.position.z = 3000;
-		this.camera.lookAt(new THREE.Vector3(0, 0, 0));
-		
-		this.renderer = new THREE.WebGLRenderer({antialias: true});
-		this.renderer.setSize(window.innerWidth, window.innerHeight);
-		this.renderer.setClearColor(0x000000, 1);
-		
-		this.controls = new THREE.OrbitControls(this.camera);
-		this.controls.maxDistance = 10000000;
-		this.controls.xRotateSpeed = 1.0;
-		this.controls.yRotateSpeed = 0.025;
-		this.controls.panSpeed = 0.05;
-		
-		this.fpsMeter = new FPSMeter(document.body, { decimals: 0, graph: true, theme: 'dark', left: '5px' });
-		
-		document.getElementById("canvas").appendChild(this.renderer.domElement);
-			
-		THREEx.WindowResize(this.renderer, this.camera);
-		THREEx.FullScreen.bindKey({charCode: 'f'.charCodeAt(0)});
-	},
-	
-	render: function() {
-		this.renderer.render(this.scene, this.camera);
-	},
-	
-	updateCamera: function() {
-		if (this.cameraDestination && this.cameraProgress <= 1.0) {
-			var cameraStep = this.orgCameraPosition.clone().lerp(this.cameraDestination, this.cameraProgress);
-			
-			this.camera.position.set(cameraStep.x, cameraStep.y, cameraStep.z);
-			this.controls.savePosition();
-			this.controls.saveTarget();
-			this.controls.reset();
-			
-			this.cameraProgress += 0.1;
-		}
-	}
-}
-
-function ObjectManager() {
-	this.controllables = [];
-	
-	this.staticObjects = null;
-	this.pickingObjects = null;
-	
-	this.mouseMove = new THREE.Vector3();
-	this.lastMouseMove = new THREE.Vector3();
-	this.mouseDblClick = null;
-	
-	this.onMouseMove = function(e) {
-		gblSimulation.objectManager.mouseMove = new THREE.Vector3(
-			(event.clientX / window.innerWidth) * 2 - 1,
-			1 - (event.clientY / window.innerHeight) * 2,
-			0.5
-		);
-	}
-	
-	this.onDoubleClick = function(e) {
-		gblSimulation.objectManager.mouseDblClick = new THREE.Vector3(
-			(event.clientX / window.innerWidth) * 2 - 1,
-			1 - (event.clientY / window.innerHeight) * 2,
-			0.5
-		);
-	}
-}
-
-ObjectManager.prototype = {
-	init:function() {
-		this.staticObjects = new THREE.Object3D();
-		this.pickingObjects = new THREE.Object3D();
-		
-		gblSimulation.simulationView.scene.add(this.staticObjects);
-		gblSimulation.simulationView.scene.add(this.pickingObjects);
-	},
-	
-	update:function() {
-		this.handleMouseMove();
-		this.handleMouseDoubleClick();
-		
-		for (var i = 0; i < this.controllables.length; i++) {
-			this.controllables[i].update();
-		}
-	},
-	
-	addObject:function(object, picking) {
-		if (picking) {
-			this.pickingObjects.add(object);
-		}
-		else {
-			this.staticObjects.add(object);
-		}
-	},
-	
-	handleMouseMove:function() { //TODO combine the raycasting of both this and dbl click methods then perform logic based on input state
-		if (gblSimulation.objectManager.mouseMove.distanceTo(gblSimulation.objectManager.lastMouseMove) > 0.0) {
-			//reset picking object visibility TODO kind of a convoluted way of accessing the picking mesh
- 			for (var i = 0; i < this.pickingObjects.children.length; i++) {
-				this.pickingObjects.children[i].worldParent.view.getMeshByName('pickingMesh').value.visible = false;
-			} 
-			
-			var projector = new THREE.Projector();
- 			var raycaster = projector.pickingRay(gblSimulation.objectManager.mouseMove.clone(), gblSimulation.simulationView.camera);
-		
-			//TODO don't bother doing intersects if object is too far away
-			var intersects = raycaster.intersectObjects(this.pickingObjects.children);
-			
-			if (intersects.length > 0) {
-				var worldParent = intersects[0].object.worldParent;
-			}
-			
-			gblSimulation.objectManager.lastMouseMove = gblSimulation.objectManager.mouseMove.clone();
-		}
-	},
-	
-	handleMouseDoubleClick:function() {
-		if (gblSimulation.objectManager.mouseDblClick != null) {
-			var projector = new THREE.Projector();
-			var raycaster = projector.pickingRay(gblSimulation.objectManager.mouseDblClick.clone(), gblSimulation.simulationView.camera);
-		
-			//TODO don't bother doing intersects if object is too far away
-			var intersects = raycaster.intersectObjects(this.pickingObjects.children);
-			
-			if (intersects.length > 0) {
-				var worldParent = intersects[0].object.worldParent;
-				
-				//TODO move this to flyToTarget() method in SimulationView
-				var destinationVec = new THREE.Vector3().subVectors(gblSimulation.simulationView.camera.position, worldParent.body.position).normalize();
-	
- 				gblSimulation.simulationView.orgCameraPosition = gblSimulation.simulationView.camera.position.clone();
-				gblSimulation.simulationView.cameraDestination = new THREE.Vector3().addVectors(worldParent.body.position, destinationVec.multiplyScalar(gblSimulation.simulationView.cameraOffset));
-				gblSimulation.simulationView.cameraProgress = 0.0;
-				
-				gblSimulation.simulationView.controls.target = worldParent.body.position.clone();
-				gblSimulation.simulationView.camera.lookAt(worldParent.body.position.clone());
-			}
-			
-			gblSimulation.objectManager.mouseDblClick = null;
-		}
-	}
 }
 
 function View() {
@@ -271,32 +104,49 @@ Body.prototype = {
 }
 
 function Controllable(body, view) {
+	this.highlight = true;
+	
 	this.body = body;
 	this.view = view;
 	
 	this.interactionRange = 50;
 	
+	this.inputCoordinates = null;
 	this.destination = null;
 	
 	this.view.setWorldParent(this)
 }
 
 Controllable.prototype = {
+	storedTextures: [],
 	storedGeometries: [],
 	storedMaterials: [],
 	
 	init:function() {
-		var controllableGeometry = new THREE.SphereGeometry(25, 32, 32);
-		var controllableMaterial = new THREE.ShaderMaterial({
-			uniforms: {
-				colour: {type: 'v3', value: new THREE.Vector3(1.0, 1.0, 1.0)}
-			},
-			vertexShader: $('#unlit_v_shader').text(),
-			fragmentShader: $('#unlit_f_shader').text(),
-		});
+		Controllable.prototype.storedTextures.push(THREE.ImageUtils.loadTexture('images/controllable.png'));
 		
+		var controllableGeometry = new THREE.SphereGeometry(250, 32, 32);
+		var controllableMaterial = new THREE.ShaderMaterial({
+			uniforms: null,
+			vertexShader: $('#unlit_tex_v_shader').text(),
+			fragmentShader: $('#unlit_tex_f_shader').text(),
+			transparent: true,
+			side: THREE.DoubleSide,
+			blending: THREE.AdditiveBlending
+		});
+	
 		this.storedGeometries.push({name: 'controllableGeometry', value: controllableGeometry});
 		this.storedMaterials.push({name: 'controllableMaterial', value: controllableMaterial});
+		
+		var pickingGeometry = new THREE.SphereGeometry(300, 32, 32);
+		var pickingMaterial = new THREE.MeshBasicMaterial({
+			color: 0xffffff,
+			transparent: true,
+			opacity: 0.2
+		});
+		
+		this.storedGeometries.push({name: 'pickingGeometry', value: pickingGeometry});
+		this.storedMaterials.push({name: 'pickingMaterial', value: pickingMaterial});
 	},
 	
 	getMaterialByName:function(name) {
@@ -318,18 +168,31 @@ Controllable.prototype = {
 	create:function(controllablePosition) {
 		var controllableBody = new Body(controllablePosition, 1, 1, 25.0);
 		
-		var controllableMesh = new THREE.Mesh(this.getGeometryByName('controllableGeometry'), this.getMaterialByName('controllableMaterial').clone());
+		var controllableMaterial = this.getMaterialByName('controllableMaterial').clone();
+		controllableMaterial.uniforms = {
+			texture1: {type: "t", value: this.storedTextures[0]}
+		};
+		
+		var controllableMesh = new THREE.Mesh(this.getGeometryByName('controllableGeometry'), controllableMaterial);
+		controllableMesh.rotation.x -= Math.PI/2;
 		gblSimulation.objectManager.addObject(controllableMesh, true);
-			
+		
+		var pickingMesh = new THREE.Mesh(this.getGeometryByName('pickingGeometry'), this.getMaterialByName('pickingMaterial'));
+		pickingMesh.visible = false;
+		
+		gblSimulation.objectManager.addObject(pickingMesh, true);
+		
 		var controllableView = new View();
 		controllableView.meshes.push({name: 'controllableMesh', value: controllableMesh});
+		controllableView.meshes.push({name: 'pickingMesh', value: pickingMesh});
 		
 		return new Controllable(controllableBody, controllableView);
 	},
 	
 	update:function() {
-		if (this.destination == null) {
-			this.getNewDestination();
+		if (this.inputCoordinates != null) {
+			this.destination = this.inputCoordinates;
+			this.inputCoordinates = null;
 		}
 		
 		if (this.destination != null) {
@@ -343,10 +206,6 @@ Controllable.prototype = {
 		}
 		
 		this.updateView();
-	},
-	
-	getNewDestination:function() {
-		this.destination = new THREE.Vector3(Math.random() * 1000, 0.0, Math.random() * 1000);
 	},
 	
 	updateView:function() {

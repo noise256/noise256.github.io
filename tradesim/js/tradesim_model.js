@@ -1,5 +1,5 @@
 window.onload = function() {
-	tradeSimulation();
+	TradeSimulation();
 }
 
 var gblSimulation = {};
@@ -37,8 +37,8 @@ var GalaxySpecification = {
 	}
 }
 
-function tradeSimulation() {
-	gblSimulation.simulationView = new SimulationView();
+function TradeSimulation() {
+	gblSimulation.simulationView = new Renderer(document.getElementById("canvas"));
 	gblSimulation.simulationView.init();
 	
 	gblSimulation.objectManager = new ObjectManager();
@@ -55,8 +55,16 @@ function tradeSimulation() {
 	
 	window.addEventListener('dblclick', gblSimulation.objectManager.onDoubleClick, false); //move
 	window.addEventListener('mousemove', gblSimulation.objectManager.onMouseMove, false); //move
+	
+	this.frame = function() {
+		requestAnimationFrame(this.frame.bind(this));
 		
-	gblSimulation.simulationView.frame();
+		gblSimulation.objectManager.update();
+		gblSimulation.simulationView.update();
+		gblSimulation.guiController.update();
+	}
+	
+	this.frame();
 }
 
 function generate() {
@@ -66,30 +74,37 @@ function generate() {
 	var numTraders = 2000;//GalaxySpecification.trader.tradersPerSystem;
 	
 	//create stars
+	var starList = [];
+	
 	var distanceToCentre = 0.0;
 	for (var i = 0; i < numStars; i++) {
 		var randVector = vec3.random(vec3.create(), distanceToCentre);
 		var starPosition = new THREE.Vector3(randVector[0], 0.0, randVector[2]);
-		gblSimulation.objectManager.stars.push(Star.prototype.create(starPosition));
+		starList.push(Star.prototype.create(starPosition));
 		distanceToCentre += Math.random() * (GalaxySpecification.galaxy.maxStarDistance - GalaxySpecification.galaxy.minStarDistance) + GalaxySpecification.galaxy.minStarDistance;
 	}
 	
+	gblSimulation.objectManager.objectList.starList = starList;
+	
 	//create planets
+	var planetList = [];
+	var colonyList = [];
 	var colonyCount = 0;
 	for (var i = 0; i < numStars; i++) {
+		var star = gblSimulation.objectManager.objectList.starList[i];
 		var distanceToStar = GalaxySpecification.star.maxStarSize + Math.random() * (GalaxySpecification.solarSystem.maxPlanetDistance - GalaxySpecification.solarSystem.minPlanetDistance) + GalaxySpecification.solarSystem.minPlanetDistance;
 		for (var j = 0; j < numPlanets; j++) {
 			var randVector = vec3.random(vec3.create(), distanceToStar);
 			var planetOffset = new THREE.Vector3(randVector[0], 0.0, randVector[2]);
 			
-			var planet = Planet.prototype.create(gblSimulation.objectManager.stars[i], new THREE.Vector3().addVectors(gblSimulation.objectManager.stars[i].body.position, planetOffset), planetOffset.length());
-			gblSimulation.objectManager.planets.push(planet);
+			var planet = Planet.prototype.create(star, new THREE.Vector3().addVectors(star.body.position, planetOffset), planetOffset.length());
+			planetList.push(planet);
 			
 			if (colonyCount < numColonies) {
 				var colony = Colony.prototype.create(planet);
 				
 				planet.colonies.push(colony);
-				gblSimulation.objectManager.colonies.push(colony);
+				colonyList.push(colony);
 				colonyCount++;
 			}
 			
@@ -97,8 +112,12 @@ function generate() {
 		}
 	}
 	
+	gblSimulation.objectManager.objectList.planetList = planetList;
+	gblSimulation.objectManager.objectList.colonyList = colonyList;
+	
 	//create traders
-	//TODO move this along with trader creation to Trader class
+	var traderList = [];
+	
 	var traderGeometry = new THREE.SphereGeometry(25, 32, 32);
 	var traderMaterial = new THREE.ShaderMaterial({
 		uniforms: {
@@ -120,8 +139,10 @@ function generate() {
 		
 		var traderEconomy = new Economy();
 		
-		gblSimulation.objectManager.traders.push(new Trader(traderBody, traderView, traderEconomy));
-	} 
+		traderList.push(new Trader(traderBody, traderView, traderEconomy));
+	}
+	
+	gblSimulation.objectManager.objectList.traderList = traderList;
 }
 
 /**
@@ -143,201 +164,6 @@ function skybox() {
 	gblSimulation.simulationView.scene.add(new THREE.Mesh(skyboxGeometry, skyboxMaterial));
 }
 
-function SimulationView() {
-	this.scene = null;
-	this.camera = null;
-	this.renderer = null;
-	this.controls = null;
-	this.fpsMeter = null;
-	
-	this.orgCameraPosition = null;
-	this.cameraDestination = null;
-	this.cameraProgress = null;
-	
-	this.cameraOffset = 25000.0;
-	
-	this.frame = function() {
-		requestAnimationFrame(this.frame.bind(this));
-		
-		this.fpsMeter.tickStart();
-		
-		this.updateCamera();
-		
-		this.controls.update();
-		gblSimulation.objectManager.update();
-		gblSimulation.guiController.update();
-		
-		this.render();
-		
-		this.fpsMeter.tick();
-	}
-}
-
-SimulationView.prototype = {
-	init: function() {
-		this.scene = new THREE.Scene();
-		
-		this.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 10, 10000000);
-		this.camera.position.x = 0;
-		this.camera.position.y = 3000;
-		this.camera.position.z = 25000;
-		this.camera.lookAt(new THREE.Vector3(0, 0, 0));
-		
-		this.renderer = new THREE.WebGLRenderer({antialias: true});
-		this.renderer.setSize(window.innerWidth, window.innerHeight);
-		this.renderer.setClearColor(0x000000, 1);
-		
-		this.controls = new THREE.OrbitControls(this.camera);
-		this.controls.maxDistance = 10000000;
-		this.controls.xRotateSpeed = 1.0;
-		this.controls.yRotateSpeed = 0.025;
-		this.controls.panSpeed = 0.05;
-		
-		this.fpsMeter = new FPSMeter(document.body, { decimals: 0, graph: true, theme: 'dark', left: '5px' });
-		
-		document.getElementById("canvas").appendChild(this.renderer.domElement);
-			
-		THREEx.WindowResize(this.renderer, this.camera);
-		THREEx.FullScreen.bindKey({charCode: 'f'.charCodeAt(0)});
-	},
-	
-	render: function() {
-		this.renderer.render(this.scene, this.camera);
-	},
-	
-	updateCamera: function() {
-		if (this.cameraDestination && this.cameraProgress <= 1.0) {
-			var cameraStep = this.orgCameraPosition.clone().lerp(this.cameraDestination, this.cameraProgress);
-			
-			this.camera.position.set(cameraStep.x, cameraStep.y, cameraStep.z);
-			this.controls.savePosition();
-			this.controls.saveTarget();
-			this.controls.reset();
-			
-			this.cameraProgress += 0.1;
-		}
-	}
-}
-
-function ObjectManager() {
-	this.stars = [];
-	this.planets = [];
-	this.colonies = [];
-	this.traders = [];
-	
-	this.staticObjects = null;
-	this.pickingObjects = null;
-	
-	this.mouseMove = new THREE.Vector3();
-	this.lastMouseMove = new THREE.Vector3();
-	this.mouseDblClick = null;
-	
-	this.onMouseMove = function(e) {
-		gblSimulation.objectManager.mouseMove = new THREE.Vector3(
-			(event.clientX / window.innerWidth) * 2 - 1,
-			1 - (event.clientY / window.innerHeight) * 2,
-			0.5
-		);
-	}
-	
-	this.onDoubleClick = function(e) {
-		gblSimulation.objectManager.mouseDblClick = new THREE.Vector3(
-			(event.clientX / window.innerWidth) * 2 - 1,
-			1 - (event.clientY / window.innerHeight) * 2,
-			0.5
-		);
-	}
-}
-
-ObjectManager.prototype = {
-	init:function() {
-		this.staticObjects = new THREE.Object3D();
-		this.pickingObjects = new THREE.Object3D();
-		
-		gblSimulation.simulationView.scene.add(this.staticObjects);
-		gblSimulation.simulationView.scene.add(this.pickingObjects);
-	},
-	
-	update:function() {
-		this.handleMouseMove();
-		this.handleMouseDoubleClick();
-		
-		for (var i = 0; i < this.stars.length; i++) {
-			this.stars[i].update();
-		}
-		for (var i = 0; i < this.planets.length; i++) {
-			this.planets[i].update();
-		}
-		for (var i = 0; i < this.traders.length; i++) {
-			this.traders[i].update();
-		}
-		for (var i = 0; i < this.colonies.length; i++) {
-			this.colonies[i].update();
-		}
-	},
-	
-	addObject:function(object, picking) {
-		if (picking) {
-			this.pickingObjects.add(object);
-		}
-		else {
-			this.staticObjects.add(object);
-		}
-	},
-	
-	handleMouseMove:function() { //TODO combine the raycasting of both this and dbl click methods then perform logic based on input state
-		if (gblSimulation.objectManager.mouseMove.distanceTo(gblSimulation.objectManager.lastMouseMove) > 0.0) {
-			//reset picking object visibility TODO kind of a convoluted way of accessing the picking mesh
- 			for (var i = 0; i < this.pickingObjects.children.length; i++) {
-				this.pickingObjects.children[i].worldParent.view.getMeshByName('pickingMesh').value.visible = false;
-			} 
-			
-			var projector = new THREE.Projector();
- 			var raycaster = projector.pickingRay(gblSimulation.objectManager.mouseMove.clone(), gblSimulation.simulationView.camera);
-		
-			//TODO don't bother doing intersects if object is too far away
-			var intersects = raycaster.intersectObjects(this.pickingObjects.children);
-			
-			if (intersects.length > 0) {
-				var worldParent = intersects[0].object.worldParent;
-				
-				if (worldParent instanceof Planet) {
-					gblSimulation.guiController.resourceGUITarget = worldParent.colonies[0];
-					worldParent.view.getMeshByName('pickingMesh').value.visible = true;
-				}
-			}
-			
-			gblSimulation.objectManager.lastMouseMove = gblSimulation.objectManager.mouseMove.clone();
-		}
-	},
-	
-	handleMouseDoubleClick:function() {
-		if (gblSimulation.objectManager.mouseDblClick != null) {
-			var projector = new THREE.Projector();
-			var raycaster = projector.pickingRay(gblSimulation.objectManager.mouseDblClick.clone(), gblSimulation.simulationView.camera);
-		
-			//TODO don't bother doing intersects if object is too far away
-			var intersects = raycaster.intersectObjects(this.pickingObjects.children);
-			
-			if (intersects.length > 0) {
-				var worldParent = intersects[0].object.worldParent;
-				
-				//TODO move this to flyToTarget() method in SimulationView
-				var destinationVec = new THREE.Vector3().subVectors(gblSimulation.simulationView.camera.position, worldParent.body.position).normalize();
-	
- 				gblSimulation.simulationView.orgCameraPosition = gblSimulation.simulationView.camera.position.clone();
-				gblSimulation.simulationView.cameraDestination = new THREE.Vector3().addVectors(worldParent.body.position, destinationVec.multiplyScalar(gblSimulation.simulationView.cameraOffset));
-				gblSimulation.simulationView.cameraProgress = 0.0;
-				
-				gblSimulation.simulationView.controls.target = worldParent.body.position.clone();
-				gblSimulation.simulationView.camera.lookAt(worldParent.body.position.clone());
-			}
-			
-			gblSimulation.objectManager.mouseDblClick = null;
-		}
-	}
-}
-
 function GUIController() {
 	this.resourceGUITarget = null;
 	
@@ -355,15 +181,18 @@ function GUIController() {
 
 GUIController.prototype = {
 	init:function() {
-		this.resourceGUI = new dat.GUI({height: 4 * 32 - 1});
-		this.resourceGUI.add(this.resourceGUIParams, 'foodQuantity').name('Food Quantity').listen();
-		this.resourceGUI.add(this.resourceGUIParams, 'foodPrice').name('Food Price').listen();
-		this.resourceGUI.add(this.resourceGUIParams, 'waterQuantity').name('Water Quantity').listen();
-		this.resourceGUI.add(this.resourceGUIParams, 'waterPrice').name('Water Price').listen();
-		this.resourceGUI.add(this.resourceGUIParams, 'fuelQuantity').name('Fuel Quantity').listen();
-		this.resourceGUI.add(this.resourceGUIParams, 'fuelPrice').name('Fuel Price').listen();
-		this.resourceGUI.add(this.resourceGUIParams, 'metalQuantity').name('Metal Quantity').listen();
-		this.resourceGUI.add(this.resourceGUIParams, 'metalPrice').name('Metal Price').listen();
+		var resourceGUI = new dat.GUI({height: 4 * 32 - 1, autoplace: false});
+		
+		resourceGUI.add(this.resourceGUIParams, 'foodQuantity').name('Food Quantity').listen();
+		resourceGUI.add(this.resourceGUIParams, 'foodPrice').name('Food Price').listen();
+		resourceGUI.add(this.resourceGUIParams, 'waterQuantity').name('Water Quantity').listen();
+		resourceGUI.add(this.resourceGUIParams, 'waterPrice').name('Water Price').listen();
+		resourceGUI.add(this.resourceGUIParams, 'fuelQuantity').name('Fuel Quantity').listen();
+		resourceGUI.add(this.resourceGUIParams, 'fuelPrice').name('Fuel Price').listen();
+		resourceGUI.add(this.resourceGUIParams, 'metalQuantity').name('Metal Quantity').listen();
+		resourceGUI.add(this.resourceGUIParams, 'metalPrice').name('Metal Price').listen();
+		
+		document.getElementById("canvas").appendChild(resourceGUI.domElement);
 	},
 	
 	update:function() {
@@ -490,6 +319,8 @@ Economy.prototype = {
 }
 
 function Star(body, view) {
+	this.highlight = false;
+	
 	this.body = body;
 	this.view = view;
 	
@@ -581,6 +412,8 @@ Star.prototype = {
 }
 
 function Planet(body, view, economy, star) {
+	this.highlight = true;
+	
 	this.body = body;
 	this.view = view;
 	this.economy = economy;
@@ -753,6 +586,8 @@ Planet.prototype = {
 }
 
 function Trader(body, view, economy) {
+	this.highlight = false;
+	
 	this.body = body;
 	this.view = view;
 	this.economy = economy;
@@ -795,12 +630,11 @@ Trader.prototype = {
 			this.body.move(destinationVec.normalize());
 		}
 		
-		
 		this.updateView();
 	},
 	
 	getNewDestination:function() {
-		var colonies = gblSimulation.objectManager.colonies;
+		var colonies = gblSimulation.objectManager.objectList.colonyList;
 		
 		var buyColony;
 		var sellColony;
