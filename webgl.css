@@ -23,6 +23,17 @@ div.webgl {
 	height:600px;
 }
 
+div.topBar {
+	background-color:#666666;
+	width: 100%;
+	height: auto;
+}
+
+h1.topBar {
+	color: #c44130;
+	margin:0px;
+}
+
 div.centerColumn {
 	background-color:#F3EDDD;
 	margin-left:20%;
