@@ -29,9 +29,20 @@ div.topBar {
 	height: auto;
 }
 
-h1.topBar {
+div.titleBar {
+	margin-left:20%;
+	margin-right:20%;
+	padding-left:1em;
+	padding-right:1em;
+	padding-top:0.25em;
+	padding-bottom:0.25em;
+	width:50%;
+}
+
+h1.titleBar {
 	color: #c44130;
-	margin:0px;
+	margin-top:0px;
+	margin-bottom:0px;
 }
 
 div.centerColumn {
@@ -58,7 +69,7 @@ h1.centerColumn {
 p.centerColumn {
 	text-align:center;
 	border-bottom:solid 5px #c44130;
-	padding-bottom:20px;
+	padding-bottom:1em;
 }
 
 /*
