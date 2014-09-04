@@ -58,7 +58,7 @@ div.centerColumn {
     border-right:solid 1px #666666;
 }
 
-h1.centerColumn {
+div.centerColumn h1 {
 	margin-top:0px;
 	padding-top:20px;
 	padding-bottom:20px;
@@ -67,7 +67,7 @@ h1.centerColumn {
 	color:#5B474E;
 }
 
-p.centerColumn {
+div.centerColumn p {
 	text-align:center;
 	border-bottom:solid 5px #c44130;
 	padding-bottom:1em;
@@ -114,6 +114,11 @@ ul.grid li h3 {
 	color: #5B474E;
 	margin: 0 0 5px;
 	overflow: hidden;
+}
+
+ul.grid li p {
+	border-bottom:none;
+	padding-bottom:0px;
 }
 
 ul.grid.columns-1 li {
