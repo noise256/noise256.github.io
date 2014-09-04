@@ -5,11 +5,11 @@ body {
 }
 
 p {
-	color: #666666;
+	color: #5B474E;
 }
 
 h3 {
-	color: #666666;
+	color: #5B474E;
 }
 
 div.webgl {
@@ -24,9 +24,10 @@ div.webgl {
 }
 
 div.topBar {
-	background-color:#666666;
+	background-color:#F3EDDD;
 	width: 100%;
 	height: auto;
+	border-bottom:solid 1px #666666;
 }
 
 div.titleBar {
@@ -40,7 +41,7 @@ div.titleBar {
 }
 
 h1.titleBar {
-	color: #c44130;
+	color: #5B474E;
 	margin-top:0px;
 	margin-bottom:0px;
 }
@@ -63,7 +64,7 @@ h1.centerColumn {
 	padding-bottom:20px;
 	text-align:center;
 	border-bottom:solid 5px #c44130;
-	color:#666666;
+	color:#5B474E;
 }
 
 p.centerColumn {
@@ -88,7 +89,7 @@ ul.grid li {
 	display: inline-block;
 	padding: 10px;
 	margin: 0 0 2.5% 2.5%;
-	background: #fff;
+	background: #FFFFFF;
 	border: 1px solid #ddd;
 	font-size: 16px;
 	font-size: 1rem;
@@ -110,8 +111,8 @@ ul.grid li a img {
 }
 
 ul.grid li h3 {
+	color: #5B474E;
 	margin: 0 0 5px;
-	white-space: nowrap;
 	overflow: hidden;
 }
 
