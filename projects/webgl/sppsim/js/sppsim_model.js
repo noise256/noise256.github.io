@@ -8,7 +8,7 @@ function SPPSimulation() {
 	gblSimulation.simulationView = new Renderer(document.getElementById("canvas"));
 	gblSimulation.simulationView.init();
 	
-	gblSimulation.simulationView.camera.position.set(24, 10, 24);
+	gblSimulation.simulationView.camera.position.set(24, 10, 100);
 	gblSimulation.simulationView.camera.lookAt(new THREE.Vector3(0, 0, 0));
 	
 	gblSimulation.objectManager = new ObjectManager();
