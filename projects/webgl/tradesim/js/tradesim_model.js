@@ -40,6 +40,7 @@ var GalaxySpecification = {
 function TradeSimulation() {
 	gblSimulation.simulationView = new Renderer(document.getElementById("canvas"));
 	gblSimulation.simulationView.init();
+	gblSimulation.simulationView.camera.position.set(0.0, 3000.0, 30000.0);
 	
 	gblSimulation.objectManager = new ObjectManager();
 	gblSimulation.objectManager.init();
