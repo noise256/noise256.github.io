@@ -44,10 +44,10 @@ function Tree(root) {
 
 Tree.prototype = {
 	create:function() {
-		var nodeMaterial = new THREE.PointCloudMaterial( {map: THREE.ImageUtils.loadTexture("images/particle-grey.png"), size: 100, color: 0xffffff});
+		var nodeMaterial = new THREE.PointCloudMaterial( {map: THREE.ImageUtils.loadTexture("images/particle-grey.png"), size: 100, color: 0xffffff, transparent: true});
 		var nodeGeometry = new THREE.Geometry();
 		
-		var edgeMaterial = new THREE.LineBasicMaterial({color: 0x666666, opacity: 0.5});
+		var edgeMaterial = new THREE.LineBasicMaterial({color: 0x666666, opacity: 0.5, transparent: true});
 		var edgeGeometry = new THREE.Geometry();
 		
 		var root = Node.prototype.create(new THREE.Vector3(0.0,0.0,0.0), null, 5, nodeGeometry, edgeGeometry)
