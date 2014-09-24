@@ -114,7 +114,7 @@ Node.prototype = {
 		var node = new Node(position, parent);
 		
 		if (depth > 0) {
-			var degree = 2;
+			var degree = 5 - depth + 1;
 			
 			for (var i = 0; i < degree; i++) {
 				var childPosition = new THREE.Vector3().addVectors(node.position, new THREE.Vector3((Math.random() * 300.0) - 150.0, (Math.random() * 225.0) + 25.0, (Math.random() * 300.0) - 150.0));
