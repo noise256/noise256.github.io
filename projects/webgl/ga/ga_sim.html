@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Genetic Tree Bifurcation</title>
+		
+		<meta charset="UTF-8"> 
+		<LINK href="../../../webgl.css" rel="stylesheet" type="text/css">
+		
+		<script src="../../../js/lib/jquery-2.1.1.min.js" type="text/javascript"></script>
+		<script src="../../../js/lib/common.js", type="text/javascript"></script>
+		<script src="../../../js/lib/vec3.js", type="text/javascript"></script>
+		<script src="../../../js/lib/three.min.js" type="text/javascript"></script>
+		<script src="../../../js/lib/dat.gui.min.js" type="text/javascript"></script>
+		<script src="../../../js/lib/fpsmeter.js" type="text/javascript"></script>
+		<script src="../../../js/lib/OrbitControls.js" type="text/javascript"></script>
+		<script src="../../../js/lib/THREEx.FullScreen.js" type="text/javascript"></script>
+		
+		<script src="../../../js/Lib.Renderer.js" type="text/javascript"></script>
+		<script src="../../../js/Lib.ObjectManager.js" type="text/javascript"></script>
+		
+		<script type="x-shader/x-vertex" id="star_v_shader">
+			uniform vec3 cameraDir;
+			
+			varying float vCameraDirDotNorm;
+			
+			void main() {
+				vCameraDirDotNorm = abs(dot(normalize(cameraDir), normal));
+				vCameraDirDotNorm = min(1.0, pow(vCameraDirDotNorm, 100.0));
+				vCameraDirDotNorm *= 2.0;
+				gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+			}
+		</script>
+		<script type="x-shader/x-fragment" id="star_f_shader">
+			uniform vec3 colour;
+			varying float vCameraDirDotNorm;
+			void main() {
+				gl_FragColor = vec4(vCameraDirDotNorm * colour, 1.0);
+			}
+		</script>
+	</head>
+	
+	<body>
+		<div class="topBar">
+			<div class="titleBar">
+				<h1 class="titleBar">Douglas Hoyal Cuthill</h1>
+			</div>
+		</div>
+		<div class="centerColumn">
+			<h1>
+				Genetic Algorithm Tree Bifurcation.
+			</h1>
+			<p>
+				A Genetic Algorithm environment for the generation of bifurcating trees.
+			</p>
+			<div id="canvas" class="webgl">
+				<script src="js/ga_model.js" type="text/javascript"></script>
+			</div>
+			<p>
+				LMB: Rotate, MMB: Zoom, RMB: Pan. Performance is substantially better in Chrome than in Firefox or IE. Optimisation will hopefully be looked at soon but for now I suggest using Chrome if you are having any performance issues.
+			</p>
+			<p>
+				"Description"
+			</p>
+		</div>
+	</body>
+</html>
