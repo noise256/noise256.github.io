@@ -30,7 +30,7 @@
 				Agent-based Trade Simulation.
 			</h1>
 			<p>
-				A simulation of planetary trade and colonisation.
+				A Self-Propelled Particle (SPP) simulation used to model flocking behaviour.
 			</p>
 			<div id="canvas" class="webgl">
 				<script src="js/sppsim_model.js" type="text/javascript"></script>
@@ -39,10 +39,14 @@
 				LMB: Rotate, MMB: Zoom, RMB: Pan. Performance is substantially better in Chrome than in Firefox or IE. Optimisation will hopefully be looked at soon but for now I suggest using Chrome if you are having any performance issues.
 			</p>
 			<p>
-				Self-Propelled Particles are used to model flocking, swarming and schooling behaviour. The model has been applied to a rich host of biological species such as Starlings and Locusts. 
-				The model describes swarming behaviour at an individual scale where independent particles determine their movement from the positioning and orientation of the particles in their vicinity. In the most minimal form 
-				the model uses three rules to determine direction of movement of the particles at the next time step. These rules describe interaction between independent particles whereby they are repulsed at close distances, aligned 
-				at moderate distances and attracted at far distances.
+				Self-Propelled Particles are used to model flocking, swarming and schooling behaviour and have been used to describe a rich host of biological species such as Starlings and Locusts. 
+				
+				Swarming behaviour is described at an individual scale where independent particles determine their movement from the positioning and orientation of the particles in their vicinity. 
+				The large scale order visible in the group emerges from the local interaction of the agents within the group and demonstrates how the SPP model is often used to explain how flocking animals
+				are able to form highly ordered groups without any centralised control or apparent leadership.
+				
+				In this relatively minimal form, the model uses three rules to determine direction of movement of the particles at the next time step. 
+				These rules describe interaction between independent particles whereby they are repulsed at close distances, aligned at moderate distances and attracted at far distances.
 			</p>
 		</div>
 	</body>

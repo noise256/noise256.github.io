@@ -253,6 +253,17 @@ vec3.distance = function(a, b) {
 };
 
 /**
+ * CUSTOM FUNCTION
+ * Square approximation of euclidean distance.
+**/
+vec3.distanceAprox = function(a, b) {
+	var x = b[0] - a[0],
+		y = b[1] - a[1],
+		z = b[2] - a[2];
+	return x*x + y*y + z*z;
+}
+
+/**
  * Alias for {@link vec3.distance}
  * @function
  */

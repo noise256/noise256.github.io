@@ -99,7 +99,7 @@ SPPSwarm.prototype = {
 			
 			for (var j = 0; j < this.numParticles; j++) {
 				var sParticle = vec3.fromValues(vertices[j].x, vertices[j].y, vertices[j].z);
-				var siblingDist = vec3.distance(cParticle, sParticle);
+				var siblingDist = vec3.distanceAprox(cParticle, sParticle);
 				
 				//TODO order of if statements may be incorrect if range values get altered by user or are initialised to different values
 				if (siblingDist < sppParams.repulseRange) {

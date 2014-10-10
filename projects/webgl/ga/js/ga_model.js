@@ -44,7 +44,7 @@ function Tree(root) {
 
 Tree.prototype = {
 	create:function() {
-		var nodeMaterial = new THREE.PointCloudMaterial( {map: THREE.ImageUtils.loadTexture("images/particle-grey.png"), size: 100, color: 0xffffff, transparent: true});
+		var nodeMaterial = new THREE.PointCloudMaterial({size: 100, color:0x000000});// {map: THREE.ImageUtils.loadTexture("images/particle-grey.png"), size: 100, color: 0xffffff, transparent: true});
 		var nodeGeometry = new THREE.Geometry();
 		
 		var edgeMaterial = new THREE.LineBasicMaterial({color: 0x666666, opacity: 0.5, transparent: true});
@@ -114,7 +114,7 @@ Node.prototype = {
 		var node = new Node(position, parent);
 		
 		if (depth > 0) {
-			var degree = 5 - depth + 1;
+			var degree = Math.floor(Math.random() * 3);
 			
 			for (var i = 0; i < degree; i++) {
 				var childPosition = new THREE.Vector3().addVectors(node.position, new THREE.Vector3((Math.random() * 300.0) - 150.0, (Math.random() * 225.0) + 25.0, (Math.random() * 300.0) - 150.0));
